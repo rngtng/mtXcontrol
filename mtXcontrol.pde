@@ -1,177 +1,164 @@
-import processing.serial.*;
+
 PFont fontA;
 
-Serial port;
+Matrix matrix;
+Arduino arduino;
 
-int numX = 5;
-int numY = 5;
+
 int border = 10;
 int rad    = 90;
 
-int offY = rad - border;  
+int offY = rad - border;
 int offX = rad - border;
 
-int speed = 15;
+int last_y = 0;
+int last_x = 0;
 
-boolean serial = true;
+int numX = 5;
+int numY = 5;
 
-Matrix matrix;
+int current_delay = 0;
+int current_speed = 15;
 
-int current_frame = 0;
-int current_delay = speed;
 boolean record    = true;
+boolean keyCtrl   = false;
+
+/* +++++++++++++++++++++++++++++ */
 
 void setup() {
-  size(offX + numX * rad, offY + numY * rad);
+  setup_editor();
   matrix = new Matrix( numX, numY );
-  
+  arduino = new Arduino(this);
+}
+
+void setup_editor() {
+  size(offX + numX * rad, offY + numY * rad);
   smooth();
   noStroke();
   fontA = loadFont("Courier-Bold-32.vlw");
   textFont(fontA, 20);
-  
-  try { 
-    port = new Serial(this, Serial.list()[0], 115200);  
-  }
-  catch( Exception e) {
-    port = null;
-  }    
- 
 }
 
-void draw() 
+
+void draw()
 {
-  if( record)  drawBack();
-  else my_delay();
-
-  for(int y=0; y< matrix.numY; y++) {    
-    if(record) drawMatrix(y);
-    // if(serial) drawSerial(y);
-  }
+  draw_background();
+  draw_matrix();
+  next_frame();
 }
 
-void drawBack() {
+/* +++++++++++++++++++++++++++++ */
+
+void draw_background() {
   background(51);
-  fill(255); 
-  text( "Frame: "+ matrix.current_frame_nr + " Speed: " + speed, 20, numY * rad + offY*0.9);      
+  fill(255);
+  String txt_mode = ((record) ? "Record" : "Play");
+  text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode, 20, numY * rad + offY*0.9 );
 }
 
-void my_delay() {
-  current_delay--;
-  if( current_delay == 0 || current_delay > speed) {
-    matrix.nextFrame();
-    current_delay = speed;      
-  }  
-}
-
-void drawMatrix(int y) {
-  for(int x=0; x<matrix.numX; x++) {
-    int colors = matrix.current_pixel(x,y) ? 255 : 127;
-    fill( colors, 153);
-    ellipse( x*rad + offX, y*rad + offY, rad-border, rad-border);
+void draw_matrix() {
+  for(int y=0; y<matrix.numY; y++) {
+    for(int x=0; x<matrix.numX; x++) {
+      int colors = matrix.current_pixel(x,y) ? 255 : 127;
+      fill( colors, 153);
+      ellipse( x*rad + offX, y*rad + offY, rad-border, rad-border);
+    }
   }
 }
 
-void drawSerial(int y) {  
-  byte valX = matrix.row(y);
-   //println("Serial: " + valX);
-  if( port == null) return;
-  port.write( valX );
-}
+/* +++++++++++++++++++++++++++++ */
 
-/* +++++++++++++++ modes +++++++++++++++ */
-void record() {
+void next_frame() {
   if(record) return;
-  matrix.current_frame_nr = 0;
-  record = true;
-  println("RECORD");         
+  if( current_delay < 1) {
+    current_delay = current_speed;
+    matrix.next_frame();
+    arduino.write_frame(matrix);
+  }
+  current_delay--;
 }
-
-void play() {
-  if(!record) return;
-  matrix.current_frame_nr = 0;
-  record =  false;
-  current_delay = speed;
-  println("PLAY");     
-}
-
-
-void write() {
-  println("Start Writing");
-  port.write(255);
-  port.write(250);
-  for(int f=0; f< matrix.numFrames(); f++) {
-    for(int y=0; y<matrix.numY; y++) {
-      byte valX = matrix.row(f,y);
-      port.write(valX);
-      println( valX );
-    }
-  } 
-  port.write(255);
-  port.write(255);
-  println("Done");
-}
-
-void read() {  
-  port.write(255);
-  port.write(251);
-  serial = false;
-  println("Done");
-}
-
 
 /* +++++++++++++++ ACTIONS +++++++++++++++ */
-void mousePressed() {  
+void mouseDragged() {
   if( !record) return;
   int x = mouseX2();
-  int y = mouseY2();
-  if( x >= matrix.numX || y >= matrix.numY) return;
-  matrix.invert_current_pixel(x,y);
-  println("pressed " + x + "," + y + "on pos " + mouseX + "," + mouseY);
+  int y =  mouseY2();
+  if( x == last_x && y == last_y) return;
+  matrix.invert_current_pixel( x, y );
+  last_x = x;
+  last_y = y;
+  arduino.write_frame(matrix);
 }
 
-void keyPressed() {  
+void mousePressed() {
+  if( !record) return;
+  matrix.invert_current_pixel( mouseX2(), mouseY2() );
+  arduino.write_frame(matrix);
+}
+
+void keyPressed() {
+  if( keyCode == 157 ) keyCtrl = true; //control
+  
   if( record ) {
-    if( keyCode == 10)  { play();  }         //ENTER  
+    if( keyCode == 10) play();      //ENTER
 
-    if( keyCode == 39) current_frame = (current_frame + 1 ) % frames.size();  // arrow right
-    if( keyCode == 37) current_frame = ( current_frame == 0 ) ?  frames.size() - 1 : current_frame - 1; //B OR arrow left
+    if( keyCode == 39) matrix.next_frame();     // arrow right
+    if( keyCode == 37) matrix.previous_frame(); // arrow left
 
-    if( keyCode == 32) addFrame();       //SPACE
-    if( keyCode == 67) copyLastFrame();  //C
-    if( keyCode == 68) deleteFrame();    //D
-    if( keyCode == 70) fillFrame();      //F
-    if( keyCode == 88) clearFrame();     //X        
+    if( key == ' ') matrix.add_frame();       //SPACE
+    if( key == 'c') matrix.copy_last_frame();  //C
+    if( key == 'd') matrix.delete_frame();    //D
+    if( key == 'f') matrix.fill_frame();      //F
+    if( key == 'x') matrix.clear_frame();     //X
 
-    //SAVE +  LOAD    
-    if( keyCode == 87) writeMatrix();     //W
-    if( keyCode == 76) loadMatrix();     //L 
-    if( keyCode == 83) saveMatrix();     //S
+    //SAVE +  LOAD
+    if( key == 'w') arduino.write_matrix(matrix);     //w
+    if( key == 'r') matrix = arduino.read_matrix();   //r
+
+    if( key == 'l') matrix.load_from_file();  //L
+    if( key == 's') matrix.save_to_file();    //S
   }
   else {
-    if( keyCode == 37 && speed > 1) speed -=1; //arrow left
-    if( keyCode == 39 && speed < 100) speed +=1;  //arrow right
     if( keyCode == 10) record();           //ENTER
-  }  
-  if( keyCode == 82 ) readMatrix(); // T
-  if( keyCode == 84 ) serial = !serial; // T
-  drawBack();  
-  println("pressed " + keyCode);   
+  }
+
+  if( keyCtrl && keyCode == 37) arduino.speed_up();   //arrow left
+  if( keyCtrl && keyCode == 39) arduino.speed_down(); //arrow right
+
+  if( keyCode == 84 ) arduino.toggle(matrix); // T
+
+  arduino.write_frame(matrix);
+  println("pressed " + key + " " + keyCode);
+}
+
+void keyReleased() {
+  if( keyCode == 157 ) keyCtrl = false;
 }
 
 int mouseY2() {
-  return o(mouseY- offY/2 ); 
+  return (mouseY- offY/2 ) / rad;
 }
 
 int mouseX2() {
-  return o(mouseX - offX/2 ); 
-}
-
-int o(int value) {
-  return value / rad;
+  return (mouseX - offX/2 ) / rad;
 }
 
 
+/* +++++++++++++++ modes +++++++++++++++ */
+void record() {
+  // if(record) return;
+  matrix.current_frame_nr = 0;
+  record = true;
+  println("RECORD");
+}
 
+void play() {
+  // if(!record) return;
+  matrix.current_frame_nr = 0;
+  record =  false;
+  //  current_delay = current_speed;
+  println("PLAY");
+}
 
+/* +++++++++++++++++++++++++++++
 
