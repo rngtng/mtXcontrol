@@ -18,6 +18,8 @@ int pinY = 8;
 
 int speed = 15;
 
+boolean serial = true;
+
 ArrayList frames  = new ArrayList();
 int current_frame = 0;
 int current_delay = speed;
@@ -46,8 +48,10 @@ void setup() {
 
   try { 
     port = new Serial(this, Serial.list()[0], 115200);  
-   // port.write(254);
-   // port.write(numY);
+    port.write(255);
+    port.write(255);    
+    // port.write(254);
+    // port.write(numY);
   }
   catch( Exception e) {
     port = null;
@@ -60,93 +64,59 @@ void draw()
 {
   if( record)  drawBack();
   else my_delay();
-  
+
   for(int y=0; y< numY; y++) {    
     if( record) drawMatrix(y);
-    //drawArduino(y);
-    drawSerial(y);
+    if( serial ) drawSerial(y);
   }
 }
 
 void drawBack() {
-    background(51);
-    fill(255); 
-    text( "Frame: "+ current_frame + " Speed: " + speed, 20, numY * rad + offY*0.9);      
+  background(51);
+  fill(255); 
+  text( "Frame: "+ current_frame + " Speed: " + speed, 20, numY * rad + offY*0.9);      
+}
+
+void my_delay() {
+  current_delay--;
+  if( current_delay == 0 || current_delay > speed) {
+    current_frame = (current_frame >= frames.size() - 1) ? 0 : current_frame + 1;
+    current_delay = speed;      
+  }  
 }
 
 void drawMatrix(int y) {
-  
   for(int x=0; x<numX; x++) {
     int colors = matrix(x,y) ? 255 : 127;
     fill( colors, 153);
     ellipse( x*rad + offX, y*rad + offY, rad-border, rad-border);
   }
-  
-}
-
-void drawArduino(int y) {
-  if( arduino == null) return;
-  for(int x=0; x<numX; x++) {
-    if( matrix(x,y) ) {
-      arduino.digitalWrite( pinX + x, Arduino.HIGH);
-    }
-  }
-  arduino.digitalWrite( pinY + y, Arduino.LOW);
-  //RESET
-  arduino.digitalWrite( pinY + y, Arduino.HIGH);
-  for(int x=0; x<numX; x++) {
-    if( matrix(x,y)) {
-      arduino.digitalWrite( pinX + x, Arduino.LOW);
-    }    
-  }     
 }
 
 void drawSerial(int y) {  
-  int valX =  matrix()[y];
-  // println("Serial: " + valX + ", " + valY);
+  int valX = matrix()[y];
+   //println("Serial: " + valX);
   if( port == null) return;
   port.write( valX );
-  /*
-  long c = 1000;
-  while( c > 0 ) { c--; }
-  println(c); */
 }
 
-void mousePressed() {  
-  if( !record) return;
-  int x = mouseX2();
-  int y = mouseY2();
-  if( x >= numX || y >= numY) return;
-  matrix()[y] = matrix()[y] ^ (1 << x) ;
-  println("pressed " + x + "," + y + "on pos " + mouseX + "," + mouseY);
+/* +++++++++++++++ modes +++++++++++++++ */
+void record() {
+  if(record) return;
+  current_frame = 0;
+  record = true;
+  println("RECORD");         
 }
 
-void keyPressed() {  
-  if( record ) {
-    if( keyCode == 10) play();           //ENTER  
-
-    if( keyCode == 39) current_frame = (current_frame + 1 ) % frames.size();  // arrow right
-    if( keyCode == 37) current_frame = ( current_frame == 0 ) ?  frames.size() - 1 : current_frame - 1; //B OR arrow left
-
-    if( keyCode == 32) addFrame();       //SPACE
-    if( keyCode == 67) copyLastFrame();  //C
-    if( keyCode == 68) deleteFrame();    //D
-    if( keyCode == 70) fillFrame();      //F
-    if( keyCode == 88) clearFrame();     //X        
-
-    //SAVE +  LOAD    
-    if( keyCode == 76) loadMatrix();     //L 
-    if( keyCode == 83) saveMatrix();     //S
-  }
-  else {
-    if( keyCode == 37 && speed > 1) speed -=1; //arrow left
-    if( keyCode == 39 && speed < 100) speed +=1;  //arrow right
-    if( keyCode == 10) record();           //ENTER
-  }  
-  drawBack();
-  println("pressed " + keyCode);   
+void play() {
+  if(!record) return;
+  current_frame = 0;
+  record =  false;
+  current_delay = speed;
+  println("PLAY");     
 }
 
+/* +++++++++++++++ DATA STRUCTURE +++++++++++++++ */
 int[] matrix() {
   return matrix(current_frame);
 }
@@ -168,19 +138,27 @@ boolean matrix(int f, int x, int y) {
   return (matrix(f)[y] & (1 << x)) > 0;
 }
 
-void record() {
-  if(record) return;
-  current_frame = 0;
-  record =  true;
-  println("RECORD");         
+/* +++++++++++++++ FILE +++++++++++++++ */
+void writeMatrix() {
+  println("Start Writing");
+  port.write(255);
+  port.write(253);
+  for(int f=0; f< frames.size(); f++) {
+    for(int y=0; y<numY; y++) {
+      port.write(matrix(f)[y]);
+      println( matrix(f)[y] );
+    }
+  } 
+  port.write(255);
+  port.write(255);
+  println("Done");
 }
 
-void play() {
-  if(!record) return;
-  current_frame = 0;
-  record =  false;
-  current_delay = speed;
-  println("PLAY");     
+void readMatrix() {  
+  port.write(255);
+  port.write(254);
+  serial = false;
+  println("Done");
 }
 
 void saveMatrix() {
@@ -225,6 +203,7 @@ void loadMatrix() {
   }  
 }
 
+/* +++++++++++++++ FRAME +++++++++++++++ */
 void copyLastFrame() {
   if(current_frame == 0) return;
   for(int y=0; y< numY; y++) {
@@ -257,6 +236,45 @@ void setFrame(int f, int value ) {
   }  
 }
 
+/* +++++++++++++++ ACTIONS +++++++++++++++ */
+void mousePressed() {  
+  if( !record) return;
+  int x = mouseX2();
+  int y = mouseY2();
+  if( x >= numX || y >= numY) return;
+  matrix()[y] = matrix()[y] ^ (1 << x) ;
+  println("pressed " + x + "," + y + "on pos " + mouseX + "," + mouseY);
+}
+
+void keyPressed() {  
+  if( record ) {
+    if( keyCode == 10)  { port.write(255); port.write(255); play();  }         //ENTER  
+
+    if( keyCode == 39) current_frame = (current_frame + 1 ) % frames.size();  // arrow right
+    if( keyCode == 37) current_frame = ( current_frame == 0 ) ?  frames.size() - 1 : current_frame - 1; //B OR arrow left
+
+    if( keyCode == 32) addFrame();       //SPACE
+    if( keyCode == 67) copyLastFrame();  //C
+    if( keyCode == 68) deleteFrame();    //D
+    if( keyCode == 70) fillFrame();      //F
+    if( keyCode == 88) clearFrame();     //X        
+
+    //SAVE +  LOAD    
+    if( keyCode == 87) writeMatrix();     //W
+    if( keyCode == 76) loadMatrix();     //L 
+    if( keyCode == 83) saveMatrix();     //S
+  }
+  else {
+    if( keyCode == 37 && speed > 1) speed -=1; //arrow left
+    if( keyCode == 39 && speed < 100) speed +=1;  //arrow right
+    if( keyCode == 10) record();           //ENTER
+  }  
+  if( keyCode == 82 ) readMatrix(); // T
+  if( keyCode == 84 ) serial = !serial; // T
+  drawBack();  
+  println("pressed " + keyCode);   
+}
+
 int mouseY2() {
   return o(mouseY- offY/2 ); 
 }
@@ -268,6 +286,7 @@ int mouseX2() {
 int o(int value) {
   return value / rad;
 }
+
 
 
 
