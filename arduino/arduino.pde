@@ -5,81 +5,190 @@
 
 #include <EEPROM.h>
 
-int addr = 0;
+#define LIVE 0 
+#define STANDALONE 1 
 
-int val1 = 0;
-int val2 = 0;
+#define FRAME_BUFFER_SIZE 512 //BYTES
 
-int speed2 = 0; 
+#define BAUD_RATE 115200
 
-int mode = 0;   //0  = LIVE, 1 = READ, 2 = WRITE
+#define CRTL 255
+#define RESET 255
 
-int x = 0;
-int y = 0;
-int maxY = 4;
+#define WRITE_FRAME 253
+#define WRITE_EEPROM 252
+#define READ_EEPROM 251
 
-void setup()
-{
-  Serial.begin(115200);
-  //maxY = EEPROM.read(0); //first BYTE is max Y
+#define SPEED 249
+#define SPEED_INC 128 //B1000 0000
+#define SPEED_DEC 1   //B0000 0001
+
+#define DEFAULT_SPEED 10000
+
+// int numX = 8;
+byte numY = 5;
+byte numFrames = 0;
+
+unsigned int current_frame_nr = 0;
+unsigned int current_frame_offset = 0;
+unsigned int current_row = 0;
+
+byte serial[3]; //keep last 3 vlaues read from serial
+
+//running mode
+byte mode = STANDALONE;
+
+unsigned int current_delay = 0;
+unsigned int current_speed = DEFAULT_SPEED; 
+
+byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
+
+void setup_timer2(){
+  TCCR2A = 0;
+  TCCR2B = 0<<CS22 | 1<<CS21 | 1<<CS20; 
+
+  //Timer2 Overflow Interrupt Enable   
+  TIMSK2 = 1<<TOIE2;
+  TCNT2 = 0 ; 
+}
+
+//Timer2 overflow interrupt vector handler
+ISR(TIMER2_OVF_vect) {
+  output_row( current_row, frame_buffer[current_frame_offset + current_row]);    
+  current_row = (current_row >= numY - 1) ? 0 : current_row + 1; 
+}
+
+void setup() {
+  Serial.begin(BAUD_RATE);
 
   for(int i = 2; i < 13; i++ ) {
     pinMode(i, OUTPUT);      // sets the digital pin as output
-    digitalWrite(i, LOW);
-  }      
+    digitalWrite(i, LOW);    
+  } 
+
+  load_from_eeprom(0);
+  reset();
+  setup_timer2();
 }
 
+void reset() {
+  current_frame_nr = 0;   
+  current_row = 0;
+  current_frame_offset = current_frame_nr * numY;
+  current_delay = 0;
+  current_speed = DEFAULT_SPEED;
+  mode = STANDALONE;
+}
 
-void loop()
-{
-  if(Serial.available()) {
-    read_serial();    
-    if( val2 == 255 ) 
-    {       
-      if( val1 == 255 ) mode = 0; // LIVE 
-      if( val1 == 254 ) { mode = 1;  addr= 0; y= 0; }  //READ
-      if( val1 == 253 ) { mode = 2;  addr= 0; y= 0; } //WRITE
+void loop() {
+  check_serial();
+  next_frame();
+}
 
-      if( val1 == 250 ) speed2++; 
-      if( val1 == 251 && speed2 > 1 ) speed2--; 
+void next_frame() {
+  if( mode == LIVE ) return; 
+  if(current_delay < 1) {      
+    current_delay = current_speed; // / numY /numY * 300;   
+    current_frame_nr++;
+    if(current_frame_nr >= numFrames) current_frame_nr = 0;
+    current_frame_offset = current_frame_nr * numY;
+  }
+  current_delay--;
+} 
+
+void check_serial() {
+  if( !Serial.available() ) return;
+  byte value = read_serial();
+  if( value == CRTL ) {
+    switch( wait_and_read_serial() ) {
+    case RESET:
+      load_from_eeprom(0);
+      reset();
+      break;
+    case WRITE_EEPROM: 
+      write_to_eeprom(0);
+      break;
+    case WRITE_FRAME:   
+      write_to_frame( current_frame_nr );
+      mode = LIVE;
+      break;
+    case SPEED:
+      value = wait_and_read_serial();
+      if( value == SPEED_INC && current_speed > 100 ) current_speed -= 100;
+      if( value == SPEED_DEC ) current_speed += 100;
+      break;
     }
-    //else if( val2 == 254 ) {
-      //maxY = val1;
-    //}
-    else {
-      if( mode == 2 ) writeE();
-      if( mode == 0 ) blink(val1);
-    } 
   }
-
-  if( mode == 1 ) playE();
-  //  delayMillisecond(speed2);
 }
 
-void read_serial() {
-  val2 = val1;
-  val1 = Serial.read();
+byte read_serial() {  
+  serial[2] = serial[1];
+  serial[1] = serial[0];
+  serial[0] = Serial.read();
+  return serial[0];
 }
 
-void blink(int colX) {    
-  PORTD = (colX << 2 )| (PIND & B00000011);
-  PORTB = ~( 1 << y );
-  y++;  
-  if(y >= maxY) y = 0;
+byte wait_and_read_serial() {
+  while( !Serial.available() );
+  return read_serial();
 }
 
-void writeE() {  
-  if( addr > 512) return; 
-  EEPROM.write(addr, val1);
-  addr++;
+void output_row( byte row, byte value ) {
+  PORTD = (value << 2 )| (PIND & B00000011);
+  PORTB = ~( 1 << row );
 }
 
-void playE() {
-  x = EEPROM.read(addr);  
-  if(addr == 512 || x == 255 ) {
-    addr = 0;
-    x = EEPROM.read(addr);  
+void write_to_frame(unsigned int frame_nr ) {  
+  byte value;
+  unsigned int frame_offset = frame_nr * numY;
+  for( byte row = 0; row < numY; row++ ) {
+    value = wait_and_read_serial();
+    frame_buffer[frame_offset + row] = value;  
   }
-  addr++;
-  blink(x);
 }
+
+void write_to_eeprom( int addr ) {  
+  //int slot = wait_and_read_serial(); 
+  // byte serialY = wait_and_read_serial(); // numY
+  // byte serialSpeed = wait_and_read_serial(); // numY  
+  byte new_numFrames = wait_and_read_serial();
+  EEPROM.write(addr, new_numFrames);  
+
+  byte new_numY = wait_and_read_serial();
+  EEPROM.write(addr + 1, new_numY);  
+
+  byte value;
+  for( int row = 0; row< new_numFrames * new_numY; row++ ) {
+    value = wait_and_read_serial();
+    EEPROM.write(addr + 2 + row, value);      
+  }
+}
+
+void load_from_eeprom( int addr ) {
+  numFrames = EEPROM.read(addr);
+  numY      = EEPROM.read(addr + 1); 
+
+  for( unsigned int row = 0; row< numFrames * numY; row++ ) {
+    frame_buffer[row] = EEPROM.read(addr + 2 + row);
+  }
+}
+
+/* 
+ digitalWrite(ledPin, LOW);  
+ v = wait_and_read_serial();
+ if( v == 255 ) digitalWrite(ledPin, HIGH);  
+ wait_and_read_serial();
+ */
+//  delayMicroseconds(100);
+/* if( row == 2 ) {
+ PORTD = (0 << 2 )| (PIND & B00000011);
+ //  delayMicroseconds(500);
+ } */
+
+
+
+/* 
+ for(int i=0; i< FRAME_BUFFER_SIZE; i++) {
+ frame_buffer[i] = i; //abs(sin( i ) ) * 64;
+ }
+ */
