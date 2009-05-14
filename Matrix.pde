@@ -11,7 +11,6 @@ class Matrix {
   Matrix(int x, int y ) {
     this.numX = x;
     this.numY = y;
-    this.add_frame();
   }
 
   int numFrames() {
@@ -89,25 +88,29 @@ class Matrix {
     println("SAVED to " + savePath);
   }
 
-  void load_from_file() {
+  Matrix load_from_file() {
     String loadPath = selectInput("Choose a Matrix File to load");  // Opens file chooser
+    Matrix matrix = new Matrix( numX, numY);
     if (loadPath == null) {
       println("No file was selected...");
-      return;
+      return matrix;
     }
-
+    
     BufferedReader reader = createReader(loadPath);
     String line = "";
     current_frame_nr = 0;
     while( line != null ) {
       try {
         line = reader.readLine();
+        if( line != null ) matrix.add_frame( line.split(",") );
       }
       catch (IOException e) {
         e.printStackTrace();
-        line = null;
+        return matrix;
       }
     }
+    matrix.current_frame_nr = 0;
+    return matrix;
   }
 
   /* +++++++++++++++ FRAME +++++++++++++++ */
@@ -127,6 +130,11 @@ class Matrix {
     frames.add( current_frame_nr, new byte[numY]); //init first frame
   }
 
+  void add_frame(String[] values) {
+    add_frame();
+    set_frame(current_frame_nr, values);
+  }
+
   void fill_frame() {
     set_frame( current_frame_nr, (byte) ((1 << numX ) - 1) );
   }
@@ -143,4 +151,18 @@ class Matrix {
     }
   }
 
+  void set_frame(int f, byte[] values ) {
+    for(int y=0; y< numY; y++) {
+      frame(f)[y] = values[y];
+    }
+  } 
+
+  void set_frame(int f, String[] values ) {
+    for(int y=0; y< numY; y++) {
+      frame(f)[y] = (byte) Integer.parseInt(values[y]);
+    }
+  } 
+
 }
+
+

@@ -6,7 +6,7 @@ class Arduino {
 
   int WRITE_FRAME  = 253;
   int WRITE_EEPROM = 252;
-  int READ_EEPORM  = 251;
+  int READ_EEPROM  = 251;
 
   int SPEED = 249;
   int SPEED_INC = 128; //B1000 0000

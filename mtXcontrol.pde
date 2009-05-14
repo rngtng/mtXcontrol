@@ -28,6 +28,7 @@ boolean keyCtrl   = false;
 void setup() {
   setup_editor();
   matrix = new Matrix( numX, numY );
+  matrix.add_frame();
   arduino = new Arduino(this);
 }
 
@@ -80,30 +81,22 @@ void next_frame() {
 
 /* +++++++++++++++ ACTIONS +++++++++++++++ */
 void mouseDragged() {
-  if( !record) return;
-  int x = mouseX2();
-  int y =  mouseY2();
-  if( x == last_x && y == last_y) return;
-  matrix.invert_current_pixel( x, y );
-  last_x = x;
-  last_y = y;
-  arduino.write_frame(matrix);
+  matrix_update(mouseX2(), mouseY2(), false );
 }
 
 void mousePressed() {
-  if( !record) return;
-  matrix.invert_current_pixel( mouseX2(), mouseY2() );
-  arduino.write_frame(matrix);
+  matrix_update(mouseX2(), mouseY2(), true );
 }
 
 void keyPressed() {
   if( keyCode == 157 ) keyCtrl = true; //control
-  
-  if( record ) {
-    if( keyCode == 10) play();      //ENTER
 
-    if( keyCode == 39) matrix.next_frame();     // arrow right
-    if( keyCode == 37) matrix.previous_frame(); // arrow left
+  if( record ) {
+    if( !keyCtrl ) {
+      if( keyCode == 10) play();      //ENTER
+      if( keyCode == 37) matrix.previous_frame(); // arrow left
+      if( keyCode == 39) matrix.next_frame();     // arrow right      
+    }
 
     if( key == ' ') matrix.add_frame();       //SPACE
     if( key == 'c') matrix.copy_last_frame();  //C
@@ -112,23 +105,27 @@ void keyPressed() {
     if( key == 'x') matrix.clear_frame();     //X
 
     //SAVE +  LOAD
-    if( key == 'w') arduino.write_matrix(matrix);     //w
-    if( key == 'r') matrix = arduino.read_matrix();   //r
-
-    if( key == 'l') matrix.load_from_file();  //L
-    if( key == 's') matrix.save_to_file();    //S
+    if( key == 'w') arduino.write_matrix(matrix);    //w
+    if( key == 'r') matrix = arduino.read_matrix();  //r
+    if( key == 'l') matrix = matrix.load_from_file();         //L
+    if( key == 's') matrix.save_to_file();           //S
   }
   else {
-    if( keyCode == 10) record();           //ENTER
+    if( !keyCtrl ) {
+      if( keyCode == 10) record();       //ENTER
+      if( keyCode == 37) speed_up();     //arrow left
+      if( keyCode == 39) speed_down();   //arrow right    
+    }
   }
 
-  if( keyCtrl && keyCode == 37) arduino.speed_up();   //arrow left
-  if( keyCtrl && keyCode == 39) arduino.speed_down(); //arrow right
-
-  if( keyCode == 84 ) arduino.toggle(matrix); // T
+  if( keyCtrl ) {
+    if( keyCode == 10 ) arduino.toggle(matrix); // ENTER
+    if( keyCode == 37) arduino.speed_up();   //arrow left
+    if( keyCode == 39) arduino.speed_down(); //arrow right
+  }
 
   arduino.write_frame(matrix);
-  println("pressed " + key + " " + keyCode);
+  // println("pressed " + key + " " + keyCode);
 }
 
 void keyReleased() {
@@ -145,6 +142,17 @@ int mouseX2() {
 
 
 /* +++++++++++++++ modes +++++++++++++++ */
+
+
+void matrix_update( int x, int y, boolean ignore_last) {  
+  if( !record) return;
+  if( !ignore_last && x == last_x && y == last_y) return;
+  matrix.invert_current_pixel( x, y );
+  last_x = x;
+  last_y = y;  
+  arduino.write_frame(matrix);
+}
+
 void record() {
   // if(record) return;
   matrix.current_frame_nr = 0;
@@ -160,5 +168,19 @@ void play() {
   println("PLAY");
 }
 
-/* +++++++++++++++++++++++++++++
+void speed_up() {
+  if( current_speed < 2 ) return;
+  current_speed--;
+}
+
+void speed_down() {
+  //  if( current_speed < 2 ) return;
+  current_speed++;
+}
+
+/* +++++++++++++++++++++++++++++ */
+
+
+
+
 
