@@ -108,6 +108,9 @@ void check_serial() {
     case WRITE_EEPROM: 
       write_to_eeprom(0);
       break;
+    case READ_EEPROM: 
+      send_eeprom(0);
+      break;      
     case WRITE_FRAME:   
       write_to_frame( current_frame_nr );
       mode = LIVE;
@@ -147,10 +150,10 @@ void write_to_frame(unsigned int frame_nr ) {
   }
 }
 
-void write_to_eeprom( int addr ) {  
-  //int slot = wait_and_read_serial(); 
+void write_to_eeprom( int addr ) {
+  //int slot = wait_and_read_serial();
   // byte serialY = wait_and_read_serial(); // numY
-  // byte serialSpeed = wait_and_read_serial(); // numY  
+  // byte serialSpeed = wait_and_read_serial(); // numY
   byte new_numFrames = wait_and_read_serial();
   EEPROM.write(addr, new_numFrames);  
 
@@ -173,22 +176,13 @@ void load_from_eeprom( int addr ) {
   }
 }
 
-/* 
- digitalWrite(ledPin, LOW);  
- v = wait_and_read_serial();
- if( v == 255 ) digitalWrite(ledPin, HIGH);  
- wait_and_read_serial();
- */
-//  delayMicroseconds(100);
-/* if( row == 2 ) {
- PORTD = (0 << 2 )| (PIND & B00000011);
- //  delayMicroseconds(500);
- } */
+void send_eeprom( int addr ) {
+  byte new_numFrames = EEPROM.read(addr);
+  Serial.write(new_numFrames);
+  byte new_numY      = EEPROM.read(addr + 1); 
+  Serial.write(new_numY);
 
-
-
-/* 
- for(int i=0; i< FRAME_BUFFER_SIZE; i++) {
- frame_buffer[i] = i; //abs(sin( i ) ) * 64;
- }
- */
+  for( unsigned int row = 0; row< new_numFrames * new_numY; row++ ) {
+    Serial.write( EEPROM.read(addr + 2 + row) );
+  }
+}

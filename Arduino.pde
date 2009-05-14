@@ -12,7 +12,7 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
-  Serial port;
+    Serial port;
 
   boolean standalone = true;
 
@@ -57,8 +57,23 @@ class Arduino {
   Matrix read_matrix() {
     print("Start Reading Matrix - ");
     command( READ_EEPROM );
+    int frames = wait_and_read_serial();   
+    println( "Frames:" + frames);
+    int numY  = wait_and_read_serial();
+    Matrix matrix = new Matrix(5, numY);
+    
+    println( "Rows: " + numY);
+    for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) 
+    {      
+      println("Frame Nr: " + frame_nr);
+      String[] data = new String[numY];
+      for( int row = 0; row < numY; row++ ) {
+        data[row] = Integer.toString(wait_and_read_serial() );
+      }
+      matrix.add_frame(data);
+    }
     println("Done");
-    return new Matrix(numX, numY);
+    return matrix;
   }
 
   void toggle(Matrix matrix) {
@@ -95,4 +110,10 @@ class Arduino {
     port.write(value);
   }
 
+  private int wait_and_read_serial() {
+    int cnt = 0;
+    while( port.available() < 1 ) { delay( 1 ); cnt++;}
+    return port.read();
+  }
 }
+
