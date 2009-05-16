@@ -4,7 +4,6 @@ PFont fontA;
 Matrix matrix;
 Arduino arduino;
 
-
 int border = 10;
 int rad    = 90;
 
@@ -53,8 +52,9 @@ void draw()
 void draw_background() {
   background(51);
   fill(255);
-  String txt_mode = ((record) ? "Record" : "Play");
-  text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode, 20, numY * rad + offY*0.9 );
+  String txt_mode = (record) ? "Record" : "Play";
+  String ard = (arduino.standalone) ? "Free" : "Ctrl";
+  text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode + " Ard: " + ard, 20, numY * rad + offY*0.9 );
 }
 
 void draw_matrix() {
@@ -91,40 +91,35 @@ void mousePressed() {
 void keyPressed() {
   if( keyCode == 157 ) keyCtrl = true; //control
 
-  if( record ) {
-    if( !keyCtrl ) {
-      if( keyCode == 10) play();      //ENTER
-      if( keyCode == 37) matrix.previous_frame(); // arrow left
-      if( keyCode == 39) matrix.next_frame();     // arrow right      
-    }
-
-    if( key == ' ') matrix.add_frame();       //SPACE
-    if( key == 'c') matrix.copy_last_frame();  //C
-    if( key == 'd') matrix.delete_frame();    //D
-    if( key == 'f') matrix.fill_frame();      //F
-    if( key == 'x') matrix.clear_frame();     //X
-
-    //SAVE +  LOAD
-    if( key == 'w') arduino.write_matrix(matrix);    //w
-    if( key == 'r') matrix = arduino.read_matrix();  //r
-    if( key == 'l') matrix = matrix.load_from_file();         //L
-    if( key == 's') matrix.save_to_file();           //S
-  }
-  else {
-    if( !keyCtrl ) {
-      if( keyCode == 10) record();       //ENTER
-      if( keyCode == 37) speed_up();     //arrow left
-      if( keyCode == 39) speed_down();   //arrow right    
-    }
-  }
-
   if( keyCtrl ) {
     if( keyCode == 10 ) arduino.toggle(matrix); // ENTER
     if( keyCode == 37) arduino.speed_up();   //arrow left
     if( keyCode == 39) arduino.speed_down(); //arrow right
+    if( key == 'l') matrix = arduino.read_matrix();  //r        
+    if( key == 's') arduino.write_matrix(matrix);    //w
   }
+  else {
+    if( key == 'l') matrix = matrix.load_from_file();         //L
+    if( key == 's') matrix.save_to_file();           //S
+    
+    if( record ) {
+      if( keyCode == 10) play();      //ENTER
+      if( keyCode == 37) matrix.previous_frame(); // arrow left
+      if( keyCode == 39) matrix.next_frame();     // arrow right      
 
-  arduino.write_frame(matrix);
+      if( key == ' ') matrix.add_frame();       //SPACE
+      if( key == 'c') matrix.copy_last_frame();  //C
+      if( key == 'd') matrix.delete_frame();    //D
+      if( key == 'f') matrix.fill_frame();      //F
+      if( key == 'x') matrix.clear_frame();     //X
+    }
+    else {
+      if( keyCode == 10) record();       //ENTER
+      if( keyCode == 37) speed_up();     //arrow left
+      if( keyCode == 39) speed_down();   //arrow right    
+    }
+    arduino.write_frame(matrix); 
+   }
   // println("pressed " + key + " " + keyCode);
 }
 
@@ -179,6 +174,7 @@ void speed_down() {
 }
 
 /* +++++++++++++++++++++++++++++ */
+
 
 
 

@@ -102,7 +102,7 @@ class Matrix {
     while( line != null ) {
       try {
         line = reader.readLine();
-        if( line != null ) matrix.add_frame( line.split(",") );
+        if( line != null && line.length() > 0) matrix.add_frame( line.split(",") );
       }
       catch (IOException e) {
         e.printStackTrace();

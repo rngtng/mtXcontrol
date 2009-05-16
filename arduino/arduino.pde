@@ -10,7 +10,7 @@
 
 #define FRAME_BUFFER_SIZE 512 //BYTES
 
-#define BAUD_RATE 115200
+#define BAUD_RATE 14400
 
 #define CRTL 255
 #define RESET 255
@@ -23,7 +23,7 @@
 #define SPEED_INC 128 //B1000 0000
 #define SPEED_DEC 1   //B0000 0001
 
-#define DEFAULT_SPEED 10000
+#define DEFAULT_SPEED 5000
 
 // int numX = 8;
 byte numY = 5;
@@ -69,6 +69,7 @@ void setup() {
   load_from_eeprom(0);
   reset();
   setup_timer2();
+  
 }
 
 void reset() {

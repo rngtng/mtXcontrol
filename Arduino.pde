@@ -1,6 +1,8 @@
 import processing.serial.*;
 
 class Arduino {
+  int BAUD_RATE  = 14400;
+  
   int CRTL  = 255;
   int RESET = 255;
 
@@ -14,11 +16,11 @@ class Arduino {
 
     Serial port;
 
-  boolean standalone = true;
+  public boolean standalone = true;
 
   Arduino(PApplet app) {
     try {
-      port = new Serial(app, Serial.list()[0], 115200);
+      port = new Serial(app, Serial.list()[0], BAUD_RATE);
     }
     catch( Exception e) {
       port = null;
@@ -78,8 +80,8 @@ class Arduino {
 
   void toggle(Matrix matrix) {
     if(standalone) {
-      write_frame(matrix);
       standalone = false;
+      write_frame(matrix);
       return;
     }
     command(RESET);
