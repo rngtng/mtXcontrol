@@ -93,6 +93,7 @@ class Matrix {
     Matrix matrix = new Matrix( numX, numY);
     if (loadPath == null) {
       println("No file was selected...");
+      matrix.add_frame();
       return matrix;
     }
     

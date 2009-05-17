@@ -24,24 +24,23 @@
 
 #define DEFAULT_SPEED 5000
 
-// #define UINT unsigned int
-// #define UBYTE unsigned byte
+// word is same as unsigend int
 
 // int numX = 8;
-unsigned byte numY = 5;
-unsigned byte numFrames = 0;
+byte numY = 5;
+byte numFrames = 0;
 
-unsigned int current_frame_nr = 0;
-unsigned int current_frame_offset = 0;
-unsigned int current_row = 0;
+word current_frame_nr = 0;
+word current_frame_offset = 0;
+byte current_row = 0;
 
 //running mode
-unsigned byte mode = STANDALONE;
+byte mode = STANDALONE;
 
-unsigned int current_delay = 0;
-unsigned int current_speed = DEFAULT_SPEED; 
+word current_delay = 0;
+word current_speed = DEFAULT_SPEED; 
 
-unsigned byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
+byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
 
 void setup_timer2(){
   TCCR2A = 0;
@@ -60,12 +59,14 @@ ISR(TIMER2_OVF_vect) {
 
 void setup() {
   Serial.begin(BAUD_RATE);
-
-  for(unsigned byte i = 2; i < 13; i++ ) {
-    pinMode(i, OUTPUT);      // sets the digital pin as output
-    digitalWrite(i, LOW);    
-  } 
-
+  
+  // init ports
+  DDRD = DDRD | B11111100;
+  PORTD = PIND & B00000011;
+    
+  DDRB = DDRB | B00111111;
+  PORTB = PINB &  B11000000;  
+   
   load_from_eeprom(0);
   reset();
   setup_timer2();
@@ -99,7 +100,7 @@ void next_frame() {
 
 void check_serial() {
   if( !Serial.available() ) return;
-  unsigned byte value = read_serial();
+  byte value = read_serial();
   if( value == CRTL ) {
     switch( wait_and_read_serial() ) {
     case RESET:
@@ -125,67 +126,67 @@ void check_serial() {
   }
 }
 
-unsigned byte read_serial() {  
+byte read_serial() {  
   return Serial.read();
 }
 
-unsigned byte wait_and_read_serial() {
+byte wait_and_read_serial() {
   while( !Serial.available() );
   return read_serial();
 }
 
-void output_row( unsigned byte row, unsigned byte value ) {
-  PORTD = (value << 2 )| (PIND & B00000011);
+void output_row( byte row, byte value ) {
+  PORTD = (value << 2 ) | (PIND & B00000011);
   PORTB = ~( 1 << row );
 }
 
-void write_to_frame(unsigned int frame_nr ) {  
-  unsigned byte value;
-  unsigned int frame_offset = frame_nr * numY;
-  for( unsigned byte row = 0; row < numY; row++ ) {
+void write_to_frame(word frame_nr ) {  
+  byte value;
+  word frame_offset = frame_nr * numY;
+  for( byte row = 0; row < numY; row++ ) {
     value = wait_and_read_serial();
     frame_buffer[frame_offset + row] = value;  
   }
 }
 
-void write_to_eeprom( unsigned int addr ) {
+void write_to_eeprom( word addr ) {
   //int slot = wait_and_read_serial();
   // byte serialY = wait_and_read_serial(); // numY
   // byte serialSpeed = wait_and_read_serial(); // numY
-  unsigned byte new_numFrames = wait_and_read_serial();
+  byte new_numFrames = wait_and_read_serial();
   EEPROM.write(addr, new_numFrames);  
 
-  unsigned byte new_numY = wait_and_read_serial();
+  byte new_numY = wait_and_read_serial();
   EEPROM.write(addr + 1, new_numY);  
 
-  unsigned int max_row = new_numFrames * new_numY;
+  word max_row = new_numFrames * new_numY;
   if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
-  unsigned byte value;
+  byte value;
   for( unsigned  int row = 0; row < max_row; row++ ) {
     value = wait_and_read_serial();
     EEPROM.write(addr + 2 + row, value);      
   }
 }
 
-void load_from_eeprom( unsigned int addr ) {
+void load_from_eeprom( word addr ) {
   numFrames = EEPROM.read(addr);
   numY      = EEPROM.read(addr + 1); 
   
-  unsigned int max_row = numFrames * numY;
+  word max_row = numFrames * numY;
   if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
-  for( unsigned int row = 0; row < max_row; row++ ) {
+  for( word row = 0; row < max_row; row++ ) {
     frame_buffer[row] = EEPROM.read(addr + 2 + row);
   }
 }
 
-void send_eeprom( unsigned int addr ) {
-  unsigned byte new_numFrames = EEPROM.read(addr);
+void send_eeprom( word addr ) {
+  byte new_numFrames = EEPROM.read(addr);
   Serial.write(new_numFrames);
-  unsigned byte new_numY      = EEPROM.read(addr + 1); 
+  byte new_numY      = EEPROM.read(addr + 1); 
   Serial.write(new_numY);
   
-  unsigned int max_row = new_numFrames * new_numY;
-  for( unsigned int row = 0; row < max_row; row++ ) {
+  word max_row = new_numFrames * new_numY;
+  for( word row = 0; row < max_row; row++ ) {
     Serial.write( EEPROM.read(addr + 2 + row) );
   }
 }

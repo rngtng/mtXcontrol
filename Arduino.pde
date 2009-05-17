@@ -52,6 +52,7 @@ class Arduino {
       for(int y=0; y<matrix.numY; y++) {
         send(matrix.row(f,y));
       }
+      delay(10);
     }
     println("Done");
   }
