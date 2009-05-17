@@ -1,6 +1,5 @@
 /*
- * LED Matrix
- *
+ * mtXControl Arduino Firmware
  */
 
 #include <EEPROM.h>
@@ -25,23 +24,24 @@
 
 #define DEFAULT_SPEED 5000
 
+// #define UINT unsigned int
+// #define UBYTE unsigned byte
+
 // int numX = 8;
-byte numY = 5;
-byte numFrames = 0;
+unsigned byte numY = 5;
+unsigned byte numFrames = 0;
 
 unsigned int current_frame_nr = 0;
 unsigned int current_frame_offset = 0;
 unsigned int current_row = 0;
 
-byte serial[3]; //keep last 3 vlaues read from serial
-
 //running mode
-byte mode = STANDALONE;
+unsigned byte mode = STANDALONE;
 
 unsigned int current_delay = 0;
 unsigned int current_speed = DEFAULT_SPEED; 
 
-byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
+unsigned byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
 
 void setup_timer2(){
   TCCR2A = 0;
@@ -61,7 +61,7 @@ ISR(TIMER2_OVF_vect) {
 void setup() {
   Serial.begin(BAUD_RATE);
 
-  for(int i = 2; i < 13; i++ ) {
+  for(unsigned byte i = 2; i < 13; i++ ) {
     pinMode(i, OUTPUT);      // sets the digital pin as output
     digitalWrite(i, LOW);    
   } 
@@ -99,7 +99,7 @@ void next_frame() {
 
 void check_serial() {
   if( !Serial.available() ) return;
-  byte value = read_serial();
+  unsigned byte value = read_serial();
   if( value == CRTL ) {
     switch( wait_and_read_serial() ) {
     case RESET:
@@ -125,65 +125,67 @@ void check_serial() {
   }
 }
 
-byte read_serial() {  
-  serial[2] = serial[1];
-  serial[1] = serial[0];
-  serial[0] = Serial.read();
-  return serial[0];
+unsigned byte read_serial() {  
+  return Serial.read();
 }
 
-byte wait_and_read_serial() {
+unsigned byte wait_and_read_serial() {
   while( !Serial.available() );
   return read_serial();
 }
 
-void output_row( byte row, byte value ) {
+void output_row( unsigned byte row, unsigned byte value ) {
   PORTD = (value << 2 )| (PIND & B00000011);
   PORTB = ~( 1 << row );
 }
 
 void write_to_frame(unsigned int frame_nr ) {  
-  byte value;
+  unsigned byte value;
   unsigned int frame_offset = frame_nr * numY;
-  for( byte row = 0; row < numY; row++ ) {
+  for( unsigned byte row = 0; row < numY; row++ ) {
     value = wait_and_read_serial();
     frame_buffer[frame_offset + row] = value;  
   }
 }
 
-void write_to_eeprom( int addr ) {
+void write_to_eeprom( unsigned int addr ) {
   //int slot = wait_and_read_serial();
   // byte serialY = wait_and_read_serial(); // numY
   // byte serialSpeed = wait_and_read_serial(); // numY
-  byte new_numFrames = wait_and_read_serial();
+  unsigned byte new_numFrames = wait_and_read_serial();
   EEPROM.write(addr, new_numFrames);  
 
-  byte new_numY = wait_and_read_serial();
+  unsigned byte new_numY = wait_and_read_serial();
   EEPROM.write(addr + 1, new_numY);  
 
-  byte value;
-  for( int row = 0; row< new_numFrames * new_numY; row++ ) {
+  unsigned int max_row = new_numFrames * new_numY;
+  if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
+  unsigned byte value;
+  for( unsigned  int row = 0; row < max_row; row++ ) {
     value = wait_and_read_serial();
     EEPROM.write(addr + 2 + row, value);      
   }
 }
 
-void load_from_eeprom( int addr ) {
+void load_from_eeprom( unsigned int addr ) {
   numFrames = EEPROM.read(addr);
   numY      = EEPROM.read(addr + 1); 
-
-  for( unsigned int row = 0; row< numFrames * numY; row++ ) {
+  
+  unsigned int max_row = numFrames * numY;
+  if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
+  for( unsigned int row = 0; row < max_row; row++ ) {
     frame_buffer[row] = EEPROM.read(addr + 2 + row);
   }
 }
 
-void send_eeprom( int addr ) {
-  byte new_numFrames = EEPROM.read(addr);
+void send_eeprom( unsigned int addr ) {
+  unsigned byte new_numFrames = EEPROM.read(addr);
   Serial.write(new_numFrames);
-  byte new_numY      = EEPROM.read(addr + 1); 
+  unsigned byte new_numY      = EEPROM.read(addr + 1); 
   Serial.write(new_numY);
-
-  for( unsigned int row = 0; row< new_numFrames * new_numY; row++ ) {
+  
+  unsigned int max_row = new_numFrames * new_numY;
+  for( unsigned int row = 0; row < max_row; row++ ) {
     Serial.write( EEPROM.read(addr + 2 + row) );
   }
 }
