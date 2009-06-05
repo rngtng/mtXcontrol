@@ -33,13 +33,11 @@ class Arduino {
 
   void write_frame(Matrix matrix) {
     if(standalone) return;
-    print("Start Writing Frame - ");
     command( WRITE_FRAME );
 
     for(int y=0; y<matrix.numY; y++) {
       send(matrix.current_row(y));
     }
-    println("Done");
   }
 
   void write_matrix(Matrix matrix) {
@@ -51,8 +49,8 @@ class Arduino {
     for(int f=0; f< matrix.numFrames(); f++) {
       for(int y=0; y<matrix.numY; y++) {
         send(matrix.row(f,y));
-      }
-      delay(10);
+        delay(1); //we need this delay to give Arduino time consuming the Byte
+      }      
     }
     println("Done");
   }

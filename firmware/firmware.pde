@@ -44,7 +44,7 @@ byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
 
 void setup_timer2(){
   TCCR2A = 0;
-  TCCR2B = 0<<CS22 | 1<<CS21 | 1<<CS20; 
+  TCCR2B = 1<<CS22 | 0<<CS21 | 1<<CS20; 
 
   //Timer2 Overflow Interrupt Enable   
   TIMSK2 = 1<<TOIE2;
@@ -136,8 +136,8 @@ byte wait_and_read_serial() {
 }
 
 void output_row( byte row, byte value ) {
-  PORTD = (value << 2 ) | (PIND & B00000011);
-  PORTB = ~( 1 << row );
+  PORTB = value; // << 2 ) 
+  PORTD = ~( 1 << (row+2) ) | (PIND & B00000011);
 }
 
 void write_to_frame(word frame_nr ) {  
