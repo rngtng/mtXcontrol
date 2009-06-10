@@ -13,8 +13,8 @@ int offX = rad - border;
 int last_y = 0;
 int last_x = 0;
 
-int numX = 5;
-int numY = 5;
+int numX = 6;
+int numY = 6;
 
 int current_delay = 0;
 int current_speed = 15;

@@ -27,7 +27,7 @@
 // word is same as unsigend int
 
 // int numX = 8;
-byte numY = 5;
+byte numY = 6;
 byte numFrames = 0;
 
 word current_frame_nr = 0;
@@ -42,7 +42,7 @@ word current_speed = DEFAULT_SPEED;
 
 byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
 
-void setup_timer2(){
+void setup_timer2() {
   TCCR2A = 0;
   TCCR2B = 1<<CS22 | 0<<CS21 | 1<<CS20; 
 
@@ -53,7 +53,7 @@ void setup_timer2(){
 
 //Timer2 overflow interrupt vector handler
 ISR(TIMER2_OVF_vect) {
-  output_row( current_row, frame_buffer[current_frame_offset + current_row]);    
+  setRow( current_row, frame_buffer[current_frame_offset + current_row]);    
   current_row = (current_row >= numY - 1) ? 0 : current_row + 1; 
 }
 
@@ -135,11 +135,6 @@ byte wait_and_read_serial() {
   return read_serial();
 }
 
-void output_row( byte row, byte value ) {
-  PORTB = value; // << 2 ) 
-  PORTD = ~( 1 << (row+2) ) | (PIND & B00000011);
-}
-
 void write_to_frame(word frame_nr ) {  
   byte value;
   word frame_offset = frame_nr * numY;
@@ -189,4 +184,9 @@ void send_eeprom( word addr ) {
   for( word row = 0; row < max_row; row++ ) {
     Serial.write( EEPROM.read(addr + 2 + row) );
   }
+}
+
+void setRow(byte row, byte value) {
+  PORTB =  255 - value; // << 2 ) 
+  PORTD = (1 << (7-row) ) | (PIND & B00000011);
 }
