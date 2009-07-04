@@ -4,8 +4,11 @@ PFont fontA;
 Matrix matrix;
 Arduino arduino;
 
+Pixel last_color = null;
+Frame current_frame = null;
+
 int border = 10;
-int rad    = 90;
+int rad    = 70;
 
 int offY = rad - border;
 int offX = rad - border;
@@ -13,8 +16,8 @@ int offX = rad - border;
 int last_y = 0;
 int last_x = 0;
 
-int numX = 6;
-int numY = 6;
+int cols = 6;
+int rows = 8;
 
 int current_delay = 0;
 int current_speed = 15;
@@ -26,13 +29,13 @@ boolean keyCtrl   = false;
 
 void setup() {
   setup_editor();
-  matrix = new Matrix( numX, numY );
-  matrix.add_frame();
+  matrix = new Matrix( cols, rows );
+  current_frame = matrix.add_frame();
   arduino = new Arduino(this);
 }
 
 void setup_editor() {
-  size(offX + numX * rad, offY + numY * rad);
+  size(offX + cols * rad, offY + rows * rad);
   smooth();
   noStroke();
   fontA = loadFont("Courier-Bold-32.vlw");
@@ -54,14 +57,16 @@ void draw_background() {
   fill(255);
   String txt_mode = (record) ? "Record" : "Play";
   String ard = (arduino.standalone) ? "Free" : "Ctrl";
-  text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode + " Ard: " + ard, 20, numY * rad + offY*0.9 );
+  text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode + " Ard: " + ard, 20, rows * rad + offY*0.9 );
 }
 
 void draw_matrix() {
-  for(int y=0; y<matrix.numY; y++) {
-    for(int x=0; x<matrix.numX; x++) {
-      int colors = matrix.current_pixel(x,y) ? 255 : 127;
-      fill( colors, 153);
+  Frame frame = matrix.current_frame();
+  Pixel pixel; 
+  for(int y=0; y<frame.rows; y++) {
+    for(int x=0; x<frame.cols; x++) {      
+      pixel = frame.get_pixel(x,y);
+      fill( -254 * pixel.r, -254 * pixel.g, -254 * pixel.b);      
       ellipse( x*rad + offX, y*rad + offY, rad-border, rad-border);
     }
   }
@@ -73,8 +78,8 @@ void next_frame() {
   if(record) return;
   if( current_delay < 1) {
     current_delay = current_speed;
-    matrix.next_frame();
-    arduino.write_frame(matrix);
+    current_frame = matrix.next_frame();
+    arduino.write_frame(current_frame);
   }
   current_delay--;
 }
@@ -92,34 +97,34 @@ void keyPressed() {
   if( keyCode == 157 ) keyCtrl = true; //control
 
   if( keyCtrl ) {
-    if( keyCode == 10 ) arduino.toggle(matrix); // ENTER
+    if( keyCode == 10 ) arduino.toggle(current_frame); // ENTER
     if( keyCode == 37) arduino.speed_up();   //arrow left
     if( keyCode == 39) arduino.speed_down(); //arrow right
     if( key == 'l') matrix = arduino.read_matrix();  //r        
     if( key == 's') arduino.write_matrix(matrix);    //w
   }
   else {
-    if( key == 'l') matrix = matrix.load_from_file();         //L
-    if( key == 's') matrix.save_to_file();           //S
-    
+    //    if( key == 'l') matrix = matrix.load_from_file();         //L
+    //  if( key == 's') matrix.save_to_file();           //S
+
     if( record ) {
       if( keyCode == 10) play();      //ENTER
-      if( keyCode == 37) matrix.previous_frame(); // arrow left
-      if( keyCode == 39) matrix.next_frame();     // arrow right      
+      if( keyCode == 37) current_frame = matrix.previous_frame(); // arrow left
+      if( keyCode == 39) current_frame = matrix.next_frame();     // arrow right      
 
-      if( key == ' ') matrix.add_frame();       //SPACE
-      if( key == 'c') matrix.copy_last_frame();  //C
-      if( key == 'd') matrix.delete_frame();    //D
-      if( key == 'f') matrix.fill_frame();      //F
-      if( key == 'x') matrix.clear_frame();     //X
+      if( key == ' ') current_frame = matrix.add_frame();       //SPACE
+      if( key == 'c') current_frame = matrix.copy_last_frame();  //C
+      if( key == 'd') current_frame = matrix.delete_frame();    //D
+      if( key == 'f') current_frame.fill();      //F
+      if( key == 'x') current_frame.clear();     //X
     }
     else {
       if( keyCode == 10) record();       //ENTER
       if( keyCode == 37) speed_up();     //arrow left
       if( keyCode == 39) speed_down();   //arrow right    
     }
-    arduino.write_frame(matrix); 
-   }
+    arduino.write_frame(current_frame); 
+  }
   // println("pressed " + key + " " + keyCode);
 }
 
@@ -138,28 +143,24 @@ int mouseX2() {
 
 /* +++++++++++++++ modes +++++++++++++++ */
 
-
 void matrix_update( int x, int y, boolean ignore_last) {  
   if( !record) return;
   if( !ignore_last && x == last_x && y == last_y) return;
-  matrix.invert_current_pixel( x, y );
+  last_color = current_frame.set_pixel(x, y, last_color);
   last_x = x;
   last_y = y;  
-  arduino.write_frame(matrix);
+  arduino.write_frame(current_frame);
 }
 
 void record() {
-  // if(record) return;
   matrix.current_frame_nr = 0;
   record = true;
   println("RECORD");
 }
 
 void play() {
-  // if(!record) return;
-  matrix.current_frame_nr = 0;
+  current_frame = matrix.first_frame();
   record =  false;
-  //  current_delay = current_speed;
   println("PLAY");
 }
 
@@ -169,11 +170,13 @@ void speed_up() {
 }
 
 void speed_down() {
-  //  if( current_speed < 2 ) return;
   current_speed++;
 }
 
 /* +++++++++++++++++++++++++++++ */
+
+
+
 
 
 

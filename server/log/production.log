@@ -1,0 +1,237 @@
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:24) [GET]
+Rendering matrix/show
+Completed in 2ms (View: 1, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:25) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:25) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:26) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:26) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:26) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:26) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:27) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:27) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:27) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:27) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:27) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:27) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:28) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:28) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:28) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:29) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:29) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:29) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:29) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#show (for 127.0.0.1 at 2009-06-05 20:10:30) [GET]
+Rendering matrix/show
+Completed in 1ms (View: 0, DB: 0) | 200 OK [http://localhost/]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:26) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 8ms (View: 6, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:27) [GET]
+  Parameters: {"x"=>"0", "y"=>"0"}
+Redirected to http://localhost:3000/matrix
+Completed in 0ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=0&y=0]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:27) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 5ms (View: 5, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:29) [GET]
+  Parameters: {"x"=>"1", "y"=>"0"}
+Redirected to http://localhost:3000/matrix
+Completed in 0ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=1&y=0]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:29) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 6ms (View: 6, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:30) [GET]
+  Parameters: {"x"=>"1", "y"=>"1"}
+Redirected to http://localhost:3000/matrix
+Completed in 0ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=1&y=1]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:30) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 5ms (View: 5, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:31) [GET]
+  Parameters: {"x"=>"2", "y"=>"1"}
+Redirected to http://localhost:3000/matrix
+Completed in 0ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=2&y=1]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:31) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 5ms (View: 5, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:32) [GET]
+  Parameters: {"x"=>"3", "y"=>"1"}
+Redirected to http://localhost:3000/matrix
+Completed in 1ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=3&y=1]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:32) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 5ms (View: 5, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:33) [GET]
+  Parameters: {"x"=>"3", "y"=>"2"}
+Redirected to http://localhost:3000/matrix
+Completed in 1ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=3&y=2]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:33) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 5ms (View: 5, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:34) [GET]
+  Parameters: {"x"=>"2", "y"=>"2"}
+Redirected to http://localhost:3000/matrix
+Completed in 0ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=2&y=2]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:34) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 6ms (View: 6, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#toggle_pixel (for 127.0.0.1 at 2009-06-07 21:36:35) [GET]
+  Parameters: {"x"=>"1", "y"=>"2"}
+Redirected to http://localhost:3000/matrix
+Completed in 0ms (DB: 0) | 302 Found [http://localhost/matrix/toggle_pixel?x=1&y=2]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:35) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 5ms (View: 4, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:37) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 7ms (View: 7, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:38) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 7ms (View: 6, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:38) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 7ms (View: 7, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:36:38) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 4ms (View: 4, DB: 0) | 200 OK [http://localhost/matrix]
+
+
+Processing MatrixController#index (for 127.0.0.1 at 2009-06-07 21:46:08) [GET]
+Rendering template within layouts/application
+Rendering matrix/index
+Completed in 9ms (View: 9, DB: 0) | 200 OK [http://localhost/matrix]

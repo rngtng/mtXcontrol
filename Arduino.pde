@@ -20,7 +20,7 @@ class Arduino {
 
   Arduino(PApplet app) {
     try {
-      port = new Serial(app, Serial.list()[0], BAUD_RATE);
+      port =  new Serial(app, Serial.list()[0], BAUD_RATE);
     }
     catch( Exception e) {
       port = null;
@@ -31,24 +31,25 @@ class Arduino {
 
   /* +++++++++++++++++++++++++++ */
 
-  void write_frame(Matrix matrix) {
+  void write_frame(Frame frame) {
     if(standalone) return;
     command( WRITE_FRAME );
 
-    for(int y=0; y<matrix.numY; y++) {
-      send(matrix.current_row(y));
+    for(int y=0; y<frame.rows; y++) {
+      send(frame.get_row(y));
     }
   }
 
   void write_matrix(Matrix matrix) {
     print("Start Writing Matrix - ");
     command( WRITE_EEPROM );
-    send(matrix.numFrames());
-    send(matrix.numY);
+    send(matrix.num_frames());
+    send(matrix.cols*3);
 
-    for(int f=0; f< matrix.numFrames(); f++) {
-      for(int y=0; y<matrix.numY; y++) {
-        send(matrix.row(f,y));
+    for(int f=0; f< matrix.num_frames(); f++) {
+      Frame frame = matrix.frame(f);
+      for(int row=0; row<frame.rows; row++) {
+        send(frame.get_row(row));
         delay(1); //we need this delay to give Arduino time consuming the Byte
       }      
     }
@@ -60,27 +61,27 @@ class Arduino {
     command( READ_EEPROM );
     int frames = wait_and_read_serial();   
     println( "Frames:" + frames);
-    int numY  = wait_and_read_serial();
-    Matrix matrix = new Matrix(5, numY);
+    int cols  = wait_and_read_serial();
+    Matrix matrix = new Matrix(rows, cols);
     
-    println( "Rows: " + numY);
+    println( "Rows: " + rows);
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) 
     {      
       println("Frame Nr: " + frame_nr);
-      String[] data = new String[numY];
-      for( int row = 0; row < numY; row++ ) {
+      String[] data = new String[cols];
+      for( int row = 0; row < cols; row++ ) {
         data[row] = Integer.toString(wait_and_read_serial() );
       }
-      matrix.add_frame(data);
+//      matrix.add_frame(data);
     }
     println("Done");
     return matrix;
   }
 
-  void toggle(Matrix matrix) {
+  void toggle(Frame frame) {
     if(standalone) {
       standalone = false;
-      write_frame(matrix);
+      write_frame(frame);
       return;
     }
     command(RESET);
@@ -104,6 +105,21 @@ class Arduino {
   private void command( int command ) {
     send(CRTL);
     send(command);
+  }
+  
+  private void send(Pixel[] pix) {
+    int r = 0;
+    int g = 0;
+    int b = 0;
+    for(int i = 0; i < pix.length; i++) {
+      r |= (pix[i].r + 1) << (i+1);
+      g |= (pix[i].g + 1) << (i+1);
+      b |= (pix[i].b + 1) << (i+1);
+    }
+    send(~r);
+    send(~g);
+    send(~b);    
+    delay(1);
   }
 
   private void send(int value) {

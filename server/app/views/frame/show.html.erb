@@ -1,0 +1,44 @@
+<% content_for :keyboard_event_handlers do %>
+      if (code == Event.KEY_RIGHT || code == 63235) { // Right Arrow
+           document.location.href = $('next').href
+      }
+      
+      if (code == Event.KEY_LEFT || code == 63234) { // Left Arrow
+          document.location.href = $('previous').href     
+      }
+  
+      if (code == 32) { // Space
+          $('new').onclick()
+      }  
+      
+      if (code == 68) { // Space
+          $('delete').onclick()
+      }
+      //alert(code);
+<% end %>
+
+<h3>Matrix <%= @matrix.name%></h3>
+
+<%= link_to "Start/Stop", nil %> | 
+
+<div class="menu" id="top_nav">
+  <%= link_to "Delete Frame", matrix_frame_path(:id => @current_frame_nr), :method => :delete, :id => 'delete'  %>
+  <%= link_to "New Frame", matrix_frame_index_path(:last_frame_nr => @current_frame_nr), :method => :post, :id => 'new' %>
+</div>  
+<table id="matrix" border="1" cellpaddin="0" cellspacing="0">
+<% @matrix.rows.times do |y| %>
+  <tr class="row">
+    <% @matrix.columns.times do |x| %>
+       <% pixel = @matrix.pixel(@current_frame_nr,x,y) %>
+       <td id="<%= "f#{x}#{y}" %>" class="pixel <%= "active" if pixel %>" align="center">           
+           <%= link_to (pixel ? 'x' : 'o'), matrix_frame_path( :id => @current_frame_nr, :x => x, :y => y), :method => :put %> 
+       </td>
+    <% end %>  
+  </tr>
+<% end %>
+</table> 
+<div class="menu" id="bottom_nav">
+  <%= link_to "&lt; Previous",     matrix_frame_path( :id => @matrix.previous_frame_nr)  , :id => 'previous' %> | 
+  Frame: <%= @current_frame_nr + 1 %> / <%= @matrix.num_frames %> |
+  <%= link_to "Next &gt;", matrix_frame_path( :id => @matrix.next_frame_nr), :id => 'next' %>
+</div>  
