@@ -17,7 +17,7 @@ class Frame {
   }
 
   public void fill() {
-    this.set_pixels( new Pixel(-1,-1,-1) );
+    this.set_pixels( new Pixel(1,1,1) );
   }
 
   public void set_pixels(Pixel pix) {
@@ -28,25 +28,41 @@ class Frame {
     }
   }
 
+  public void set_pixels(Pixel[] pix) {
+    for( int y = 0; y < this.rows; y++ ) { 
+      for( int x = 0; x < this.cols; x++ ) {            
+        pixs[pos(x,y)] = pix[pos(x,y)].clone();
+      }
+    }
+  }
+
   public Pixel get_pixel(int x, int y) {
     return pixs[pos(x,y)];
   }
 
   public Pixel[] get_row(int y) {
     Pixel[] pix = new Pixel[this.cols];
-    for(int i = 0; i < pix.length; i++) {
-      pix[i] = pixs[pos(i,y)];
+    for(int x = 0; x < this.cols; x++) {
+      pix[x] = pixs[pos(x,y)];
     }
     return pix;
   }
 
   public Pixel set_row(int y, Pixel pix) {    
-    Pixel last = pix;
     for( int x = 0; x < this.cols; x++ ) {
       pix = set_pixel(x, y, pix);
     }
     return pix;
   }
+
+  public Pixel set_row(int y, int r, int g, int b) {    
+    println( r + g + b);
+    for( int x = 0; x < this.cols; x++ ) {
+      pixs[pos(x,y)] = new Pixel( (r >> x) & 1, (g >> x) & 1, (b >> x) & 1 );
+    }
+    return pixs[pos(this.cols-1,y)];
+  }
+
 
   public Pixel set_col(int x, Pixel pix) {    
     for( int y = 0; y < this.rows; y++ ) {
@@ -68,8 +84,15 @@ class Frame {
     return pixs[pos(x,y)];
   }
 
+  public Frame clone() {
+    Frame f = new Frame(this.cols, this.rows);
+    f.set_pixels(pixs);
+    return f;
+  }
+
   private int pos(int x, int y ) {
     return (y * this.cols) + x;
   }
+
 }
 

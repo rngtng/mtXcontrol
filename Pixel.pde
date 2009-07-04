@@ -3,20 +3,17 @@ class Pixel {
   public int g;
   public int b;
   
-  Pixel( int loc_r, int loc_g, int loc_b ) {
-    r = loc_r;
-    g = loc_g;
-    b = loc_b;    
+  Pixel( int r, int g, int b ) {
+    this.r = (r != 0) ? -1 : 0;
+    this.g = (g != 0) ? -1 : 0;
+    this.b = (b != 0) ? -1 : 0;
+    println(this.r+","+this.g+","+this.b);
   }
 
   Pixel() {
     this(0,0,0);
   }    
 
-  Pixel( String loc_r, String loc_g, String loc_b ) {
-    this(Integer.parseInt(loc_r), Integer.parseInt(loc_g), Integer.parseInt(loc_b));
-  }
-  
   public void invert() {
     if( r < 0) {
       if( g < 0 ) {       

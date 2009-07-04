@@ -61,17 +61,17 @@ class Arduino {
     int frames = wait_and_read_serial();   
     println( "Frames:" + frames);
     int cols  = wait_and_read_serial();
-    Matrix matrix = new Matrix(rows, cols);
+    Matrix matrix = new Matrix(rows, cols / 3);
 
     println( "Rows: " + rows);
+     println( "Cols: " + cols);
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) 
-    {      
+    { 
+      Frame frame = matrix.add_frame();     
       println("Frame Nr: " + frame_nr);
-      String[] data = new String[cols];
-      for( int row = 0; row < cols; row++ ) {
-        data[row] = Integer.toString(wait_and_read_serial() );
+      for( int y = 0; y < frame.rows; y++ ) {
+        frame.set_row(y, wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
       }
-      //      matrix.add_frame(data);
     }
     println("Done");
     return matrix;
@@ -107,18 +107,17 @@ class Arduino {
   }
 
   private void send_row(Pixel[] pix) {
-    int r = 0;
-    int g = 0;
-    int b = 0;
+    byte r = 0;
+    byte g = 0;
+    byte b = 0;
     for(int i = 0; i < pix.length; i++) {
-      r |= (pix[i].r + 1) << (i+1);
-      g |= (pix[i].g + 1) << (i+1);
-      b |= (pix[i].b + 1) << (i+1);
+      r |= (pix[i].r + 1) << i;
+      g |= (pix[i].g + 1) << i;
+      b |= (pix[i].b + 1) << i;
     }
+    println( ~r + " " + ~g + " " + ~b);
     send(~r);
-    delay(1);
     send(~g);
-    delay(1);
     send(~b);    
     delay(1);
   }

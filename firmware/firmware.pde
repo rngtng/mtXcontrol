@@ -76,7 +76,7 @@ void setup() {
 
   // init ports  
   //DDRD = DDRD | B11111100;
-  // PORTD = PIND & B00000011;
+  //PORTD = PIND & B00000011;
 
   DDRD=0xff;
   DDRC=0xff;
@@ -84,11 +84,9 @@ void setup() {
   PORTB=0;
   PORTD=0;  
 
-  /* 
-   PORTD = PIND & B00000011;
+  /* PORTD = PIND & B00000011;
    DDRB = DDRB | B00111111;
-   PORTB = PINB &  B11000000;  
-   */
+   PORTB = PINB &  B11000000;  */
 
   load_from_eeprom(0);
   //load_single(0);

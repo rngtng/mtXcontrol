@@ -52,7 +52,10 @@ class Matrix {
 
   /* +++++++++++++++ FRAME +++++++++++++++ */
   Frame copy_last_frame() {
-    //    if(current_frame_nr != 0) frames[current_frame_nr] = frames.get(current_frame_nr-1).clone();    
+    if(current_frame_nr != 0) {
+      Frame prev_frame = (Frame) frames.get(current_frame_nr - 1);
+      frames.set(current_frame_nr, prev_frame.clone() );
+    }    
     return current_frame();
   }
 

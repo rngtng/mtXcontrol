@@ -16,7 +16,7 @@ int offX = rad - border;
 int last_y = 0;
 int last_x = 0;
 
-int cols = 6;
+int cols = 8;
 int rows = 8;
 
 int current_delay = 0;
@@ -62,11 +62,10 @@ void draw_background() {
 }
 
 void draw_matrix() {
-  Frame frame = matrix.current_frame();
   Pixel pixel; 
-  for(int y=0; y<frame.rows; y++) {
-    for(int x=0; x<frame.cols; x++) {      
-      pixel = frame.get_pixel(x,y);
+  for(int y=0; y<current_frame.rows; y++) {
+    for(int x=0; x<current_frame.cols; x++) {      
+      pixel = current_frame.get_pixel(x,y);
       fill( -254 * pixel.r, -254 * pixel.g, -254 * pixel.b);      
       ellipse( x*rad + offX, y*rad + offY, rad-border, rad-border);
     }
@@ -101,7 +100,7 @@ void keyPressed() {
     if( keyCode == 10 ) arduino.toggle(current_frame); // ENTER
     if( keyCode == 37) arduino.speed_up();   //arrow left
     if( keyCode == 39) arduino.speed_down(); //arrow right
-    if( key == 'l') matrix = arduino.read_matrix();  //r        
+    if( key == 'l') { matrix = arduino.read_matrix();  current_frame = matrix.current_frame(); } //r        
     if( key == 's') arduino.write_matrix(matrix);    //w
   }
   else {
