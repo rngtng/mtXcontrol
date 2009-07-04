@@ -57,6 +57,7 @@ void draw_background() {
   fill(255);
   String txt_mode = (record) ? "Record" : "Play";
   String ard = (arduino.standalone) ? "Free" : "Ctrl";
+  
   text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode + " Ard: " + ard, 20, rows * rad + offY*0.9 );
 }
 

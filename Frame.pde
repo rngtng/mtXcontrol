@@ -72,3 +72,4 @@ class Frame {
     return (y * this.cols) + x;
   }
 }
+

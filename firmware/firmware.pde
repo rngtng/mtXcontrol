@@ -27,8 +27,7 @@
 
 // word is same as unsigend int
 
-// int numX = 8;
-byte numY = 24;
+byte rows = 24;
 byte numFrames = 0;
 
 word current_frame_nr = 0;
@@ -68,8 +67,8 @@ void setup_timer2_o() {
 
 //Timer2 overflow interrupt vector handler
 ISR(TIMER2_OVF_vect) {
-  set_row( current_row / 3, 14, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);    
-  current_row = (current_row >= numY - 1) ? 0 : current_row + 3; 
+  set_row( current_row / 3, 16, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);    
+  current_row = (current_row >= rows - 1) ? 0 : current_row + 3; 
 }
 
 void setup() {
@@ -91,8 +90,8 @@ void setup() {
    PORTB = PINB &  B11000000;  
    */
 
-//  load_from_eeprom(0);
-  load_single(0);
+  load_from_eeprom(0);
+  //load_single(0);
   reset();
   setup_timer2();
 
@@ -101,7 +100,7 @@ void setup() {
 void reset() {
   current_frame_nr = 0;   
   current_row = 0;
-  current_frame_offset = current_frame_nr * numY;
+  current_frame_offset = current_frame_nr * rows;
   current_delay = 0;
   current_speed = DEFAULT_SPEED;
   mode = STANDALONE;
@@ -110,8 +109,6 @@ void reset() {
 void loop() {
   check_serial();
   next_frame();
-  //set_row(1, 1, B10010000, B01000100, B0011001);
-  //delay(10); 
 }
 
 void next_frame_ol() {
@@ -128,10 +125,10 @@ void next_frame_ol() {
 void next_frame() {
   if( mode == LIVE ) return; 
   if(current_delay < 1) {      
-    current_delay = current_speed; // / numY /numY * 300;   
+    current_delay = current_speed; // / rows /rows * 300;   
     current_frame_nr++;
     if(current_frame_nr >= numFrames) current_frame_nr = 0;
-    current_frame_offset = current_frame_nr * numY;
+    current_frame_offset = current_frame_nr * rows;
   }
   current_delay--;
 } 
@@ -175,8 +172,8 @@ byte wait_and_read_serial() {
 
 void write_to_frame(word frame_nr ) {  
   byte value;
-  word frame_offset = frame_nr * numY;
-  for( byte row = 0; row < numY; row++ ) {
+  word frame_offset = frame_nr * rows;
+  for( byte row = 0; row < rows; row++ ) {
     value = wait_and_read_serial();
     frame_buffer[frame_offset + row] = value;  
   }
@@ -184,15 +181,15 @@ void write_to_frame(word frame_nr ) {
 
 void write_to_eeprom( word addr ) {
   //int slot = wait_and_read_serial();
-  // byte serialY = wait_and_read_serial(); // numY
-  // byte serialSpeed = wait_and_read_serial(); // numY
+  // byte serialY = wait_and_read_serial(); // rows
+  // byte serialSpeed = wait_and_read_serial(); // rows
   byte new_numFrames = wait_and_read_serial();
   EEPROM.write(addr, new_numFrames);  
 
-  byte new_numY = wait_and_read_serial();
-  EEPROM.write(addr + 1, new_numY);  
+  byte new_rows = wait_and_read_serial();
+  EEPROM.write(addr + 1, new_rows);  
 
-  word max_row = new_numFrames * new_numY;
+  word max_row = new_numFrames * new_rows;
   if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
   byte value;
   for( unsigned  int row = 0; row < max_row; row++ ) {
@@ -204,7 +201,7 @@ void write_to_eeprom( word addr ) {
 void load_single( word addr ) {
   numFrames = 1;
 
-  word max_row = numFrames * numY;
+  word max_row = numFrames * rows;
   if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
   for( word row = 0; row < max_row; row++ ) {
     frame_buffer[row] = 1 << (row / 3);
@@ -213,9 +210,9 @@ void load_single( word addr ) {
 
 void load_from_eeprom( word addr ) {
   numFrames = EEPROM.read(addr);
-  numY      = EEPROM.read(addr + 1); 
+  rows      = EEPROM.read(addr + 1); 
 
-  word max_row = numFrames * numY;
+  word max_row = numFrames * rows;
   if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
   for( word row = 0; row < max_row; row++ ) {
     frame_buffer[row] = EEPROM.read(addr + 2 + row);
@@ -225,10 +222,10 @@ void load_from_eeprom( word addr ) {
 void send_eeprom( word addr ) {
   byte new_numFrames = EEPROM.read(addr);
   Serial.write(new_numFrames);
-  byte new_numY      = EEPROM.read(addr + 1); 
-  Serial.write(new_numY);
+  byte new_rows      = EEPROM.read(addr + 1); 
+  Serial.write(new_rows);
 
-  word max_row = new_numFrames * new_numY;
+  word max_row = new_numFrames * new_rows;
   for( word row = 0; row < max_row; row++ ) {
     Serial.write( EEPROM.read(addr + 2 + row) );
   }

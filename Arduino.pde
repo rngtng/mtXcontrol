@@ -36,7 +36,7 @@ class Arduino {
     command( WRITE_FRAME );
 
     for(int y=0; y<frame.rows; y++) {
-      send(frame.get_row(y));
+      send_row(frame.get_row(y));
     }
   }
 
@@ -44,13 +44,12 @@ class Arduino {
     print("Start Writing Matrix - ");
     command( WRITE_EEPROM );
     send(matrix.num_frames());
-    send(matrix.cols*3);
+    send(matrix.rows*3);
 
     for(int f=0; f< matrix.num_frames(); f++) {
       Frame frame = matrix.frame(f);
       for(int row=0; row<frame.rows; row++) {
-        send(frame.get_row(row));
-        delay(1); //we need this delay to give Arduino time consuming the Byte
+        send_row(frame.get_row(row));
       }      
     }
     println("Done");
@@ -107,7 +106,7 @@ class Arduino {
     send(command);
   }
 
-  private void send(Pixel[] pix) {
+  private void send_row(Pixel[] pix) {
     int r = 0;
     int g = 0;
     int b = 0;
@@ -117,7 +116,9 @@ class Arduino {
       b |= (pix[i].b + 1) << (i+1);
     }
     send(~r);
+    delay(1);
     send(~g);
+    delay(1);
     send(~b);    
     delay(1);
   }
