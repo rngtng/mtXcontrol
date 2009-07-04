@@ -3,7 +3,7 @@
  */
 
 #include <EEPROM.h>
-#include "rainbow.h"
+#include "rgb.h"
 
 #define LIVE 0 
 #define STANDALONE 1 
