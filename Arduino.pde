@@ -2,7 +2,7 @@ import processing.serial.*;
 
 class Arduino {
   int BAUD_RATE  = 14400;
-  
+
   int CRTL  = 255;
   int RESET = 255;
 
@@ -63,7 +63,7 @@ class Arduino {
     println( "Frames:" + frames);
     int cols  = wait_and_read_serial();
     Matrix matrix = new Matrix(rows, cols);
-    
+
     println( "Rows: " + rows);
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) 
     {      
@@ -72,7 +72,7 @@ class Arduino {
       for( int row = 0; row < cols; row++ ) {
         data[row] = Integer.toString(wait_and_read_serial() );
       }
-//      matrix.add_frame(data);
+      //      matrix.add_frame(data);
     }
     println("Done");
     return matrix;
@@ -106,7 +106,7 @@ class Arduino {
     send(CRTL);
     send(command);
   }
-  
+
   private void send(Pixel[] pix) {
     int r = 0;
     int g = 0;
@@ -129,8 +129,12 @@ class Arduino {
 
   private int wait_and_read_serial() {
     int cnt = 0;
-    while( port.available() < 1 ) { delay( 1 ); cnt++;}
+    while( port.available() < 1 ) { 
+      delay( 1 ); 
+      cnt++;
+    }
     return port.read();
   }
 }
+
 

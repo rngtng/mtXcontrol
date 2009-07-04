@@ -43,30 +43,3 @@ class Pixel {
     return new Pixel(r,g,b); 
   }
 }
-
-
-
-  /*  public boolean[] get(int x) {
-   boolean[] b = { at(r,x), at(g,x), at(b,x) };
-   return b;
-   }
-
-  
-  public boolean get_r(int x) {
-    return (r & (1 << x)) > 0;
-  }
-
-  public boolean get_g(int x) {
-    return (g & (1 << x)) > 0;
-  }
-
-  public boolean get_b(int x) {
-    return (b & (1 << x)) > 0;
-  }
-   
-   */
-
-
-
-
-

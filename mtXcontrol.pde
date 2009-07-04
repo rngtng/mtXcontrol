@@ -104,7 +104,7 @@ void keyPressed() {
     if( key == 's') arduino.write_matrix(matrix);    //w
   }
   else {
-    //    if( key == 'l') matrix = matrix.load_from_file();         //L
+    //  if( key == 'l') matrix = matrix.load_from_file();         //L
     //  if( key == 's') matrix.save_to_file();           //S
 
     if( record ) {
@@ -172,14 +172,4 @@ void speed_up() {
 void speed_down() {
   current_speed++;
 }
-
-/* +++++++++++++++++++++++++++++ */
-
-
-
-
-
-
-
-
 

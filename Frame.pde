@@ -41,7 +41,7 @@ class Frame {
   }
 
   public Pixel set_row(int y, Pixel pix) {    
-     Pixel last = pix;
+    Pixel last = pix;
     for( int x = 0; x < this.cols; x++ ) {
       pix = set_pixel(x, y, pix);
     }
@@ -72,76 +72,3 @@ class Frame {
     return (y * this.cols) + x;
   }
 }
-
-////////#############################
-
-/*
-    for(int y=0; y< cols; y++) {
- frame[y] = new Pixel(0,0,0);
- }
- 
- 
- Pixel current_row(int y) {
- return row(current_frame_nr, y);
- }
- 
- 
- public Frame clone() {
- frame = new Frame(this.rows, this.cols);    
- return frame; 
- }
- 
- 
- boolean[] current_pixel(int x, int y) {
- return pixel(current_frame_nr, x, y);
- }
- 
- 
- void set_current_pixel( int x, int y, Pixel pix ) {
- invert_pixel( current_frame_nr, x, y, pix );
- }
- 
- Pixel row(int f, int y) {
- return (Pixel) frame(f)[y];
- }
- 
- Pixel pixel(int f, int x, int y) {
- return row(f, y);
- }
- 
- 
- Pixel[] frame = new Pixel[cols];
- 
- void add_frame(String[] values) {
- add_frame();
- set_frame(current_frame_nr, values);
- }
- 
- 
- void set_frame(int f, Pixel value ) {
- for(int y=0; y< cols; y++) {
- frame(f)[y] = value.clone();
- }
- }
- 
- void set_frame(int f, Pixel[] values ) {
- for(int y=0; y< cols; y++) {
- frame(f)[y] = values[y];
- }
- } 
- 
- void set_frame(int f, String[] values ) {
- for(int y=0; y< cols; y++) {
- frame(f)[y] = new Pixel(values[y],"","");
- }
- } 
- 
- */
-
-
-
-
-
-
-
-
