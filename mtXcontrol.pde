@@ -104,8 +104,8 @@ void keyPressed() {
     if( key == 's') arduino.write_matrix(matrix);    //w
   }
   else {
-    //  if( key == 'l') matrix = matrix.load_from_file();         //L
-    //  if( key == 's') matrix.save_to_file();           //S
+    if( key == 'l') { matrix = matrix.load_from_file();  current_frame = matrix.current_frame(); }  //L
+    if( key == 's') matrix.save_to_file();           //S
 
     if( record ) {
       if( keyCode == 10) play();      //ENTER

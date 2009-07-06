@@ -20,7 +20,7 @@ class Arduino {
 
   Arduino(PApplet app) {
     try {
-      port =  new Serial(app, Serial.list()[0], BAUD_RATE);
+      port =  null; //new Serial(app, Serial.list()[0], BAUD_RATE);
     }
     catch( Exception e) {
       port = null;
@@ -48,8 +48,8 @@ class Arduino {
 
     for(int f=0; f< matrix.num_frames(); f++) {
       Frame frame = matrix.frame(f);
-      for(int row=0; row<frame.rows; row++) {
-        send_row(frame.get_row(row));
+      for(int y=0; y<frame.rows; y++) {
+        send_row(frame.get_row(y));
       }      
     }
     println("Done");
@@ -63,8 +63,6 @@ class Arduino {
     int cols  = wait_and_read_serial();
     Matrix matrix = new Matrix(rows, cols / 3);
 
-    println( "Rows: " + rows);
-     println( "Cols: " + cols);
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) 
     { 
       Frame frame = matrix.add_frame();     
@@ -106,25 +104,16 @@ class Arduino {
     send(command);
   }
 
-  private void send_row(Pixel[] pix) {
-    byte r = 0;
-    byte g = 0;
-    byte b = 0;
-    for(int i = 0; i < pix.length; i++) {
-      r |= (pix[i].r + 1) << i;
-      g |= (pix[i].g + 1) << i;
-      b |= (pix[i].b + 1) << i;
-    }
-    println( ~r + " " + ~g + " " + ~b);
-    send(~r);
-    send(~g);
-    send(~b);    
-    delay(1);
-  }
-
   private void send(int value) {
     if( port == null ) return;
     port.write(value);
+  }
+
+  private void send_row( int[] row) {
+    for( int i = 0; i < row.length; i++) {
+      send(row[i]);
+    }
+    delay(1);        
   }
 
   private int wait_and_read_serial() {
@@ -136,5 +125,9 @@ class Arduino {
     return port.read();
   }
 }
+
+
+
+
 
 

@@ -18,7 +18,7 @@ class Matrix {
   }
 
   Frame next_frame() {
-    current_frame_nr = (current_frame_nr + 1 ) % num_frames();  // (current_frame_nr >= frames.size() - 1) ? 0 : current_frame_nr + 1;
+    current_frame_nr = (current_frame_nr + 1 ) % num_frames(); 
     return current_frame();
   }
 
@@ -73,55 +73,59 @@ class Matrix {
     return current_frame();
   }
 
+  /* +++++++++++++++ FILE +++++++++++++++ */
+  void save_to_file() {
+    String savePath = selectOutput();  // Opens file chooser
+    if (savePath == null) {
+      println("No output file was selected...");
+      return;
+    }
+    PrintWriter output = createWriter(savePath);
+    // output.println(rows+","+cols+","+speed);
+
+    for(int f=0; f< this.num_frames(); f++) {
+      Frame frame = this.frame(f);
+      for(int y=0; y<frame.rows; y++) {
+        int[] row = frame.get_row(y);
+        output.print(row[0] + "," + row[1] + "," + row[2] + ",");
+      }
+      output.println();
+    }
+
+    output.flush(); // Writes the remaining data to the file
+    output.close(); // Finishes the file
+    println("SAVED to " + savePath);
+  }
+
+  Matrix load_from_file() {
+    String loadPath = selectInput("Choose a Matrix File to load");  // Opens file chooser
+    Matrix matrix = new Matrix( this.cols, this.rows); //actually we have to read values from File!
+    if (loadPath == null) {
+      println("No file was selected...");
+      matrix.add_frame();
+      return matrix;
+    }
+
+    BufferedReader reader = createReader(loadPath);
+    String line = "";
+    while( line != null ) {
+      try {
+        line = reader.readLine();
+        if( line != null && line.length() > 0) {
+          Frame frame = matrix.add_frame();
+          String[] str = line.split(",");
+          for(int y = 0; y < frame.rows; y++) {
+            frame.set_row(y, Integer.parseInt(str[y*3]), Integer.parseInt(str[y*3 + 1]), Integer.parseInt(str[y*3 + 2]));           
+          }
+        }
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+        return matrix;
+      }
+    }
+    return matrix;
+  } 
+
 }
-
-
-
-/* +++++++++++++++ FILE +++++++++++++++ 
- void save_to_file() {
- String savePath = selectOutput();  // Opens file chooser
- if (savePath == null) {
- println("No output file was selected...");
- return;
- }
- PrintWriter output = createWriter(savePath);
- // output.println(rows+","+cols+","+speed);
- 
- for(int f=0; f< frames.size(); f++) {
- for(int y=0; y<cols; y++) {
- output.print(row(f,y) + ",");
- }
- output.println();
- }
- 
- output.flush(); // Writes the remaining data to the file
- output.close(); // Finishes the file
- println("SAVED to " + savePath);
- }
- 
- Matrix load_from_file() {
- String loadPath = selectInput("Choose a Matrix File to load");  // Opens file chooser
- Matrix matrix = new Matrix( rows, cols);
- if (loadPath == null) {
- println("No file was selected...");
- matrix.add_frame();
- return matrix;
- }
- 
- BufferedReader reader = createReader(loadPath);
- String line = "";
- current_frame_nr = 0;
- while( line != null ) {
- try {
- line = reader.readLine();
- if( line != null && line.length() > 0) matrix.add_frame( line.split(",") );
- }
- catch (IOException e) {
- e.printStackTrace();
- return matrix;
- }
- }
- matrix.current_frame_nr = 0;
- return matrix;
- } */
 

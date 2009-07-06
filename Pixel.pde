@@ -7,7 +7,6 @@ class Pixel {
     this.r = (r != 0) ? -1 : 0;
     this.g = (g != 0) ? -1 : 0;
     this.b = (b != 0) ? -1 : 0;
-    println(this.r+","+this.g+","+this.b);
   }
 
   Pixel() {
