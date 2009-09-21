@@ -14,15 +14,15 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
-    Serial port;
+  Serial port;
 
   public boolean standalone = true;
 
   Arduino(PApplet app) {
     try {
-      port =  null; //new Serial(app, Serial.list()[0], BAUD_RATE);
+      port = new Serial(app, Serial.list()[0], BAUD_RATE);
     }
-    catch( Exception e) {
+    catch(Exception e) {
       port = null;
     }
     standalone = true;
@@ -32,7 +32,7 @@ class Arduino {
   /* +++++++++++++++++++++++++++ */
 
   void write_frame(Frame frame) {
-    if(standalone) return;
+    if(frame == null || standalone) return;
     command( WRITE_FRAME );
 
     for(int y=0; y<frame.rows; y++) {
@@ -61,7 +61,7 @@ class Arduino {
     int frames = wait_and_read_serial();   
     println( "Frames:" + frames);
     int cols  = wait_and_read_serial();
-    Matrix matrix = new Matrix(rows, cols / 3);
+    Matrix matrix = new Matrix(8, cols / 3);
 
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) 
     { 

@@ -2,17 +2,56 @@
 class Matrix {
 
   ArrayList frames  = new ArrayList();
-
+  PGraphics pg = null;
+  
+  public int rad    = 70;
+  int border = 10;
+  
   public int rows = 0;
   public int cols = 0;
 
-  public int current_frame_nr;
+  int current_frame_nr;
 
   Matrix(int cols, int rows ) {
     this.cols = cols; //X
     this.rows = rows; //Y
+    this.pg = createGraphics(this.width(), this.height(), P2D);
+    add_frame();
+  }
+  
+  public int width() {
+    return cols * rad;
   }
 
+  public int height() {
+    return rows * rad;
+  }
+
+  public PGraphics current_image() {
+    Pixel pixel; 
+    this.pg.beginDraw();    
+    this.pg.background(55);
+    this.pg.smooth();
+    this.pg.noStroke();   
+    for(int y=0; y<current_frame().rows; y++) {
+      for(int x=0; x<current_frame().cols; x++) {      
+        pixel = current_frame().get_pixel(x,y);
+        this.pg.fill(pixel.get_color());      
+        this.pg.ellipse( x*rad+rad/2, y*rad+rad/2, rad-border, rad-border);
+      }
+    }
+    this.pg.endDraw();   
+    return this.pg;
+  }
+
+  public Frame click(int x, int y) {
+    return this.current_frame().update(x / rad, y / rad, true);
+  }
+  
+  public Frame drag(int x, int y) {
+    return this.current_frame().update(x / rad, y / rad, false);
+  }  
+  
   int num_frames() {
     return frames.size();
   }
@@ -46,8 +85,8 @@ class Matrix {
     }
   }
 
-  void set_pixel( int f, int x, int y, Pixel colour ) {      
-    frame(f).set_pixel(x,y,colour);        
+  void set_pixel(int f, int x, int y, Pixel colour) {      
+    frame(f).set_colored_pixel(x,y,colour);        
   } 
 
   /* +++++++++++++++ FRAME +++++++++++++++ */
@@ -128,4 +167,5 @@ class Matrix {
   } 
 
 }
+
 

@@ -3,7 +3,7 @@
  */
 
 #include <EEPROM.h>
-#include "rgb.h"
+#include <Rainbowduino.h>
 
 #define LIVE 0 
 #define STANDALONE 1 
@@ -25,12 +25,12 @@
 
 #define DEFAULT_SPEED 5000
 
-// word is same as unsigend int
-
 byte rows = 24;
 byte numFrames = 0;
 
-word current_frame_nr = 0;
+Rainbowduino rainbow = Rainbowduino();
+
+word current_frame_nr = 0;   // word is same as unsigend int
 word current_frame_offset = 0;
 byte current_row = 0;
 
@@ -42,57 +42,28 @@ word current_speed = DEFAULT_SPEED;
 
 byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
 
-void setup_timer2() {
+void setup_timer() {
   TCCR2A = 0;
   TCCR2B = 1<<CS22 | 0 <<CS21 | 0<<CS20; 
 
-  //Timer2 Overflow Interrupt Enable   
-  TIMSK2 = 1<<TOIE2;
-  TCNT2 = 0 ; 
-  sei();   
-}
-
-
-void setup_timer2_o() {
-  //  TCCR2A |= (1 << WGM21) | (1 << WGM20);   
-  TCCR2A = 0;
-  TCCR2B |= (1<<CS22);   // by clk/64
-  TCCR2B &= ~((1<<CS21) | (1<<CS20));   // by clk/64
-  TCCR2B &= ~((1<<WGM21) | (1<<WGM20));   // Use normal mode
-  ASSR |= (0<<AS2);       // Use internal clock - external clock not used in Arduino
-  TIMSK2 |= (1<<TOIE2) | (0<<OCIE2B);   //Timer2 Overflow Interrupt Enable
-  //  TCNT2 = GamaTab[0];
+  TIMSK2 = 1<<TOIE2;   //Timer2 Overflow Interrupt Enable   
+  TCNT2 = 0;    //  TCNT2 = GamaTab[0];
   sei();   
 }
 
 //Timer2 overflow interrupt vector handler
 ISR(TIMER2_OVF_vect) {
-  set_row( current_row / 3, 16, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);    
+  rainbow.set_row( current_row / 3, 15, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);
   current_row = (current_row >= rows - 1) ? 0 : current_row + 3; 
 }
 
 void setup() {
   Serial.begin(BAUD_RATE);  
 
-  // init ports  
-  //DDRD = DDRD | B11111100;
-  //PORTD = PIND & B00000011;
-
-  DDRD=0xff;
-  DDRC=0xff;
-  DDRB=0xff;
-  PORTB=0;
-  PORTD=0;  
-
-  /* PORTD = PIND & B00000011;
-   DDRB = DDRB | B00111111;
-   PORTB = PINB &  B11000000;  */
-
   load_from_eeprom(0);
   //load_single(0);
   reset();
-  setup_timer2();
-
+  setup_timer();
 }
 
 void reset() {
@@ -107,17 +78,6 @@ void reset() {
 void loop() {
   check_serial();
   next_frame();
-}
-
-void next_frame_ol() {
-  for( int i = 0; i < 8; i++ ) {          
-    for( int j = 0; j < 5; j++ ) {    
-      set_row(abs(i-2), 1, B00000000, B00000000, B11111111);
-      set_row(abs(i-1), (i+1) << 2, B00000000, B11111111, B00000000);
-      set_row(i, (i+1) << 4, B11111111, B00000000, B00000000);
-    }
-  }
-  delay(10);
 }
 
 void next_frame() {
@@ -196,6 +156,18 @@ void write_to_eeprom( word addr ) {
   }
 }
 
+void send_eeprom( word addr ) {
+  byte new_numFrames = EEPROM.read(addr);
+  Serial.write(new_numFrames);
+  byte new_rows      = EEPROM.read(addr + 1); 
+  Serial.write(new_rows);
+
+  word max_row = new_numFrames * new_rows;
+  for( word row = 0; row < max_row; row++ ) {
+    Serial.write( EEPROM.read(addr + 2 + row) );
+  }
+}
+
 void load_single( word addr ) {
   numFrames = 1;
 
@@ -217,60 +189,4 @@ void load_from_eeprom( word addr ) {
   }
 }
 
-void send_eeprom( word addr ) {
-  byte new_numFrames = EEPROM.read(addr);
-  Serial.write(new_numFrames);
-  byte new_rows      = EEPROM.read(addr + 1); 
-  Serial.write(new_rows);
 
-  word max_row = new_numFrames * new_rows;
-  for( word row = 0; row < max_row; row++ ) {
-    Serial.write( EEPROM.read(addr + 2 + row) );
-  }
-}
-
-void set_row(byte line, byte level, byte r, byte b, byte g ) {
-  open_line(line);
-  for( byte i = 0; i < 16; i++ ) {    
-    disable_oe;
-    le_high;  
-    set_color( (i < level) ? b : 0 );
-    set_color( (i < level) ? r : 0 );
-    set_color( (i < level) ? g : 0 );
-    le_low;   
-    enable_oe;
-  }   
-}
-
-
-void set_color(byte c ) {
-  for(byte color=0;color<8;color++) {   
-    if( c > 127 )  { 
-      shift_data_1;  
-    }
-    else { 
-      shift_data_0; 
-    }
-    c = c << 1;   
-    clk_rising;
-  }   
-}
-
-
-//==============================================================
-void open_line(byte line)     // open the scaning line 
-{
-  if(line < 3) {
-    PORTB  = (PINB & ~0x07) | 0x04 >> line;
-    PORTD  = (PIND & ~0xF8); 
-  }
-  else {
-    PORTB  = (PINB & ~0x07);
-    PORTD  = (PIND & ~0xF8) | 0x80 >> (line - 3); 
-  }
-}
-
-/* void setRow(byte row, byte value) {
- PORTB =  255 - value; // << 2 ) 
- PORTD = (1 << (7-row) ) | (PIND & B00000011);
- } */
