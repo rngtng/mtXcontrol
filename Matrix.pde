@@ -1,8 +1,7 @@
 
 class Matrix {
 
-  ArrayList frames  = new ArrayList();
-  PGraphics pg = null;
+  ArrayList frames  = new ArrayList();  
   
   public int rad    = 70;
   int border = 10;
@@ -15,7 +14,6 @@ class Matrix {
   Matrix(int cols, int rows ) {
     this.cols = cols; //X
     this.rows = rows; //Y
-    this.pg = createGraphics(this.width(), this.height(), P2D);
     add_frame();
   }
   
@@ -27,28 +25,21 @@ class Matrix {
     return rows * rad;
   }
 
-  public PGraphics current_image() {
-    Pixel pixel; 
-    this.pg.beginDraw();    
-    this.pg.background(55);
-    this.pg.smooth();
-    this.pg.noStroke();   
-    for(int y=0; y<current_frame().rows; y++) {
-      for(int x=0; x<current_frame().cols; x++) {      
-        pixel = current_frame().get_pixel(x,y);
-        this.pg.fill(pixel.get_color());      
-        this.pg.ellipse( x*rad+rad/2, y*rad+rad/2, rad-border, rad-border);
-      }
-    }
-    this.pg.endDraw();   
-    return this.pg;
+  public PGraphics current_frame_image() {
+    return this.current_frame_image(rad, border);
+  }
+
+  public PGraphics current_frame_image(int draw_rad, int draw_border) {
+    return this.current_frame().draw_full(draw_rad, draw_border);
   }
 
   public Frame click(int x, int y) {
+    if( x > this.width() + 25 || y > this.height() + 25) return this.current_frame();
     return this.current_frame().update(x / rad, y / rad, true);
   }
   
   public Frame drag(int x, int y) {
+    if( x > this.width() + 25 || y > this.height() + 25) return this.current_frame();
     return this.current_frame().update(x / rad, y / rad, false);
   }  
   

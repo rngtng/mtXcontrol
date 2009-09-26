@@ -13,14 +13,15 @@ class Pixel {
     this(0,0,0);
   }    
 
-  public void invert() {
+  public Pixel invert() {
     if(r < 0) {
       if(g < 0) {       
         b = ~b;
       }
       g = ~g;
     }  
-    r = ~r;          
+    r = ~r;   
+    return this;
   }
 
   public boolean equal(Pixel p) {
