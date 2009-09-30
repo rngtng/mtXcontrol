@@ -16,7 +16,7 @@ int current_speed = 15;
 boolean record    = true;
 boolean keyCtrl   = false;
 boolean keyMac   = false;
-
+boolean update = true;
 Button[] buttons;
 
 /* +++++++++++++++++++++++++++++ */
@@ -35,41 +35,77 @@ void setup() {
 }
 
 void setup_buttons() {
-  buttons = new Button[matrix.rows+matrix.cols+1]; 
+  buttons = new Button[matrix.rows+matrix.cols+1+20]; 
   int button_size = 15;
-  color button_color = #444444;
-  color button_color_over = #999999;
   int offset = 10;
+  int button_index = 0;
+  
+  buttons[button_index++] = new TextToggleButton( "Mode: RECORD", "Mode: PLAY", offX + matrix.width() + offset + 30, 30, 130, 25, #444444, #999999);
+  buttons[button_index++] = new TextToggleButton( "Arduino: FREE", "Arduino: CTRL", offX + matrix.width() + offset + 30, 60, 130, 25, #444444, #999999);
 
+  buttons[button_index++] = new ActionButton( "Load", offX + matrix.width() + offset + 30, 120, 130, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "Save", offX + matrix.width() + offset + 30, 150, 130, 25, #444444, #999999);
+ 
+  buttons[button_index++] = new ActionButton( "Add",    offX + matrix.width() + offset + 30, 220, 130, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "Delete", offX + matrix.width() + offset + 30, 250, 130, 25, #444444, #999999);
+  
+  buttons[button_index++] = new ActionButton( "L",    offX + matrix.width() + offset + 30, 310, 40, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "R",    offX + matrix.width() + offset + 120, 310, 40, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "U",    offX + matrix.width() + offset + 75, 290, 40, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "D",    offX + matrix.width() + offset + 75, 325, 40, 25, #444444, #999999);
+  
+  
+  buttons[button_index++] = new ActionButton( "Copy",    offX + matrix.width() + offset + 30, 365, 130, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "Fill",    offX + matrix.width() + offset + 30, 395, 130, 25, #444444, #999999);
+  buttons[button_index++] = new ActionButton( "Clear", offX + matrix.width() + offset + 30, 425, 130, 25, #444444, #999999);
+ 
+  
+//  buttons[button_index++] = new RectButton( offX + matrix.width() + offset + 40, 570, 100, 20, new Pixel().get_color());
+//  buttons[button_index++] = new TextButton( "Save", offX + matrix.width() + offset + 30, 270, 80, 20, #444444, #999999);
+  
+  color button_color = #333333;
+  color button_color_over = #999999;
   for(int i = 0; i < matrix.rows; i++ ) {
-    buttons[i] = new RectButton( offX + matrix.width() + offset, offY + i * matrix.rad + matrix.border / 2, button_size, matrix.rad - matrix.border, button_color, button_color_over );
+      buttons[button_index++] = new RectButton( offX + matrix.width() + offset, offY + i * matrix.rad + matrix.border / 2, button_size, matrix.rad - matrix.border, button_color, button_color_over );
   }  
   for(int i = 0; i < matrix.cols; i++ ) {
-    buttons[matrix.rows + i] = new RectButton( offX + i * matrix.rad + matrix.border / 2, offY + matrix.width() + offset, matrix.rad - matrix.border, button_size, button_color, button_color_over );
+    buttons[button_index++] = new RectButton( offX + i * matrix.rad + matrix.border / 2, offY + matrix.width() + offset, matrix.rad - matrix.border, button_size, button_color, button_color_over );
   } 
-  buttons[matrix.rows + matrix.cols] = new SquareButton( offX + matrix.width() + offset, offY + matrix.width() + offset, button_size, button_color, button_color_over );
+  buttons[button_index++] = new SquareButton( offX + matrix.width() + offset, offY + matrix.width() + offset, button_size, button_color, button_color_over ); 
 }
 
 void draw()
 {
-  background(51);
+  if(update) {
+  background(41);
   image(matrix.current_frame_image(), offX, offY);
-  for(int i = 0; i < matrix.rows+matrix.cols+1; i++ ) {
-    buttons[i].display();
+  for(int i = 0; i < buttons.length; i++ ) {
+    if( buttons[i] != null ) buttons[i].display();
   }
   
-  draw_frames(); 
-  fill(255); //white
-  /*  String txt_mode = (record) ? "Record" : "Play";
+  draw_thumb_frames(); 
+   
+//   fill(255); //white
+   //textFont(fontA, 20);
+   
+   /* String txt_mode = (record) ? "Record" : "Play";
+   text( "Mode: " + txt_mode, offX + matrix.width() + 40, 40);
+   
    String ard = (arduino.standalone) ? "Free" : "Ctrl";
-   textFont(fontA, 20);
-   text( "Frame: "+ matrix.current_frame_nr + " Speed: " + current_speed + " Mode: " + txt_mode + " Ard: " + ard, 20, matrix.height() + 2*offY*0.9 );
+   text( "Arduino: " + ard, offX + matrix.width() + 40, 60 );
    */
+  // text( "Color: ", offX + matrix.width() + 40, 360 );
+  //fill(matrix.current_frame().last_color.get_color()); //white
+   
+   
+//   fill(255); //white
+   //text( "Speed: " + current_speed, offX + matrix.width() + 55, 660);
+   update = false;
+  }
   next_frame();
-
 }
 
-void draw_frames() {
+void draw_thumb_frames() {
   int i;
   int img_x;
   int img_y = offY + matrix.height() + 40;  
@@ -109,17 +145,23 @@ void next_frame() {
 void mouseDragged() {
   if(!record) return;
   arduino.write_frame( matrix.drag(mouseX - offX, mouseY - offY) );
+  update = true;
 }
 
 void mousePressed() {
+  for(int i = 0; i < buttons.length; i++ ) {
+    if( buttons[i] != null ) buttons[i].pressed();
+  }  
   if(!record) return;
   arduino.write_frame( matrix.click(mouseX - offX, mouseY - offY) );
+  update = true;
 }
 
 void mouseMoved() {
-    for(int i = 0; i < matrix.rows+matrix.cols+1; i++ ) {
-      buttons[i].update();
-    }
+  for(int i = 0; i < buttons.length; i++ ) {
+    if( buttons[i] != null ) update = update || buttons[i].over();
+  }
+  update = true;
 }
 
 void keyPressed() {
@@ -140,7 +182,7 @@ void keyPressed() {
     if( keyCode == 38) matrix.current_frame().shift_up(); // arrow left
     if( keyCode == 40) matrix.current_frame().shift_down();   // arrow right      
     if( keyCode == 8)  matrix.current_frame().clear();     //Del
-    if( keyCode == 32) matrix.current_frame().fill_frame();      //Space
+    if( keyCode == 32) matrix.current_frame().fill();      //Space
   }
   else {
     if( key == 'l') matrix = matrix.load_from_file(); //L
@@ -162,6 +204,7 @@ void keyPressed() {
     }
     arduino.write_frame(matrix.current_frame()); 
   }
+  update = true;
   println("pressed " + key + " " + keyCode);
 }
 

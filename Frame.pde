@@ -10,14 +10,15 @@ class Frame {
   public int rows = 0;
   public int cols = 0;
   
-  Pixel last_color = null;
+  public Pixel last_color = null;
   int last_y = 0;
   int last_x = 0;
    
   Frame( int cols, int rows ) {
     this.cols = cols;    
     this.rows = rows;
-    pixs = new Pixel[rows*cols];
+    this.pixs = new Pixel[rows*cols];
+    this.last_color = new Pixel();
     this.clear();
     this.pg = createGraphics(8, 10, P2D);
   }
@@ -41,11 +42,11 @@ class Frame {
     canvas.noStroke();   
     for(int y = 0; y < this.rows; y++) {
       for(int x = 0; x < this.cols; x++) {      
-        pixel = this.get_pixel(x,y);
-        if( pixel != null) canvas.fill(pixel.get_color());      
+        canvas.fill(this.get_pixel(x,y).get_color());      
         canvas.ellipse( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
       }
     }
+    println( "drawn" );
     canvas.endDraw();   
     return canvas;
   }
@@ -54,8 +55,8 @@ class Frame {
     this.set_pixels(new Pixel());
   }
 
-  public void fill_frame() {
-    this.set_pixels( new Pixel(1,1,1) );
+  public void fill() {
+    this.set_pixels( last_color );
   }
 
   public void set_pixels(Pixel pix) {

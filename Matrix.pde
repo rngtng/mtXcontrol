@@ -106,7 +106,7 @@ class Matrix {
   /* +++++++++++++++ FILE +++++++++++++++ */
   void save_to_file() {
     String savePath = selectOutput();  // Opens file chooser
-    if (savePath == null) {
+    if(savePath == null) {
       println("No output file was selected...");
       return;
     }
@@ -129,13 +129,12 @@ class Matrix {
 
   Matrix load_from_file() {
     String loadPath = selectInput("Choose a Matrix File to load");  // Opens file chooser
-    Matrix matrix = new Matrix( this.cols, this.rows); //actually we have to read values from File!
-    if (loadPath == null) {
+    if(loadPath == null) {
       println("No file was selected...");
-      matrix.add_frame();
-      return matrix;
+      return this;
     }
 
+    Matrix matrix = new Matrix( this.cols, this.rows); //actually we have to read values from File!
     BufferedReader reader = createReader(loadPath);
     String line = "";
     while( line != null ) {

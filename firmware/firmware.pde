@@ -53,7 +53,7 @@ void setup_timer() {
 
 //Timer2 overflow interrupt vector handler
 ISR(TIMER2_OVF_vect) {
-  rainbow.set_row( current_row / 3, 15, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);
+  rainbow.set_row( current_row / 3, 16, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);
   current_row = (current_row >= rows - 1) ? 0 : current_row + 3; 
 }
 
