@@ -1,7 +1,7 @@
 
 class Matrix {
 
-  ArrayList frames  = new ArrayList();  
+  ArrayList frames  = new ArrayList();
 
   public int rad    = 70;
   int border = 10;
@@ -9,9 +9,9 @@ class Matrix {
   public int rows = 0;
   public int cols = 0;
   public PixelColor current_color;
-  
+
   Frame copy_frame;
-  
+
   int current_frame_nr;
 
   Matrix(int cols, int rows ) {
@@ -51,7 +51,7 @@ class Matrix {
   }
 
   Frame next_frame() {
-    current_frame_nr = (current_frame_nr + 1 ) % num_frames(); 
+    current_frame_nr = (current_frame_nr + 1 ) % num_frames();
     return current_frame();
   }
 
@@ -79,9 +79,9 @@ class Matrix {
     }
   }
 
-  void set_pixel(int f, int x, int y, PixelColor pc) {      
-    frame(f).set_colored_pixel(x, y, pc);        
-  } 
+  void set_pixel(int f, int x, int y, PixelColor pc) {
+    frame(f).set_colored_pixel(x, y, pc);
+  }
 
   /* +++++++++++++++ FRAME +++++++++++++++ */
   Frame copy_frame() {
@@ -102,7 +102,7 @@ class Matrix {
   }
 
   Frame delete_frame() {
-    if(current_frame_nr != 0) { 
+    if(current_frame_nr != 0) {
       frames.remove(current_frame_nr);
       current_frame_nr--;
     }
@@ -150,7 +150,7 @@ class Matrix {
           Frame frame = matrix.add_frame();
           String[] str = line.split(",");
           for(int y = 0; y < frame.rows; y++) {
-            frame.set_row(y, Integer.parseInt(str[y*3]), Integer.parseInt(str[y*3 + 1]), Integer.parseInt(str[y*3 + 2]));           
+            frame.set_row(y, Integer.parseInt(str[y*3]), Integer.parseInt(str[y*3 + 1]), Integer.parseInt(str[y*3 + 2]));
           }
         }
       }
@@ -160,7 +160,7 @@ class Matrix {
       }
     }
     return matrix;
-  } 
+  }
 
 }
 

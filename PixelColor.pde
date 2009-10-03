@@ -5,22 +5,22 @@ class PixelColor {
 
   PixelColor() {
     this(0,0,0);
-  }    
+  }
 
   PixelColor(int r, int g, int b) {
     this.r = (r != 0) ? -1 : 0;
     this.g = (g != 0) ? -1 : 0;
     this.b = (b != 0) ? -1 : 0;
   }
-  
+
   public PixelColor invert() {
     if(r < 0) {
-      if(g < 0) {       
+      if(g < 0) {
         b = ~b;
       }
       g = ~g;
-    }  
-    r = ~r;   
+    }
+    r = ~r;
     return this;
   }
 
@@ -37,7 +37,7 @@ class PixelColor {
   }
 
   public PixelColor clone() {
-    return new PixelColor(r,g,b); 
+    return new PixelColor(r,g,b);
   }
 
   public color get_color() {
@@ -51,11 +51,11 @@ class PixelColor {
 
 /*  PixelColor(color c) {
  thils(c, 40);
- } 
- 
+ }
+
  PixelColor(color c, int trashhold) {
  this.r = (  red(c) > trashhold) ? 1 : 0;
- this.g = (green(c) > trashhold) ? 1 : 0; 
- this.b = ( blue(c) > trashhold) ? 1 : 0; 
+ this.g = (green(c) > trashhold) ? 1 : 0;
+ this.b = ( blue(c) > trashhold) ? 1 : 0;
  }*/
 
