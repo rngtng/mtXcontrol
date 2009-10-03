@@ -43,7 +43,7 @@ class Pixel {
   public color get_color() {
     return color(-254 * this.r, -254 * this.g, -254 * this.b);
   }
-  
+
   public int to_int() {
     return this.r + this.g + this.b;
   }
@@ -51,11 +51,12 @@ class Pixel {
 
 
 /*  Pixel(color c) {
-    thils(c, 40);
-  } 
+ thils(c, 40);
+ } 
+ 
+ Pixel(color c, int trashhold) {
+ this.r = (  red(c) > trashhold) ? 1 : 0;
+ this.g = (green(c) > trashhold) ? 1 : 0; 
+ this.b = ( blue(c) > trashhold) ? 1 : 0; 
+ }*/
 
-  Pixel(color c, int trashhold) {
-    this.r = (  red(c) > trashhold) ? 1 : 0;
-    this.g = (green(c) > trashhold) ? 1 : 0; 
-    this.b = ( blue(c) > trashhold) ? 1 : 0; 
-  }*/

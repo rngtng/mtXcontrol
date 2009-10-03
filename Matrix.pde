@@ -2,10 +2,10 @@
 class Matrix {
 
   ArrayList frames  = new ArrayList();  
-  
+
   public int rad    = 70;
   int border = 10;
-  
+
   public int rows = 0;
   public int cols = 0;
 
@@ -16,7 +16,7 @@ class Matrix {
     this.rows = rows; //Y
     add_frame();
   }
-  
+
   public int width() {
     return cols * rad;
   }
@@ -33,16 +33,11 @@ class Matrix {
     return this.current_frame().draw_full(draw_rad, draw_border);
   }
 
-  public Frame click(int x, int y) {
-    if( x > this.width() + 25 || y > this.height() + 25) return this.current_frame();
-    return this.current_frame().update(x / rad, y / rad, true);
+  public boolean click(int x, int y, boolean dragged) {
+    if( x > this.width() + 25 || y > this.height() + 25) return false; //25 pixel right and bottom for row editing
+    return this.current_frame().update(x / rad, y / rad, !dragged);
   }
-  
-  public Frame drag(int x, int y) {
-    if( x > this.width() + 25 || y > this.height() + 25) return this.current_frame();
-    return this.current_frame().update(x / rad, y / rad, false);
-  }  
-  
+
   int num_frames() {
     return frames.size();
   }
@@ -157,5 +152,6 @@ class Matrix {
   } 
 
 }
+
 
 

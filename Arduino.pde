@@ -14,7 +14,7 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
-  Serial port;
+    Serial port;
 
   public boolean standalone = true;
 
@@ -125,6 +125,7 @@ class Arduino {
     return port.read();
   }
 }
+
 
 
 

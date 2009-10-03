@@ -139,12 +139,12 @@ class Frame {
     return get_pixel(x,y);
   }
   
-  public Frame update( int x, int y, boolean ignore_last) {
-    if(!ignore_last && x == last_x && y == last_y) return null;
+  public boolean update( int x, int y, boolean ignore_last) {
+    if(!ignore_last && x == last_x && y == last_y) return false;
     last_color = set_colored_pixel(x, y, last_color);
     last_x = x;
     last_y = y;
-    return this;
+    return true;
   }
 
   public Frame clone() {
