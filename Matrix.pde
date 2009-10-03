@@ -102,9 +102,9 @@ class Matrix {
   }
 
   Frame delete_frame() {
-    if(current_frame_nr != 0) {
+    if(this.num_frames() > 1) {
       frames.remove(current_frame_nr);
-      current_frame_nr--;
+      current_frame_nr = current_frame_nr % num_frames();
     }
     return current_frame();
   }
