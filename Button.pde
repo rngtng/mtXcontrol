@@ -170,11 +170,12 @@ class ActionButton extends TextButton {
     if(this.button_text == ">") matrix.current_frame().shift_right();
     if(this.button_text == "Load") matrix = matrix.load_from_file();
     if(this.button_text == "Save") matrix.save_to_file();
-    if(this.button_text == "Add") matrix.add_frame();
+    if(this.button_text == "Add")  matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
-    if(this.button_text == "Copy") matrix.copy_last_frame(); 
-    if(this.button_text == "Fill") matrix.current_frame().fill();
-    if(this.button_text == "Clear") matrix.current_frame().clear();    
+    if(this.button_text == "Copy")   matrix.copy_frame(); 
+    if(this.button_text == "Paste")  matrix.paste_frame(); 
+    if(this.button_text == "Fill")   matrix.current_frame().fill(matrix.current_color);
+    if(this.button_text == "Clear")  matrix.current_frame().clear();    
   
     return true;
   }
@@ -201,4 +202,25 @@ class ActionToggleButton extends ActionButton {
      if(this.shortcut == "m+10") arduino.toggle(matrix.current_frame()); // ENTER    
      return true;
   }
+}
+
+class ColorButton extends RectButton {
+  
+  ColorButton(int ix, int iy) { 
+    this(ix, iy, 130, 25);
+  }
+  
+  ColorButton(int ix, int iy, int iwidth, int iheight) {
+    super(ix, iy, iwidth, iheight, matrix.current_color.get_color(), matrix.current_color.get_color());
+  }
+  
+  protected color current_color() {
+    return matrix.current_color.get_color();
+  }
+  
+  public boolean pressed() {
+    if(!this.over) return false; 
+    matrix.current_color.invert();
+    return true;
+  }  
 }

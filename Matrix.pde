@@ -8,12 +8,16 @@ class Matrix {
 
   public int rows = 0;
   public int cols = 0;
-
+  public PixelColor current_color;
+  
+  Frame copy_frame;
+  
   int current_frame_nr;
 
   Matrix(int cols, int rows ) {
     this.cols = cols; //X
     this.rows = rows; //Y
+    this.current_color = new PixelColor().invert();
     add_frame();
   }
 
@@ -34,8 +38,12 @@ class Matrix {
   }
 
   public boolean click(int x, int y, boolean dragged) {
+    if( x < 0 || y < 0) return false; //25 pixel right and bottom for row editing
     if( x > this.width() + 25 || y > this.height() + 25) return false; //25 pixel right and bottom for row editing
-    return this.current_frame().update(x / rad, y / rad, !dragged);
+    PixelColor pc = this.current_frame().update(x / rad, y / rad, current_color, !dragged);
+    if( pc == null ) return false;
+    current_color = pc;
+    return true;
   }
 
   int num_frames() {
@@ -71,16 +79,19 @@ class Matrix {
     }
   }
 
-  void set_pixel(int f, int x, int y, Pixel colour) {      
-    frame(f).set_colored_pixel(x,y,colour);        
+  void set_pixel(int f, int x, int y, PixelColor pc) {      
+    frame(f).set_colored_pixel(x, y, pc);        
   } 
 
   /* +++++++++++++++ FRAME +++++++++++++++ */
-  Frame copy_last_frame() {
-    if(current_frame_nr != 0) {
-      Frame prev_frame = (Frame) frames.get(current_frame_nr - 1);
-      frames.set(current_frame_nr, prev_frame.clone() );
-    }    
+  Frame copy_frame() {
+    copy_frame = current_frame().clone();
+    return current_frame();
+  }
+
+  /* +++++++++++++++ FRAME +++++++++++++++ */
+  Frame paste_frame() {
+    if( copy_frame != null) frames.set(current_frame_nr, copy_frame.clone()); // better use set_pixel here!?
     return current_frame();
   }
 
@@ -91,7 +102,7 @@ class Matrix {
   }
 
   Frame delete_frame() {
-    if( current_frame_nr != 0) { 
+    if(current_frame_nr != 0) { 
       frames.remove(current_frame_nr);
       current_frame_nr--;
     }
@@ -108,7 +119,7 @@ class Matrix {
     PrintWriter output = createWriter(savePath);
     // output.println(rows+","+cols+","+speed);
 
-    for(int f=0; f< this.num_frames(); f++) {
+    for(int f = 0; f < this.num_frames(); f++) {
       Frame frame = this.frame(f);
       for(int y=0; y<frame.rows; y++) {
         int[] row = frame.get_row(y);

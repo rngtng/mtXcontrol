@@ -2,7 +2,8 @@ class Frame {
 
   //static 
   PGraphics pg = null;
-  Pixel[] pixs  = null;
+  int letter_scale = 3;
+  PixelColor[] pixs  = null;
   
   PGraphics frame = null;
   PGraphics thumb = null;
@@ -10,17 +11,15 @@ class Frame {
   public int rows = 0;
   public int cols = 0;
   
-  public Pixel last_color = null;
   int last_y = 0;
   int last_x = 0;
    
   Frame( int cols, int rows ) {
     this.cols = cols;    
     this.rows = rows;
-    this.pixs = new Pixel[rows*cols];
-    this.last_color = new Pixel();
+    this.pixs = new PixelColor[rows*cols];
     this.clear();
-    this.pg = createGraphics(8, 10, P2D);
+    this.pg = createGraphics(8*letter_scale, 10*letter_scale, P2D);
   }
    
   public PGraphics draw_full(int draw_rad, int draw_border) {
@@ -34,7 +33,6 @@ class Frame {
   }
   
   public PGraphics draw_canvas(int draw_rad, int draw_border) {
-    Pixel pixel; 
     PGraphics canvas = createGraphics(this.cols * draw_rad, this.rows * draw_rad, P2D);   
     canvas.beginDraw();
     canvas.background(55);
@@ -52,22 +50,22 @@ class Frame {
   }
 
   public void clear() {
-    this.set_pixels(new Pixel());
+    this.set_pixels(new PixelColor());
   }
 
-  public void fill() {
-    this.set_pixels( last_color );
+  public void fill(PixelColor pc) {
+    this.set_pixels(pc);
   }
 
-  public void set_pixels(Pixel pix) {
+  public void set_pixels(PixelColor pc) {
     for( int y = 0; y < this.rows; y++ ) { 
       for( int x = 0; x < this.cols; x++ ) {            
-        set_pixel(x, y, pix);
+        set_pixel(x, y, pc);
       }
     }
   }
 
-  public void set_pixels(Pixel[] pix) {
+  public void set_pixels(PixelColor[] pix) {
     for( int y = 0; y < this.rows; y++ ) { 
       for( int x = 0; x < this.cols; x++ ) {            
         set_pixel(x, y, pix[pos(x,y)]);
@@ -75,7 +73,7 @@ class Frame {
     }
   }
 
-  public Pixel get_pixel(int x, int y) {
+  public PixelColor get_pixel(int x, int y) {
     return pixs[pos(x,y)];
   }
 
@@ -92,59 +90,57 @@ class Frame {
     return res;
   }
 
-  public Pixel set_row(int y, Pixel pix) {    
+  public PixelColor set_row(int y, PixelColor pc) {    
     for( int x = 0; x < this.cols; x++ ) {
-      pix = set_colored_pixel(x, y, pix);
+      pc = set_colored_pixel(x, y, pc);
     }
-    return pix;
+    return pc;
   }
 
-  public Pixel set_row(int y, int r, int g, int b) {
-    Pixel last = null;
+  public PixelColor set_row(int y, int r, int g, int b) {
+    PixelColor pc = null;
     for( int x = 0; x < this.cols; x++ ) {
-      last = set_pixel(x, y, new Pixel( (r >> x) & 1, (g >> x) & 1, (b >> x) & 1 ) );
+      pc = set_pixel(x, y, new PixelColor( (r >> x) & 1, (g >> x) & 1, (b >> x) & 1 ) );
     }
-    return last;
+    return pc;
   }
 
-
-  public Pixel set_col(int x, Pixel pix) {    
+  public PixelColor set_col(int x, PixelColor pc) {    
     for( int y = 0; y < this.rows; y++ ) {
-      pix = set_colored_pixel(x, y, pix);
+      pc = set_colored_pixel(x, y, pc);
     }
-    return pix;
+    return pc;
   }
 
-  public Pixel set_colored_pixel(int x, int y, Pixel pix) {    
-    if( x >= cols ) return set_row( y, pix);
-    if( y >= rows)  return set_col( x, pix);
-    if( this.get_pixel(x,y).equal(pix) ) {
+  public PixelColor set_colored_pixel(int x, int y, PixelColor pc) {    
+    if( x >= cols ) return set_row( y, pc);
+    if( y >= rows)  return set_col( x, pc);
+    if( this.get_pixel(x,y).equal(pc) ) {
       this.frame = null;
       this.thumb = null;
       return this.get_pixel(x,y).invert();
     }
-    return set_pixel(x, y, pix);
+    return set_pixel(x, y, pc);
   }
 
-  public Pixel set_pixel(int x, int y, Pixel pix) {    
-    if( pix == null ) pix = new Pixel();
-    if(get_pixel(x,y) != null ) {
-      pixs[pos(x,y)].set_copied_values(pix);
+  public PixelColor set_pixel(int x, int y, PixelColor pc) {    
+    if( pc == null ) pc = new PixelColor();
+    if(this.get_pixel(x,y) != null ) {
+      this.get_pixel(x,y).set_color(pc);
     }
     else { 
-      pixs[pos(x,y)] = pix.clone();
+      pixs[pos(x,y)] = pc.clone();
     }
     this.frame = null;
     this.thumb = null;
-    return get_pixel(x,y);
+    return this.get_pixel(x,y);
   }
   
-  public boolean update( int x, int y, boolean ignore_last) {
-    if(!ignore_last && x == last_x && y == last_y) return false;
-    last_color = set_colored_pixel(x, y, last_color);
+  public PixelColor update(int x, int y, PixelColor pc, boolean ignore_last) {
+    if(!ignore_last && x == last_x && y == last_y) return null;
     last_x = x;
     last_y = y;
-    return true;
+    return set_colored_pixel(x, y, pc);
   }
 
   public Frame clone() {
@@ -189,26 +185,25 @@ class Frame {
     return (y * this.cols) + x;
   }
     
-  private void set_letter(char letter, PFont font) {
-    set_letter(letter, font, 50);
+  private void set_letter(char letter, PFont font, PixelColor pc) {
+    set_letter(letter, font, pc, 50);
   }    
 
-  private void set_letter(char letter, PFont font, int trashhold) {
-    Pixel colour = last_color;
-    Pixel last_pixel = null;
+  private void set_letter(char letter, PFont font, PixelColor pc, int trashhold) {
     int offset = 0;
-    this.pg.beginDraw();    
-    this.pg.fill(#FF0000); 
+    this.pg.beginDraw();
+    this.pg.fill(#FF0000);  //red
     this.pg.background(0);
-    this.pg.textFont(font,10);
-    this.pg.text(letter,0,8);
+    this.pg.textFont(font,10*letter_scale);
+    this.pg.text(letter,0,8*letter_scale);
     this.pg.endDraw();
     this.pg.loadPixels();
     for(int row = 0; row < 10; row++) {
       int sum = 0;
       for(int col = 0; col < 8; col++) {
-        if(red(this.pg.pixels[row*8+col]) > trashhold) {
-          last_color = this.set_colored_pixel(col, row-offset, colour);
+        if( this.get_pixs(row, col) > trashhold) {
+          //this.set_colored_pixel(col, row-offset, pc);
+          this.set_pixel(col, row-offset, pc);
           sum++;
         }
         else {
@@ -220,6 +215,15 @@ class Frame {
     }
   }
 
+  private int get_pixs(int x, int y) {
+    int trashhold = 0;
+    x *= this.letter_scale;
+    y *= this.letter_scale;
+    for(int k = 0; k < this.letter_scale; k++) {
+      for(int k2 = 0; k2 < this.letter_scale; k2++) {
+        trashhold += red(this.pg.pixels[(x+k)*8*this.letter_scale+y+k2]);
+      }  
+    }
+    return trashhold / (this.letter_scale * this.letter_scale);
+  }
 }
-
-
