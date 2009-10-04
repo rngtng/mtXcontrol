@@ -31,13 +31,36 @@ Copyright (c) 2009 Tobias Bielohlawek
 #define shift_data_1     {SH_PORT |= SH_BIT_SDI;}
 #define shift_data_0     {SH_PORT &= ~SH_BIT_SDI;}
 
+#define NUM_ROWS 24 // 3 BYTES  per ROW
+
 class Rainbowduino {
 
 public:
-  Rainbowduino();
-  void set_row(byte line, byte level, byte r, byte b, byte g);
-  void set_color(byte c);
-  void open_line(byte line);
+  byte frame_buffer[24*10]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
+
+  byte current_frame_nr;
+  word current_frame_offset;
+  
+  volatile byte current_row;
+  byte num_frames;
+  byte num_rows;
+  
+  word off;
+  
+  Rainbowduino(byte set_num_frames = 1);
+  void reset();
+  void set_frame(byte frame_nr, byte* data);
+  void set_frame_nr(byte frame_nr);
+  void set_frame_row(byte frame_nr, byte row, byte data);  
+  void set_current_frame_row(byte row, byte data); 
+  void next_frame();
+  int  nframes();
+  void draw();
+    
+private:
+  void draw_row(byte row, byte level, byte r, byte b, byte g);
+  void draw_color(byte c);
+  void enable_row(byte row);
 };
 
 #endif	//RAINBOWDUINO.h

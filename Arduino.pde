@@ -44,8 +44,7 @@ class Arduino {
     print("Start Writing Matrix - ");
     command( WRITE_EEPROM );
     send(matrix.num_frames());
-    send(matrix.rows*3);
-
+    //send(matrix.rows*3);
     for(int f = 0; f < matrix.num_frames(); f++) {
       send_frame(matrix.frame(f));
     }
@@ -57,9 +56,8 @@ class Arduino {
     command( READ_EEPROM );
     int frames = wait_and_read_serial();
     println( "Frames:" + frames);
-    int cols  = wait_and_read_serial();
-    Matrix matrix = new Matrix(8, cols / 3);
-
+    // int cols  = wait_and_read_serial();
+    Matrix matrix = new Matrix(8, 8);
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ )
     {
       Frame frame = matrix.add_frame();

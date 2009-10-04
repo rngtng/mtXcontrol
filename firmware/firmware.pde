@@ -8,8 +8,6 @@
 #define LIVE 0
 #define STANDALONE 1
 
-#define FRAME_BUFFER_SIZE 256 //BYTES
-
 #define BAUD_RATE 14400
 
 #define CRTL 255
@@ -25,22 +23,13 @@
 
 #define DEFAULT_SPEED 5000
 
-byte rows = 24;
-byte numFrames = 0;
-
-Rainbowduino rainbow = Rainbowduino();
-
-word current_frame_nr = 0;   // word is same as unsigend int
-word current_frame_offset = 0;
-byte current_row = 0;
+Rainbowduino rainbow = Rainbowduino(10);  //max 10 Frames
 
 //running mode
 byte mode = STANDALONE;
 
 word current_delay = 0;
 word current_speed = DEFAULT_SPEED;
-
-byte frame_buffer[FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
 
 void setup_timer() {
   TCCR2A = 0;
@@ -53,23 +42,19 @@ void setup_timer() {
 
 //Timer2 overflow interrupt vector handler
 ISR(TIMER2_OVF_vect) {
-  rainbow.set_row( current_row / 3, 16, frame_buffer[current_frame_offset + current_row], frame_buffer[current_frame_offset + current_row+1], frame_buffer[current_frame_offset + current_row+2]);
-  current_row = (current_row >= rows - 1) ? 0 : current_row + 3;
+  rainbow.draw();
 }
 
 void setup() {
   Serial.begin(BAUD_RATE);
 
   load_from_eeprom(0);
-  //load_single(0);
   reset();
   setup_timer();
 }
 
 void reset() {
-  current_frame_nr = 0;
-  current_row = 0;
-  current_frame_offset = current_frame_nr * rows;
+  rainbow.reset();
   current_delay = 0;
   current_speed = DEFAULT_SPEED;
   mode = STANDALONE;
@@ -84,9 +69,7 @@ void next_frame() {
   if( mode == LIVE ) return;
   if(current_delay < 1) {
     current_delay = current_speed; // / rows /rows * 300;
-    current_frame_nr++;
-    if(current_frame_nr >= numFrames) current_frame_nr = 0;
-    current_frame_offset = current_frame_nr * rows;
+    rainbow.next_frame();
   }
   current_delay--;
 }
@@ -107,7 +90,7 @@ void check_serial() {
       send_eeprom(0);
       break;
     case WRITE_FRAME:
-      write_to_frame( current_frame_nr );
+      write_to_current_frame();
       mode = LIVE;
       break;
     case SPEED:
@@ -128,65 +111,41 @@ byte wait_and_read_serial() {
   return read_serial();
 }
 
-void write_to_frame(word frame_nr) {
-  byte value;
-  word frame_offset = frame_nr * rows;
-  for(byte row = 0; row < rows; row++) {
-    value = wait_and_read_serial();
-    frame_buffer[frame_offset + row] = value;
+void write_to_current_frame() {
+  for(byte row = 0; row < rainbow.num_rows; row++) {
+    rainbow.set_current_frame_row(row, wait_and_read_serial());
   }
 }
 
 void write_to_eeprom( word addr ) {
-  //int slot = wait_and_read_serial();
-  // byte serialY = wait_and_read_serial(); // rows
-  // byte serialSpeed = wait_and_read_serial(); // rows
-  byte new_numFrames = wait_and_read_serial();
-  EEPROM.write(addr, new_numFrames);
+  word num_frames = wait_and_read_serial();
+  EEPROM.write(addr++, num_frames);
 
-  byte new_rows = wait_and_read_serial();
-  EEPROM.write(addr + 1, new_rows);
-
-  word max_row = new_numFrames * new_rows;
-  if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
-  byte value;
-  for( unsigned  int row = 0; row < max_row; row++ ) {
-    value = wait_and_read_serial();
-    EEPROM.write(addr + 2 + row, value);
+  for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
+    for( byte row = 0; row < rainbow.num_rows; row++ ) {
+      EEPROM.write(addr++, wait_and_read_serial());
+    }  
   }
 }
 
 void send_eeprom( word addr ) {
-  byte new_numFrames = EEPROM.read(addr);
-  Serial.write(new_numFrames);
-  byte new_rows      = EEPROM.read(addr + 1);
-  Serial.write(new_rows);
+  word num_frames = EEPROM.read(addr++);
+  Serial.write(num_frames);
 
-  word max_row = new_numFrames * new_rows;
-  for( word row = 0; row < max_row; row++ ) {
-    Serial.write( EEPROM.read(addr + 2 + row) );
-  }
-}
-
-void load_single( word addr ) {
-  numFrames = 1;
-
-  word max_row = numFrames * rows;
-  if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
-  for( word row = 0; row < max_row; row++ ) {
-    frame_buffer[row] = 1 << (row / 3);
+  for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
+    for( byte row = 0; row < rainbow.num_rows; row++ ) {
+      Serial.write( EEPROM.read(addr++) );
+    }  
   }
 }
 
 void load_from_eeprom( word addr ) {
-  numFrames = EEPROM.read(addr);
-  rows      = EEPROM.read(addr + 1);
-
-  word max_row = numFrames * rows;
-  if(max_row > FRAME_BUFFER_SIZE)  max_row = FRAME_BUFFER_SIZE;
-  for( word row = 0; row < max_row; row++ ) {
-    frame_buffer[row] = EEPROM.read(addr + 2 + row);
+  word num_frames = EEPROM.read(addr++);
+  rainbow.num_frames = num_frames;
+  
+  for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
+    for( byte row = 0; row < rainbow.num_rows; row++ ) {
+      rainbow.set_frame_row(frame_nr, row, EEPROM.read(addr++));
+    }
   }
 }
-
-
