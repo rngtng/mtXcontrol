@@ -44,7 +44,7 @@ class Frame {
         canvas.ellipse( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
       }
     }
-    println( "drawn" );
+  //  println( "drawn" );
     canvas.endDraw();
     return canvas;
   }
@@ -133,7 +133,7 @@ class Frame {
     }
     this.frame = null;
     this.thumb = null;
-    return this.get_pixel(x,y);
+    return this.get_pixel(x,y).clone();
   }
 
   public PixelColor update(int x, int y, PixelColor pc, boolean ignore_last) {

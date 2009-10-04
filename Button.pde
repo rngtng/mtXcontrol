@@ -5,20 +5,15 @@
   code cleanup
  */
 
-class Button
+class Button extends GuiElement
 {
-  int x, y;
-  int size;
-  public color basecolor, highlightcolor;
+  public color highlightcolor;
   boolean over = false;
-  boolean hide = false;
   //  boolean pressed = false;
   boolean locked = false;
 
   Button(int ix, int iy,  color icolor, color ihighlight) {
-    this.x = ix;
-    this.y = iy;
-    this.basecolor = icolor;
+    super(ix, iy, icolor);
     this.highlightcolor = ihighlight;
   }
 
@@ -35,17 +30,6 @@ class Button
 
   public boolean over() {
     return false;
-  }
-
-  public void display() {
-    display(false);
-  }
-
-  public void display(boolean ihide) {
-    this.hide = ihide;
-    if(this.hide) return;
-    stroke(30);
-    fill(current_color());
   }
 
   /* ************************************************************************** */
@@ -144,7 +128,7 @@ class ActionButton extends TextButton {
   String shortcut;
 
   ActionButton(String itext, String ishortcut, int ix, int iy) {
-    this(itext, ishortcut, ix, iy, 130, 25, #444444, #999999);
+    this(itext, ishortcut, ix, iy, 134, 25, #444444, #999999);
   }
 
   ActionButton(String itext, String ishortcut, int ix, int iy,  int iwidth, int iheight) {
@@ -168,7 +152,7 @@ class ActionButton extends TextButton {
     if(crtl) code = "c+" + code;
     if(alt) code = "a+" + code;
     if(!this.shortcut.equals(code+char(key_code)) && !this.shortcut.equals(code+key_code)) return false;
-    println(code+char(key_code) + " " + code+key_code + " -> " + this.shortcut);
+    //println(code+char(key_code) + " " + code+key_code + " -> " + this.shortcut);
     this.locked = !this.locked;
     return perform_action();
   }
@@ -178,8 +162,10 @@ class ActionButton extends TextButton {
     if(this.button_text == "v") matrix.current_frame().shift_down();
     if(this.button_text == "<") matrix.current_frame().shift_left();
     if(this.button_text == ">") matrix.current_frame().shift_right();
-    if(this.button_text == "Load") matrix = matrix.load_from_file();
-    if(this.button_text == "Save") matrix.save_to_file();
+    if(this.button_text == "Load from File") matrix = matrix.load_from_file();
+    if(this.button_text == "Save to File") matrix.save_to_file();    
+    if(this.button_text == "Save to Arduino") arduino.write_matrix(matrix);
+    if(this.button_text == "Load from Arduino") matrix = arduino.read_matrix();    
     if(this.button_text == "Add")  matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();
@@ -195,7 +181,7 @@ class ActionToggleButton extends ActionButton {
   String button_text2;
 
   ActionToggleButton(String itext, String itext2, String ishortcut, int ix, int iy)  {
-    this(itext, itext2, ishortcut, ix, iy, 130, 25, #444444, #999999);
+    this(itext, itext2, ishortcut, ix, iy, 134, 25, #444444, #999999);
   }
 
   ActionToggleButton(String itext, String itext2, String ishortcut, int ix, int iy, int iwidth, int iheight, color icolor, color ihighlight)  {
@@ -209,7 +195,7 @@ class ActionToggleButton extends ActionButton {
 
   protected boolean perform_action() {
      if(this.shortcut == "10") toggle_mode(); // ENTER
-     if(this.shortcut == "m+10") arduino.toggle(matrix.current_frame()); // ENTER
+     if(this.shortcut == "a+10") arduino.toggle(matrix.current_frame()); // ENTER
      return true;
   }
 }
@@ -217,7 +203,7 @@ class ActionToggleButton extends ActionButton {
 class ColorButton extends RectButton {
 
   ColorButton(int ix, int iy) {
-    this(ix, iy, 130, 25);
+    this(ix, iy, 134, 25);
   }
 
   ColorButton(int ix, int iy, int iwidth, int iheight) {
@@ -231,6 +217,19 @@ class ColorButton extends RectButton {
   public boolean pressed() {
     if(!this.over) return false;
     matrix.current_color.invert();
+    return true;
+  }
+}
+
+class MiniColorButton extends RectButton {
+
+  MiniColorButton(int ix, int iy, int iwidth, int iheight, color icolor) {
+    super(ix, iy, iwidth, iheight, icolor, icolor);
+  }
+
+  public boolean pressed() {
+    if(!this.over) return false;
+    matrix.current_color.set_color(this.current_color());
     return true;
   }
 }

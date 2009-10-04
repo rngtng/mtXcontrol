@@ -18,8 +18,8 @@ class Arduino {
 
   public boolean standalone = true;
 
-  boolean mirror_cols = false;
-  boolean mirror_rows = false;
+  boolean mirror_cols = true;
+  boolean mirror_rows = true;
 
   Arduino(PApplet app) {
     try {

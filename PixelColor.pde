@@ -36,6 +36,12 @@ class PixelColor {
     this.b = pc.b;
   }
 
+  public void set_color(color c) {
+    this.r = int(red(c)) / -254;
+    this.g = int(green(c)) / -254;
+    this.b = int(blue(c)) / -254;
+  }
+
   public PixelColor clone() {
     return new PixelColor(r,g,b);
   }
@@ -48,14 +54,3 @@ class PixelColor {
     return this.r + this.g + this.b;
   }
 }
-
-/*  PixelColor(color c) {
- thils(c, 40);
- }
-
- PixelColor(color c, int trashhold) {
- this.r = (  red(c) > trashhold) ? 1 : 0;
- this.g = (green(c) > trashhold) ? 1 : 0;
- this.b = ( blue(c) > trashhold) ? 1 : 0;
- }*/
-
