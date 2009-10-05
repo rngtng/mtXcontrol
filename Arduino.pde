@@ -107,7 +107,7 @@ class Arduino {
     port.write(value);
   }
 
-  private void send_row(int[] row) {
+  private void send_row(byte[] row) {
     for(int i = 0; i < row.length; i++) {
       send(mirror_cols ? row[i] : ~row[i]);
     }

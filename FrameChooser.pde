@@ -38,7 +38,7 @@ class FrameChooser extends RectButton {
   }
   
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
-     if(!record) return false; //better use hide status
+     if(!record || mac || crtl || alt) return false; //better use hide status
      if(key_code == 37) matrix.previous_frame(); // arrow left
      if(key_code == 39) matrix.next_frame();     // arrow right
      return (key_code == 37 || key_code == 39);

@@ -122,8 +122,8 @@ class Matrix {
     for(int f = 0; f < this.num_frames(); f++) {
       Frame frame = this.frame(f);
       for(int y=0; y<frame.rows; y++) {
-        int[] row = frame.get_row(y);
-        output.print(row[0] + "," + row[1] + "," + row[2] + ",");
+        byte[] row = frame.get_row(7-y);
+        output.print(~row[0] + "," + ~row[1] + "," + ~row[2] + ",");
       }
       output.println();
     }
@@ -141,17 +141,18 @@ class Matrix {
     }
 
     Matrix matrix = new Matrix( this.cols, this.rows); //actually we have to read values from File!
+    Frame frame = matrix.current_frame();
     BufferedReader reader = createReader(loadPath);
     String line = "";
     while( line != null ) {
       try {
         line = reader.readLine();
-        if( line != null && line.length() > 0) {
-          Frame frame = matrix.add_frame();
+        if( line != null && line.length() > 0) {          
           String[] str = line.split(",");
           for(int y = 0; y < frame.rows; y++) {
             frame.set_row(y, Integer.parseInt(str[y*3]), Integer.parseInt(str[y*3 + 1]), Integer.parseInt(str[y*3 + 2]));
           }
+          frame = matrix.add_frame();
         }
       }
       catch (IOException e) {
@@ -159,6 +160,7 @@ class Matrix {
         return matrix;
       }
     }
+    matrix.delete_frame();
     return matrix;
   }
 

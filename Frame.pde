@@ -77,16 +77,16 @@ class Frame {
     return pixs[pos(x,y)];
   }
 
-  private int[] get_row(int y) {
-    int[] res = new int[3];
+  private byte[] get_row(int y) {
+    byte[] res = new byte[3];
     for(int x = 0; x < this.cols; x++) {
       res[0] |= (pixs[pos(x,y)].r + 1) << x;
       res[1] |= (pixs[pos(x,y)].g + 1) << x;
       res[2] |= (pixs[pos(x,y)].b + 1) << x;
     }
-    res[0] = ~res[0];
-    res[1] = ~res[1];
-    res[2] = ~res[2];
+    res[0] = (byte) ~res[0];
+    res[1] = (byte) ~res[1];
+    res[2] = (byte) ~res[2];
     return res;
   }
 
