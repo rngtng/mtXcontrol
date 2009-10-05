@@ -36,16 +36,10 @@ Copyright (c) 2009 Tobias Bielohlawek
 class Rainbowduino {
 
 public:
-  byte frame_buffer[24*10]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
-
-  byte current_frame_nr;
-  word current_frame_offset;
-  
-  volatile byte current_row;
   byte num_frames;
   byte num_rows;
   
-  word off;
+  byte frame_buffer[24*10]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
   
   Rainbowduino(byte set_num_frames = 1);
   void reset();
@@ -54,16 +48,18 @@ public:
   void set_frame_row(byte frame_nr, byte row, byte data);  
   void set_current_frame_row(byte row, byte data); 
   void next_frame();
-  int  nframes();
   void draw();
-    
+
 private:
+  byte current_frame_nr;
+  word current_frame_offset;
+  word off;  
+  volatile byte current_row;
+
   void draw_row(byte row, byte level, byte r, byte b, byte g);
   void draw_color(byte c);
   void enable_row(byte row);
 };
 
 #endif	//RAINBOWDUINO.h
-
-
 

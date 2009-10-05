@@ -66,15 +66,11 @@ void Rainbowduino::next_frame()
   if(current_frame_nr >= num_frames) current_frame_nr = 0;
 }
 
-int Rainbowduino::nframes() {
-  return num_frames;
-}
-
 //==============================================================
 void Rainbowduino::draw() {
-  off = current_frame_nr * num_rows + current_row * 3;
-  draw_row(current_row, 16, frame_buffer[off++], frame_buffer[off++], frame_buffer[off++]);
-  current_row = (current_row >= num_rows - 1) ? 0 : current_row+1;  
+  off = current_frame_nr * num_rows + current_row;
+  draw_row(current_row / 3, 16, frame_buffer[off++], frame_buffer[off++], frame_buffer[off++]);
+  current_row = (current_row >= num_rows - 1) ? 0 : current_row+3;  
 }
 
 //==============================================================
