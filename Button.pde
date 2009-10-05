@@ -162,10 +162,10 @@ class ActionButton extends TextButton {
     if(this.button_text == "v") matrix.current_frame().shift_down();
     if(this.button_text == "<") matrix.current_frame().shift_left();
     if(this.button_text == ">") matrix.current_frame().shift_right();
-    if(this.button_text == "Load from File") matrix = matrix.load_from_file();
-    if(this.button_text == "Save to File") matrix.save_to_file();    
-    if(this.button_text == "Save to Arduino") arduino.write_matrix(matrix);
-    if(this.button_text == "Load from Arduino") matrix = arduino.read_matrix();    
+    if(this.shortcut    == "L") matrix = matrix.load_from_file();
+    if(this.shortcut    == "S") matrix.save_to_file();    
+    if(this.shortcut    == "a+L") matrix = arduino.read_matrix();        
+    if(this.shortcut    == "a+S") arduino.write_matrix(matrix);
     if(this.button_text == "Add")  matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();

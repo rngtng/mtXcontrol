@@ -63,11 +63,11 @@ void setup_buttons() {
     
   hide_button_index = button_index;
   buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "File",       "L", button_x,      y_pos += 30, 65, 25);
+  buttons[button_index++] = new ActionButton( "File",      "L", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+L", button_x + 67, y_pos,       65, 25);
   
   buttons[button_index++] = new TextElement( "Save to:", button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "File",       "S", button_x,      y_pos += 30, 65, 25);
+  buttons[button_index++] = new ActionButton( "File",      "S", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+S", button_x + 67, y_pos,       65, 25);
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);

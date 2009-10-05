@@ -52,20 +52,23 @@ class Arduino {
   }
 
   Matrix read_matrix() {
+    if(standalone) toggle(matrix.current_frame());
     print("Start Reading Matrix - ");
     command( READ_EEPROM );
     int frames = wait_and_read_serial();
     println( "Frames:" + frames);
     // int cols  = wait_and_read_serial();
-    Matrix matrix = new Matrix(8, 8);
+    Matrix matrix = new Matrix(8,8);
+    Frame frame = matrix.current_frame();    
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ )
-    {
-      Frame frame = matrix.add_frame();
+    { 
       println("Frame Nr: " + frame_nr);
       for( int y = 0; y < frame.rows; y++ ) {
         frame.set_row(y, wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
       }
+      frame = matrix.add_frame();
     }
+    matrix.delete_frame();
     println("Done");
     return matrix;
   }

@@ -96,8 +96,8 @@ class Matrix {
   }
 
   Frame add_frame() {
-    if( !frames.isEmpty()) current_frame_nr++;
-    frames.add( current_frame_nr, new Frame(this.cols, this.rows)); //init first frame
+    if(!frames.isEmpty()) current_frame_nr++;
+    frames.add(current_frame_nr, new Frame(this.cols, this.rows)); //init first frame
     return current_frame();
   }
 
