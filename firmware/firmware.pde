@@ -47,7 +47,6 @@ ISR(TIMER2_OVF_vect) {
 
 void setup() {
   Serial.begin(BAUD_RATE);
-
   load_from_eeprom(0);
   reset();
   setup_timer();

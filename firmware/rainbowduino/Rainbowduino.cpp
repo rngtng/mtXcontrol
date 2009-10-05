@@ -69,14 +69,14 @@ void Rainbowduino::next_frame()
 //==============================================================
 void Rainbowduino::draw() {
   off = current_frame_nr * num_rows + current_row;
-  draw_row(current_row / 3, 16, frame_buffer[off++], frame_buffer[off++], frame_buffer[off++]);
+  draw_row(current_row / 3, 31, frame_buffer[off++], frame_buffer[off++], frame_buffer[off++]);
   current_row = (current_row >= num_rows - 1) ? 0 : current_row+3;  
 }
 
 //==============================================================
 void Rainbowduino::draw_row(byte row, byte level, byte r, byte b, byte g) {
   enable_row(row);
-  for(byte i = 0; i < 16; i++) {
+  for(byte i = 0; i < 32; i++) {
     disable_oe;
     le_high;
     draw_color( (i < level) ? b : 0 );
