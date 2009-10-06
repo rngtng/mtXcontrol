@@ -122,7 +122,8 @@ class Matrix {
     for(int f = 0; f < this.num_frames(); f++) {
       Frame frame = this.frame(f);
       for(int y=0; y<frame.rows; y++) {
-        byte[] row = frame.get_row(7-y);
+        //invert matrix
+        byte[] row = frame.get_row(7-y);        
         output.print(~row[0] + "," + ~row[1] + "," + ~row[2] + ",");
       }
       output.println();
@@ -147,10 +148,11 @@ class Matrix {
     while( line != null ) {
       try {
         line = reader.readLine();
-        if( line != null && line.length() > 0) {          
+        if( line != null && line.length() > 0) {
           String[] str = line.split(",");
           for(int y = 0; y < frame.rows; y++) {
-            frame.set_row(y, Integer.parseInt(str[y*3]), Integer.parseInt(str[y*3 + 1]), Integer.parseInt(str[y*3 + 2]));
+            //invert matrix
+            frame.set_row(7-y, ~Integer.parseInt(str[y*3]), ~Integer.parseInt(str[y*3 + 1]), ~Integer.parseInt(str[y*3 + 2]));
           }
           frame = matrix.add_frame();
         }
