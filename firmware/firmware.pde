@@ -129,6 +129,7 @@ void write_to_eeprom( word addr ) {
 
 void send_eeprom( word addr ) {
   word num_frames = EEPROM.read(addr++);
+  if(num_frames > rainbow.num_frames) num_frames = rainbow.num_frames;
   Serial.write(num_frames);
 
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {

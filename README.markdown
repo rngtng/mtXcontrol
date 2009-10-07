@@ -1,8 +1,8 @@
 # mtXcontrol - a Rainbowduino Editor -
 
-mtXcontrol is an editor written in Processing to easily create image sequences for the [Rainbowduino controller](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html). The Rainbowduino is a 8x8 RGB LED driver  controler created by seeedstudio, based on the Arduino Project.
+*mtXcontrol* is an editor written in [Processing](http://processing.org) to easily create image sequences for the [Rainbowduino controller](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html). The Rainbowduino is a 8x8 RGB LED driver controllr created by seeedstudio, based on the Arduino Project.
 
-With *mtXcontrol* Editor you can draw points, lines &amp; rows in different colors, create multiple frames and manipulate them. Add, delete, move, fill, copy &amp; paste of frames is supported. Play all frames by different speed, liveupdate the controller and save your work to file or upload it to Rainbowduino to make it standalone (mind: due to 256kb memory only up to 10 frames can be stored by now). A special feature is typing letters and numbers. Future versions aim to support multiple controllers and 
+With *mtXcontrol* Editor you can draw points, lines &amp; rows in different colors, create multiple frames and manipulate them. Add, delete, move, fill, copy &amp; paste of frames is supported. Play all frames by different speed, realtime update the controller and save your work to file or upload it to Rainbowduino to make it standalone (mind: due to 256kb memory only up to 10 frames can be stored by now). A special feature is typing letters and numbers. Future versions aim to support multiple controllers and 
 
 [Check out this short demo video](http://www.vimeo.com/6924030)
 
@@ -10,7 +10,15 @@ With *mtXcontrol* Editor you can draw points, lines &amp; rows in different colo
 Download sources here: [github mtXControl Project](http://github.com/rngtng/mtXcontrol)
 
 ## Mini HowTo:
-mtXcontrol consits of two parts:  One is the Editor program which you run on your computer, the other is the firmware you have to upload to your rainbowduino. [See instruction here](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it).  The firmware make use of the Rainbowduino.h Library to manioulate the Matrix easily. Connect your Rainbowduino via USB to your computer and you are ready to go - happy mtXcontrol drawing!
+mtXcontrol consits of two parts:  One is the Editor program which you run on your computer, the other is the firmware you have to upload to your rainbowduino first. [See instruction here](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it).  The firmware make use of the Rainbowduino.h Library to manipulate the Matrix easily. Make sure to put it into your Arudino Library. Connect your Rainbowduino via USB to your computer uploa firmware and you are ready to go - happy mtXcontrol drawing!
+
+
+## Requirements
+* Mac/Win/Linux System running Java
+* Processing IDE, get it from [here](http://processing.org/download/)
+* Arduino IDE, get it from [here](http://arduino.cc/en/Main/Software)
+* Rainbowduino + 8x8 RGB LED Matrix, get it from [here](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html)
+
 
 ## Full list of Features:
 * Draw multicolor points, line and rows  (8bit color support)
@@ -22,6 +30,7 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 * Standalone Mode or realtime Rainbowudino Update
 * Keyboard shortcut for each function
 
+
 ## Future ideas:
 * Use compression to save more frames to EEPROM (e.g. Huffman?)
 * Font configuration
@@ -29,6 +38,7 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 * Standart import/export file format
 * Support other devices
 * More colors 
+
 
 ## Keyboard shortcuts:
 * ENTER - switch between record /place Mode
@@ -50,6 +60,7 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 * alt+<left/right ARROW> - Adjust speed on Rainbowduino
 * alt+L - download from Rainbowduino
 * alt+S - upload from Rainbowduino
+
 
 ## Other
 This project is part of the [seeedstudio carnival 2009](http://www.seeedstudio.com/forum/viewtopic.php?f=11&amp;t=397)
