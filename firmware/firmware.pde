@@ -67,7 +67,7 @@ void loop() {
 void next_frame() {
   if( mode == LIVE ) return;
   if(current_delay < 1) {
-    current_delay = current_speed; // / rows /rows * 300;
+    current_delay = current_speed;
     rainbow.next_frame();
   }
   current_delay--;
@@ -82,7 +82,7 @@ void check_serial() {
       load_from_eeprom(0);
       reset();
       break;
-    case WRITE_EEPROM:
+    case WRITE_EEPROM: // TODO: add handshake sequence here???
       write_to_eeprom(0);
       break;
     case READ_EEPROM:
@@ -122,14 +122,13 @@ void write_to_eeprom( word addr ) {
 
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
-      EEPROM.write(addr++, wait_and_read_serial());
+      EEPROM.write(addr++, wait_and_read_serial()); //TODO: this will likely fail if addr is bigger than we actually can adress
     }  
   }
 }
 
 void send_eeprom( word addr ) {
-  word num_frames = EEPROM.read(addr++);
-  if(num_frames > rainbow.num_frames) num_frames = rainbow.num_frames;
+  word num_frames = min(MAX_FRAMES, EEPROM.read(addr++));
   Serial.write(num_frames);
 
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
@@ -140,10 +139,9 @@ void send_eeprom( word addr ) {
 }
 
 void load_from_eeprom( word addr ) {
-  word num_frames = EEPROM.read(addr++);
-  rainbow.num_frames = num_frames;
+  rainbow.num_frames = min(MAX_FRAMES, EEPROM.read(addr++));
   
-  for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
+  for( word frame_nr = 0; frame_nr < rainbow.num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
       rainbow.set_frame_row(frame_nr, row, EEPROM.read(addr++));
     }

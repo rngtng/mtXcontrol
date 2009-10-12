@@ -32,6 +32,8 @@ Copyright (c) 2009 Tobias Bielohlawek
 #define shift_data_0     {SH_PORT &= ~SH_BIT_SDI;}
 
 #define NUM_ROWS 24 // 3 BYTES  per ROW
+#define MAX_NUM_FRAMES 10 // 3 BYTES  per ROW
+
 
 class Rainbowduino {
 
@@ -39,7 +41,7 @@ public:
   byte num_frames;
   byte num_rows;
   
-  byte frame_buffer[24*10]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
+  byte frame_buffer[24*MAX_NUM_FRAMES]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
   
   Rainbowduino(byte set_num_frames = 1);
   void reset();
