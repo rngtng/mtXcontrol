@@ -1,9 +1,9 @@
 /*
-RAINBOWDUINO.h - A driver to run Seeedstudio 8x8 RBG LED Matrix
-Based on Rainbow.h by Seedstudio.com -> http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html
-Copyright (c) 2009 Tobias Bielohlawek
-
-*/
+ * Rainbowduino.h v.01.01 - A driver to run Seeedstudio 8x8 RBG LED Matrix
+ * Based on Rainbow.h by Seedstudio.com -> http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html
+ * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com
+ *
+ */
 
 #ifndef RAINBOWDUINO_h
 #define RAINBOWDUINO_h
@@ -39,23 +39,24 @@ class Rainbowduino {
 
 public:
   byte num_frames;
+  byte max_num_frames;
   byte num_rows;
-  
+
   byte frame_buffer[24*MAX_NUM_FRAMES]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
-  
+
   Rainbowduino(byte set_num_frames = 1);
   void reset();
   void set_frame(byte frame_nr, byte* data);
   void set_frame_nr(byte frame_nr);
-  void set_frame_row(byte frame_nr, byte row, byte data);  
-  void set_current_frame_row(byte row, byte data); 
+  void set_frame_row(byte frame_nr, byte row, byte data);
+  void set_current_frame_row(byte row, byte data);
   void next_frame();
   void draw();
 
 private:
   byte current_frame_nr;
   word current_frame_offset;
-  word off;  
+  word off;  //buffer offset
   volatile byte current_row;
 
   void draw_row(byte row, byte level, byte r, byte b, byte g);
@@ -63,5 +64,5 @@ private:
   void enable_row(byte row);
 };
 
-#endif	//RAINBOWDUINO.h
+#endif //RAINBOWDUINO.h
 

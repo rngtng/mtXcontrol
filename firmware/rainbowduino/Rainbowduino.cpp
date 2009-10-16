@@ -1,7 +1,8 @@
 /*
-Rainbowduino.h v.01 - A driver to run Seeedstudio 8x8 RBG LED Matrix
-Copyright (c) 2009 Tobias Bielohlawek  All right reserved.
-*/
+ * Rainbowduino.h v.01.01 - A driver to run Seeedstudio 8x8 RBG LED Matrix
+ * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com
+ *
+ */
 
 // include this library's description file
 #include "Rainbowduino.h"
@@ -23,11 +24,12 @@ Rainbowduino::Rainbowduino(byte set_num_frames) {
   PORTD = 0;
   num_frames = set_num_frames;
   num_rows = NUM_ROWS;
+  max_num_frames = MAX_NUM_FRAMES;
   reset();
 }
 
 
-//==============================================================
+//=== Manipulating ==========================================================
 void Rainbowduino::reset() {
   current_frame_nr = 0;
   current_row = 0;
@@ -66,14 +68,13 @@ void Rainbowduino::next_frame()
   if(current_frame_nr >= num_frames) current_frame_nr = 0;
 }
 
-//==============================================================
+//=== Drawing ===========================================================
 void Rainbowduino::draw() {
   off = current_frame_nr * num_rows + current_row;
   draw_row(current_row / 3, 31, frame_buffer[off++], frame_buffer[off++], frame_buffer[off++]);
   current_row = (current_row >= num_rows - 1) ? 0 : current_row+3;  
 }
 
-//==============================================================
 void Rainbowduino::draw_row(byte row, byte level, byte r, byte b, byte g) {
   enable_row(row);
   for(byte i = 0; i < 32; i++) {
@@ -87,7 +88,6 @@ void Rainbowduino::draw_row(byte row, byte level, byte r, byte b, byte g) {
   }
 }
 
-//==============================================================
 void Rainbowduino::draw_color(byte c) {
   for(byte color = 0; color < 8; color++) {
     if(c > 127) {

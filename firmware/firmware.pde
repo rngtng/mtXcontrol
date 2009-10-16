@@ -1,9 +1,17 @@
 /*
- * mtXControl Arduino Firmware
+ * Firmware.h v.01.01 - to run mtXcontrol Rainbowduino/Arduino
+ * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com/mtxcontrol
+ *
  */
 
 #include <EEPROM.h>
-#include <Rainbowduino.h>
+
+/* 
+ * Rainbowduino.h && Rainbowduino.cpp are symbolically linked to make it compile right from the beginning.
+ * It's way more clean if you move "rainbowduino" Folder (including Rainbowduino.h && Rainbowduino.cpp) to you Arduino library 
+ * and remove those links
+ */
+#include "Rainbowduino.h"
 
 #define LIVE 0
 #define STANDALONE 1
@@ -123,24 +131,24 @@ void write_to_eeprom( word addr ) {
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
       EEPROM.write(addr++, wait_and_read_serial()); //TODO: this will likely fail if addr is bigger than we actually can adress
-    }  
+    }
   }
 }
 
 void send_eeprom( word addr ) {
-  word num_frames = min(MAX_FRAMES, EEPROM.read(addr++));
+  word num_frames = min(rainbow.max_num_frames, EEPROM.read(addr++));
   Serial.write(num_frames);
 
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
       Serial.write( EEPROM.read(addr++) );
-    }  
+    }
   }
 }
 
 void load_from_eeprom( word addr ) {
-  rainbow.num_frames = min(MAX_FRAMES, EEPROM.read(addr++));
-  
+  rainbow.num_frames = min(rainbow.max_num_frames, EEPROM.read(addr++));
+
   for( word frame_nr = 0; frame_nr < rainbow.num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
       rainbow.set_frame_row(frame_nr, row, EEPROM.read(addr++));
