@@ -31,9 +31,9 @@
 #define shift_data_1     {SH_PORT |= SH_BIT_SDI;}
 #define shift_data_0     {SH_PORT &= ~SH_BIT_SDI;}
 
-#define NUM_ROWS 24 // 3 BYTES  per ROW
+#define NUM_LINES 8
+#define NUM_ROWS 24 // 3 BYTES per ROW  x 8 Lines
 #define MAX_NUM_FRAMES 10 // 3 BYTES  per ROW
-
 
 class Rainbowduino {
 
@@ -50,6 +50,15 @@ public:
   void set_frame_nr(byte frame_nr);
   void set_frame_row(byte frame_nr, byte row, byte data);
   void set_current_frame_row(byte row, byte data);
+ 
+  //to set all 3 colors of each line
+  void set_frame_line(byte frame_nr, byte x, byte red, byte green, byte blue);
+  void set_current_frame_line(byte x, byte red, byte green, byte blue);
+
+  //to set all 3 colors of each pixel
+  void set_frame_pixel(byte frame_nr, byte x, byte y, byte red, byte green, byte blue);
+  void set_current_frame_pixel(byte x, byte y, byte red, byte green, byte blue);
+
   void next_frame();
   void draw();
 

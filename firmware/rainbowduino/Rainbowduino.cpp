@@ -62,6 +62,35 @@ void Rainbowduino::set_frame_row(byte frame_nr, byte row, byte data)
   frame_buffer[offset+row] = data;
 }
 
+void Rainbowduino::set_current_frame_line(byte x, byte red, byte green, byte blue)
+{
+  set_frame_line(current_frame_nr, x, red, green, blue);
+}
+
+void Rainbowduino::set_frame_line(byte frame_nr, byte x, byte red, byte green, byte blue)
+{
+  if( frame_nr > num_frames) return;
+  word offset = frame_nr * num_rows;
+  frame_buffer[offset+x]   = blue;
+  frame_buffer[offset+x+1] = red;
+  frame_buffer[offset+x+2] = green;
+}
+
+void Rainbowduino::set_current_frame_pixel(byte x, byte y, byte red, byte green, byte blue)
+{
+  set_frame_pixel(current_frame_nr, x, y, red, green, blue);
+}
+
+void Rainbowduino::set_frame_pixel(byte frame_nr, byte x, byte y, byte red, byte green, byte blue)
+{
+  if( frame_nr > num_frames) return;
+  word offset = frame_nr * num_rows;
+  frame_buffer[offset+x  ] = (blue  > 0) ? frame_buffer[offset+x]   | (1<<y) : frame_buffer[offset+x]   & ~(1<<y);
+  frame_buffer[offset+x+1] = (red   > 0) ? frame_buffer[offset+x+1] | (1<<y) : frame_buffer[offset+x+1] & ~(1<<y);
+  frame_buffer[offset+x+2] = (green > 0) ? frame_buffer[offset+x+1] | (1<<y) : frame_buffer[offset+x+2] & ~(1<<y);
+}
+
+
 void Rainbowduino::next_frame()
 {
   current_frame_nr++;
@@ -75,6 +104,7 @@ void Rainbowduino::draw() {
   current_row = (current_row >= num_rows - 1) ? 0 : current_row+3;  
 }
 
+//--- colors to shift: blue, red,  green 
 void Rainbowduino::draw_row(byte row, byte level, byte r, byte b, byte g) {
   enable_row(row);
   for(byte i = 0; i < 32; i++) {
