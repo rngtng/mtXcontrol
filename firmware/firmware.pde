@@ -1,5 +1,5 @@
 /*
- * Firmware.h v.01.01 - to run mtXcontrol Rainbowduino/Arduino
+ * Firmware.h version 1.02 - to run mtXcontrol Rainbowduino/Arduino
  * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com/mtxcontrol
  *
  */
@@ -39,17 +39,21 @@ byte mode = STANDALONE;
 word current_delay = 0;
 word current_speed = DEFAULT_SPEED;
 
-void setup_timer() {
-  TCCR2A = 0;
-  TCCR2B = 1<<CS22 | 0 <<CS21 | 0<<CS20;
-
-  TIMSK2 = 1<<TOIE2;   //Timer2 Overflow Interrupt Enable
-  TCNT2 = 0;    //  TCNT2 = GamaTab[0];
-  sei();
+void setup_timer()               
+{
+  TCCR2A |= (1 << WGM21) | (1 << WGM20);   
+  TCCR2B |= (1<<CS22); // by clk/64
+  TCCR2B &= ~((1<<CS21) | (1<<CS20));   // by clk/64
+  TCCR2B &= ~((1<<WGM21) | (1<<WGM20));   // Use normal mode
+  ASSR |= (0<<AS2);       // Use internal clock - external clock not used in Arduino
+  TIMSK2 |= (1<<TOIE2) | (0<<OCIE2B);   //Timer2 Overflow Interrupt Enable
+  TCNT2 = 0xE7; //gamma value
+  sei();   
 }
 
 //Timer2 overflow interrupt vector handler
 ISR(TIMER2_OVF_vect) {
+  TCNT2 = 0xE7; //gamma value
   rainbow.draw();
 }
 
@@ -147,7 +151,7 @@ void send_eeprom( word addr ) {
 }
 
 void load_from_eeprom( word addr ) {
-  rainbow.num_frames = min(rainbow.max_num_frames, EEPROM.read(addr++));
+  rainbow.set_num_frames(EEPROM.read(addr++));
 
   for( word frame_nr = 0; frame_nr < rainbow.num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
