@@ -16,7 +16,7 @@
 #define LIVE 0
 #define STANDALONE 1
 
-#define BAUD_RATE 14400
+#define BAUD_RATE 9600
 
 #define CRTL 255
 #define RESET 255
@@ -140,19 +140,20 @@ void write_to_eeprom( word addr ) {
 }
 
 void send_eeprom( word addr ) {
-  word num_frames = min(rainbow.max_num_frames, EEPROM.read(addr++));
+  word num_frames = EEPROM.read(addr++); 
+  num_frames = min(rainbow.max_num_frames, num_frames);
   Serial.write(num_frames);
 
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
       Serial.write( EEPROM.read(addr++) );
     }
+    delay(1);
   }
 }
 
 void load_from_eeprom( word addr ) {
   rainbow.set_num_frames(EEPROM.read(addr++));
-
   for( word frame_nr = 0; frame_nr < rainbow.num_frames; frame_nr++ ) {
     for( byte row = 0; row < rainbow.num_rows; row++ ) {
       rainbow.set_frame_row(frame_nr, row, EEPROM.read(addr++));

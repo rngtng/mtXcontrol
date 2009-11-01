@@ -13,7 +13,7 @@ class FrameChooser extends RectButton {
     int frame_nr;
     for(int nr = 0; nr < this.show_frames; nr++) {
       frame_nr = this.get_frame_nr(nr);      
-      display_frame(this.x + this.frame_width * frame_nr, this.y, frame_nr);
+      display_frame(this.x + this.frame_width * nr, this.y, frame_nr);
     }
   }
   

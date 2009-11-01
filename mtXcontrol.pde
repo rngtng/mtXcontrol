@@ -30,7 +30,7 @@ int hide_button_index;
 void setup() {
   matrix = new Matrix(8, 8);
   arduino = new Arduino(this);
-  size(780,720); //size(2*offX + matrix.width(), 2*offY + matrix.height() );
+  size(780,720);
   smooth();
   noStroke();
   fontA = loadFont("Courier-Bold-32.vlw");

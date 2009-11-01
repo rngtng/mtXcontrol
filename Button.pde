@@ -158,6 +158,7 @@ class ActionButton extends TextButton {
   }
 
   protected boolean perform_action() {
+    if(this.hide) return false;
     if(this.button_text == "^") matrix.current_frame().shift_up();
     if(this.button_text == "v") matrix.current_frame().shift_down();
     if(this.button_text == "<") matrix.current_frame().shift_left();

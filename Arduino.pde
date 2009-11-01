@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 class Arduino {
-  int BAUD_RATE  = 14400;
+  int BAUD_RATE  = 9600;
 
   int CRTL  = 255;
   int RESET = 255;
@@ -42,6 +42,7 @@ class Arduino {
 
   void write_matrix(Matrix matrix) {
     print("Start Writing Matrix - ");
+    write_frame(matrix.frame(0));
     command( WRITE_EEPROM );
     send(matrix.num_frames());
     //send(matrix.rows*3);
@@ -63,7 +64,7 @@ class Arduino {
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ )
     { 
       println("Frame Nr: " + frame_nr);
-      for( int y = 0; y < frame.rows; y++ ) {
+      for( int y = frame.rows - 1; y >= 0; y-- ) {
         frame.set_row(y, wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
       }
       frame = matrix.add_frame();
