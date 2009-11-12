@@ -10,7 +10,7 @@ With *mtXcontrol* Editor you can draw points, lines &amp; rows in different colo
 Download sources here: [github mtXControl Project](http://github.com/rngtng/mtXcontrol)
 
 ## Mini HowTo:
-mtXcontrol consits of two parts:  One is the Editor program which you run on your computer, the other is the firmware you have to upload to your rainbowduino first. [See instruction here](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it).  The firmware make use of the Rainbowduino.h Library to manipulate the Matrix easily. Make sure to put it into your Arudino Library. Connect your Rainbowduino via USB to your computer uploa firmware and you are ready to go - happy mtXcontrol drawing!
+mtXcontrol consits of two parts:  One is the Editor program which you run on your computer, the other is the firmware you have to upload to your rainbowduino first. [See instruction here](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it).  The firmware makes use of the Rainbowduino.h Library to manipulate the Matrix easily. Make sure to put it into your Arduino Library. Connect your Rainbowduino via USB to your computer, upload firmware and you are ready to go - happy mtXcontrol drawing!
 
 
 ## Requirements
@@ -19,6 +19,21 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 * Arduino IDE, get it from [here](http://arduino.cc/en/Main/Software)
 * Rainbowduino + 8x8 RGB LED Matrix, get it from [here](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html)
 
+
+## Step-by-Step Instructions
+1. Load the latest Arduino environment on the PC
+2. Confirm the ability to upload a simple sketch to the Arduino, making sure to select the correct processor type
+3. Upload the "blank" sketch to the Arduino so that it acts like a pass-through connection
+4. connect the Rainbowduino to the Arduino as indicated in the [blog picture](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it) 
+5. Using the Arduino IDE, load the firmware.pde sketch and then transfer it. The Arduino serves as the middle-man so that the microcontroller on the Rainbowduino can be reprogrammed. Important note is to change the processor type to 168 if you have a 328 Arduino.
+6. A brand new Rainbowduino should now go from displaying the multi-colored test pattern to all white LEDs.
+7. Close the Arduino IDE. Load the latest Processing IDE (although similar in appearance, they are not the same). Remember to leave everything connected as displayed in the blog photo.
+8. Load the mtXControl application and compile and run it. The display should go blank.
+9. Use the application to design your animation. For a preview, switch to 'Matrix: Slave' mode (alt + ENTER) or second button form top, which displays your drawings in realtime on the Matrix.
+10. Then Save it to the Matrix.
+11. Close the Processing IDE. Disconnect the USB cable from your PC to the Arduino and undo the connections between the Arduino and the Rainbowduino.
+12. Power the Rainbowduino up by itself (either with an AC adaptor or a battery) and the animation should display.
+(Big thanks to *Bob* putting [those steps together](http://www.seeedstudio.com/forum/viewtopic.php?f=11&t=435&start=10))
 
 ## Full list of Features:
 * Draw multicolor points, line and rows  (8bit color support)
@@ -32,12 +47,13 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 
 
 ## Future ideas:
-* Use compression to save more frames to EEPROM (e.g. Huffman?)
+* Use compression to save more frames to EEPROM - Join discussion [here](http://stackoverflow.com/questions/1606102/arduino-lightweight-compression-algorithm-to-store-data-in-eeprom)
 * Font configuration
 * Support for multiple Rainbowduinos
-* Standart import/export file format
-* Support other devices
-* More colors 
+* Standard import/export file format
+* Support other devices (launchpad/RG Matrix)
+* More colors (12bit Support)
+* XBee Support
 
 
 ## Keyboard shortcuts:
@@ -63,8 +79,7 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 
 
 ## Other
-This project is part of the [seeedstudio carnival 2009](http://www.seeedstudio.com/forum/viewtopic.php?f=11&amp;t=397)
-
+This project won the [seeedstudio carnival 2009](http://www.seeedstudio.com/forum/viewtopic.php?f=11&amp;t=397) See the [announcement and discussions](http://www.seeedstudio.com/forum/viewtopic.php?f=11&t=435&start=0) there.
 
 ## License
 The MIT License
