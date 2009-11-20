@@ -21,6 +21,9 @@
 #define CRTL 255
 #define RESET 255
 
+#define PING 254
+#define HELLO 254
+
 #define WRITE_FRAME 253
 #define WRITE_EEPROM 252
 #define READ_EEPROM 251
@@ -90,6 +93,9 @@ void check_serial() {
   byte value = read_serial();
   if( value == CRTL ) {
     switch( wait_and_read_serial() ) {
+    case PING:  
+      Serial.write(HELLO);
+      break;
     case RESET:
       load_from_eeprom(0);
       reset();

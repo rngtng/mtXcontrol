@@ -6,6 +6,9 @@ class Arduino {
   int CRTL  = 255;
   int RESET = 255;
 
+  int PING = 254;
+  int HELLO = 254;
+
   int WRITE_FRAME  = 253;
   int WRITE_EEPROM = 252;
   int READ_EEPROM  = 251;
@@ -14,7 +17,7 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
-  Serial port;
+    Serial port;
 
   public boolean standalone = true;
 
@@ -22,15 +25,24 @@ class Arduino {
   boolean mirror_rows = true;
 
   Arduino(PApplet app) {
-    try {
-      port = new Serial(app, Serial.list()[0], BAUD_RATE);
-    }
-    catch(Exception e) {
-      port = null;
-    }
-    standalone = true;
+    standalone = !auto_detect_and_set_port(app);
   }
 
+  boolean auto_detect_and_set_port(PApplet app) {
+    String[] ports = Serial.list();
+    for(int i = 0; i < ports.length; i++) {
+      try {
+        port = new Serial(app, ports[i], BAUD_RATE);
+        command(PING);
+        if( wait_and_read_serial(1000) == HELLO) return true;
+        port.stop();
+      }
+      catch(Exception e) {      
+      }
+    }
+    port = null;
+    return false; 
+  }
 
   /* +++++++++++++++++++++++++++ */
 
@@ -112,7 +124,7 @@ class Arduino {
     for(int i = 0; i < row.length; i++) {
       send(mirror_cols ? row[i] : ~row[i]);
     }
-    delay(1);
+    delay(2);
   }
 
   void send_frame(Frame frame) {
@@ -122,11 +134,23 @@ class Arduino {
   }
 
   private int wait_and_read_serial() {
+    try {
+      return wait_and_read_serial(1000);
+    } 
+    catch( Exception e) {
+      return wait_and_read_serial(); //endless loop, as we have not timeout
+    }
+  }
+
+  private int wait_and_read_serial(int timeout) throws Exception {
     int cnt = 0;
     while( port.available() < 1 ) {
       delay( 1 );
       cnt++;
+      if(cnt > timeout) throw new Exception();
     }
     return port.read();
   }
 }
+
+
