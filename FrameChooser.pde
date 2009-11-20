@@ -41,7 +41,7 @@ class FrameChooser extends RectButton {
   }
   
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
-     if(!super.key_pressed(key_code, mac, crtl, alt)) return false;
+     if(this.disabled) return false;
      if(mac || crtl || alt) return false;
      if(key_code == 37) matrix.previous_frame(); // arrow left  //use perform_ation here??
      if(key_code == 39) matrix.next_frame();     // arrow right

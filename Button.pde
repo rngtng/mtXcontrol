@@ -11,7 +11,8 @@ class Button extends GuiElement
   boolean over = false;
   //  boolean pressed = false;
   boolean locked = false;
-
+  String shortcut = null;
+  
   Button(int ix, int iy,  color icolor, color ihighlight) {
     super(ix, iy, icolor);
     this.highlightcolor = ihighlight;
@@ -25,7 +26,7 @@ class Button extends GuiElement
   }
 
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
-    return !this.disabled;
+    return !this.disabled && this.shortcut != null;
   }
   
   public boolean over() {
@@ -123,7 +124,7 @@ class TextButton extends RectButton {
   }
 
   protected color current_text_color() {
-    return (this.disabled) ? #AAAAAA : #FFFFFF;
+    return (this.disabled) ? #666666 : #FFFFFF;
   }
   
   protected String current_text() {
@@ -139,8 +140,6 @@ class TextButton extends RectButton {
 
 class ActionButton extends TextButton {
 
-  String shortcut;
-
   ActionButton(String itext, String ishortcut, int ix, int iy) {
     this(itext, ishortcut, ix, iy, 134, 25, #444444, #999999);
   }
@@ -152,7 +151,6 @@ class ActionButton extends TextButton {
   ActionButton(String itext, String ishortcut, int ix, int iy, int iwidth, int iheight, color icolor, color ihighlight) {
     super(itext, ix, iy, iwidth, iheight, icolor, ihighlight);
     this.shortcut = ishortcut;
-    this.enable();
   }
 
   public boolean pressed() {
@@ -179,8 +177,8 @@ class ActionButton extends TextButton {
     if(this.button_text == "v") matrix.current_frame().shift_down();
     if(this.button_text == "<") matrix.current_frame().shift_left();
     if(this.button_text == ">") matrix.current_frame().shift_right();
-    if(this.shortcut    == "L") matrix = matrix.load_from_file();
-    if(this.shortcut    == "S") matrix.save_to_file();
+    if(this.shortcut    == "m+L") { matrix = matrix.load_from_file(); keyMac  = false;}
+    if(this.shortcut    == "m+S") { matrix.save_to_file(); keyMac  = false;}
     if(this.shortcut    == "a+L") matrix = arduino.read_matrix();
     if(this.shortcut    == "a+S") arduino.write_matrix(matrix);
     if(this.button_text == "Add")    matrix.add_frame();

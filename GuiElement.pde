@@ -2,7 +2,7 @@ class GuiElement {
   int x, y;
   color basecolor;
   boolean hidden = false;
-  boolean disabled = true;
+  boolean disabled = false;
   private boolean old_disabled = false;
   
   GuiElement(int ix, int iy, color icolor) {
@@ -56,6 +56,11 @@ class TextElement extends TextButton {
     super(itext, ix, iy, 0, 0, #000000, #000000);
     this.disable();
   }
+
+  protected color current_text_color() {
+    return #FFFFFF;
+  }
+
   
   protected void update_offset() {
     x_offset = x;
