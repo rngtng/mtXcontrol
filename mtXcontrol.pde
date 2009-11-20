@@ -36,6 +36,7 @@ void setup() {
   fontA = loadFont("Courier-Bold-32.vlw");
   fontLetter = loadFont("ArialMT-20.vlw");
   setup_buttons();
+  frameRate(15);
 }
 
 void setup_buttons() {
@@ -59,23 +60,27 @@ void setup_buttons() {
   int button_x = offX + matrix.width() + offset + 30;
   buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += 30);
   buttons[button_index++] = new ActionToggleButton( "Matrix: FREE",  "Matrix: SLAVE", "a+10", button_x, y_pos += 30);
+  if(arduino.port == null) buttons[button_index-1].disable();
+  
   buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, 59, 10);
-    
+  
   hide_button_index = button_index;
   buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",      "L", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+L", button_x + 67, y_pos,       65, 25);
+  if(arduino.port == null) buttons[button_index-1].disable();
   
   buttons[button_index++] = new TextElement( "Save to:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",      "S", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+S", button_x + 67, y_pos,       65, 25);
+  if(arduino.port == null) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
   buttons[button_index++] = new ColorButton( button_x, y_pos += 30);
   y_pos += 30;
   PixelColor pc = new PixelColor(); 
   for(int i = 0; i < 8; i++) {
-    buttons[button_index++] = new MiniColorButton( button_x + i * 17, y_pos, 14, 14, pc.get_color());
+    buttons[button_index++] = new MiniColorButton( button_x + i * 17, y_pos, 14, 14, pc.get_color() );
     pc.invert();
   }
   
@@ -99,14 +104,21 @@ void draw()
   if(update) {
     background(41);
     image(matrix.current_frame_image(), offX, offY);
+  
     for(int i = 0; i < buttons.length; i++ ) {
-      if(buttons[i] != null) buttons[i].display( !record && i >= hide_button_index );
+      if(buttons[i] == null) break;
+      buttons[i].display();
     }
     
+    fill(255); //white
     if(!record) {
-      fill(255); //white
       text( "Speed: " + current_speed, offX + matrix.width() + 65, 110);
     }
+    
+    if(arduino.port == null) {
+      text( "No Matrix found, running in standalone mode", 120, 20);  
+    }
+    
     arduino.write_frame(matrix.current_frame());
     update = false;
   }
@@ -134,7 +146,8 @@ void mouseDragged() {
 
 void mousePressed() {
   for(int i = 0; i < buttons.length; i++ ) {
-    if( buttons[i] != null ) update = update || buttons[i].pressed();
+    if(buttons[i] == null) break;
+    update = update || buttons[i].pressed();
   }
   if(!record) return;
   update = matrix.click(mouseX - offX, mouseY - offY, false) || update;
@@ -142,7 +155,8 @@ void mousePressed() {
 
 void mouseMoved() {
   for(int i = 0; i < buttons.length; i++ ) {
-    if( buttons[i] != null ) update = update || buttons[i].over();
+    if(buttons[i] == null) break;
+    update = update || buttons[i].over();
   }
 }
 
@@ -150,9 +164,11 @@ void keyPressed() {
   if(keyCode == 17)  keyCtrl = true; //control
   if(keyCode == 18)  keyAlt  = true; //alt
   if(keyCode == 157) keyMac  = true; //mac
-
+  
   for(int i = 0; i < buttons.length; i++ ) {
-    if(buttons[i] != null ) update = update || buttons[i].key_pressed(keyCode, keyMac, keyCtrl, keyAlt);
+    if(buttons[i] == null) break;
+    update = buttons[i].key_pressed(keyCode, keyMac, keyCtrl, keyAlt);  
+    if(update) return;
   }
 
   if(keyAlt) {
@@ -162,6 +178,7 @@ void keyPressed() {
   else if(keyCtrl) {
     if(keyCode >= 48) matrix.current_frame().set_letter(char(keyCode), fontLetter, matrix.current_color);
     update = true;
+    return;
   }
   else {
     if(!record) {
@@ -183,6 +200,11 @@ void keyReleased() {
 void toggle_mode() {
   matrix.current_frame_nr = 0;
   record = !record;
+  for(int i = hide_button_index; i < buttons.length; i++ ) {
+    if(buttons[i] == null) break;
+    if(record) buttons[i].toggle(); else buttons[i].hide();
+  }
+  buttons[hide_button_index-1].disable();
 }
 
 void speed_up() {
@@ -193,5 +215,4 @@ void speed_up() {
 void speed_down() {
   current_speed++;
 }
-
 

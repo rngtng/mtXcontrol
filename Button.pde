@@ -18,23 +18,23 @@ class Button extends GuiElement
   }
 
   public boolean pressed() {
-    if(!this.over) return false;
+    if(!this.over || this.disabled) return false;
     boolean old_locked = this.locked;
     this.locked = !this.locked;
     return this.locked != old_locked;
   }
 
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
-    return false;
+    return !this.disabled;
   }
-
+  
   public boolean over() {
     return false;
   }
 
   /* ************************************************************************** */
   protected color current_color() {
-    return this.over ? highlightcolor : basecolor;
+    return (this.over && !this.disabled) ? highlightcolor : basecolor;
   }
 
   protected boolean overRect(int x, int y, int width, int height) {
@@ -62,10 +62,10 @@ class CircleButton extends Button {
     return this.over != old_over;
   }
 
-  public void display(boolean hide)  {
-    super.display(hide);
-    if(this.hide) return;
+  public boolean display()  {
+    if( !super.display() ) return false;
     ellipse(x, y, size, size);
+    return true;
   }
 }
 
@@ -88,10 +88,10 @@ class RectButton extends Button {
     return this.over != old_over;
   }
 
-  public void display(boolean hide) {
-    super.display(hide);
-    if(this.hide) return;
+  public boolean display() {
+    if( !super.display() ) return false;
     rect(x, y, width, height);
+    return true;
   }
 }
 
@@ -104,23 +104,37 @@ class SquareButton extends RectButton {
 
 class TextButton extends RectButton {
   String button_text;
-
+  public color text_color;
+  float x_offset;
+  float y_offset;
+  
   TextButton(String itext, int ix, int iy, int iwidth, int iheight, color icolor, color ihighlight) {
     super(ix, iy, iwidth, iheight, icolor, ihighlight);
     this.button_text = itext;
   }
 
-  public void display(boolean hide) {
-    super.display(hide);
-    if(this.hide) return;
+  public boolean display() {
+    if( !super.display() ) return false;
     textFont(fontA, 15);
-    fill(255);
-    text(this.current_text(), x + (this.width - textWidth(this.button_text)) / 2, y + 17);
+    fill(current_text_color());
+    update_offset();
+    text(this.current_text(), x_offset, y_offset);
+    return true;
   }
 
+  protected color current_text_color() {
+    return (this.disabled) ? #AAAAAA : #FFFFFF;
+  }
+  
   protected String current_text() {
     return this.button_text;
   }
+  
+  protected void update_offset() {
+    x_offset = x + (this.width - textWidth(current_text())) / 2;
+    y_offset = y + 17;
+  }
+  
 }
 
 class ActionButton extends TextButton {
@@ -138,43 +152,43 @@ class ActionButton extends TextButton {
   ActionButton(String itext, String ishortcut, int ix, int iy, int iwidth, int iheight, color icolor, color ihighlight) {
     super(itext, ix, iy, iwidth, iheight, icolor, ihighlight);
     this.shortcut = ishortcut;
+    this.enable();
   }
 
   public boolean pressed() {
-    if(!this.over) return false;
+    if(!super.pressed()) return false;
+    perform_action();
     this.locked = !this.locked;
-    return perform_action();
+    return true;
   }
 
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
+    if(!super.key_pressed(key_code, mac, crtl, alt)) return false;
     String code = "";
     if(mac)  code = "m+" + code;
     if(crtl) code = "c+" + code;
     if(alt) code = "a+" + code;
-    if(!this.shortcut.equals(code+char(key_code)) && !this.shortcut.equals(code+key_code)) return false;
-    //println(code+char(key_code) + " " + code+key_code + " -> " + this.shortcut);
+    if(!this.shortcut.equals(code+char(key_code)) && !this.shortcut.equals(code+key_code)) return false; //no shortcut defined
+    perform_action();
     this.locked = !this.locked;
-    return perform_action();
+    return true;
   }
 
-  protected boolean perform_action() {
-    if(this.hide) return false;
+  protected void perform_action() {
     if(this.button_text == "^") matrix.current_frame().shift_up();
     if(this.button_text == "v") matrix.current_frame().shift_down();
     if(this.button_text == "<") matrix.current_frame().shift_left();
     if(this.button_text == ">") matrix.current_frame().shift_right();
     if(this.shortcut    == "L") matrix = matrix.load_from_file();
-    if(this.shortcut    == "S") matrix.save_to_file();    
-    if(this.shortcut    == "a+L") matrix = arduino.read_matrix();        
+    if(this.shortcut    == "S") matrix.save_to_file();
+    if(this.shortcut    == "a+L") matrix = arduino.read_matrix();
     if(this.shortcut    == "a+S") arduino.write_matrix(matrix);
-    if(this.button_text == "Add")  matrix.add_frame();
+    if(this.button_text == "Add")    matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();
     if(this.button_text == "Paste")  matrix.paste_frame();
     if(this.button_text == "Fill")   matrix.current_frame().fill(matrix.current_color);
     if(this.button_text == "Clear")  matrix.current_frame().clear();
-
-    return true;
   }
 }
 
@@ -194,10 +208,9 @@ class ActionToggleButton extends ActionButton {
     return this.locked ?  this.button_text2 : this.button_text;
   }
 
-  protected boolean perform_action() {
+  protected void perform_action() {
      if(this.shortcut == "10") toggle_mode(); // ENTER
      if(this.shortcut == "a+10") arduino.toggle(matrix.current_frame()); // ENTER
-     return true;
   }
 }
 
@@ -216,7 +229,7 @@ class ColorButton extends RectButton {
   }
 
   public boolean pressed() {
-    if(!this.over) return false;
+    if(!super.pressed()) return false;
     matrix.current_color.invert();
     return true;
   }
@@ -229,7 +242,7 @@ class MiniColorButton extends RectButton {
   }
 
   public boolean pressed() {
-    if(!this.over) return false;
+    if(!super.pressed()) return false;
     matrix.current_color.set_color(this.current_color());
     return true;
   }

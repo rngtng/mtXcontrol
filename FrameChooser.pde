@@ -7,14 +7,17 @@ class FrameChooser extends RectButton {
     super(ix, iy, iwidth * ishow_frames, iwidth, #111111, #FFFF00);
     this.frame_width = iwidth;
     this.show_frames = ishow_frames;
+    this.enable();
   }
 
-  public void display(boolean hide) {
+  public boolean display() {
+    if(this.hidden) return false;
     int frame_nr;
     for(int nr = 0; nr < this.show_frames; nr++) {
       frame_nr = this.get_frame_nr(nr);      
       display_frame(this.x + this.frame_width * nr, this.y, frame_nr);
     }
+    return true;
   }
   
   private void display_frame(int frame_x, int frame_y, int frame_nr) {
@@ -38,8 +41,9 @@ class FrameChooser extends RectButton {
   }
   
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
-     if(!record || mac || crtl || alt) return false; //better use hide status
-     if(key_code == 37) matrix.previous_frame(); // arrow left
+     if(!super.key_pressed(key_code, mac, crtl, alt)) return false;
+     if(mac || crtl || alt) return false;
+     if(key_code == 37) matrix.previous_frame(); // arrow left  //use perform_ation here??
      if(key_code == 39) matrix.next_frame();     // arrow right
      return (key_code == 37 || key_code == 39);
   }
