@@ -35,15 +35,17 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 12. Power the Rainbowduino up by itself (either with an AC adaptor or a battery) and the animation should display.
 (Big thanks to *Bob* putting [those steps together](http://www.seeedstudio.com/forum/viewtopic.php?f=11&t=435&start=10))
 
+
 ## Full list of Features:
 * Draw multicolor points, line and rows  (8bit color support)
 * Add, delete, clear, fill, *copy &amp; paste*, move frames
 * *Draw letters and numbers*, Font configureable
-* Save &amp; Load to File
+* Save to &amp; foad from *Bitmap file*
 * Upload and Download to Matrix *EEPROM* (mind: due to 256kb memory only up to 10 frames). 
 * Frame preview, easily navigate through
 * Standalone Mode or realtime Rainbowudino Update
 * Keyboard shortcut for each function
+* auto port & matrix detection
 
 
 ## Future ideas:
@@ -60,12 +62,12 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 * ENTER - switch between record /place Mode
 * <left/right ARROW> - Frame forward/backward (Record Mode) or Speed in Place Mode
 * SPACE - Insert Frame after current Frame
-* S - Save to File
-* L - Load File
 * D - Delete Frame
 * C - Clear frame
 * F - fill frame
 
+* command+S - Save to File (Bitmap)
+* command+L - Load File (Bitmap OR text (.mtx))
 * command+C - Copy Frame
 * command+V - Paste Frame
 

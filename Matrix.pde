@@ -12,6 +12,8 @@ class Matrix {
 
   Frame copy_frame;
 
+  int SCALE = 1;
+
   int current_frame_nr;
 
   Matrix(int cols, int rows ) {
@@ -116,21 +118,19 @@ class Matrix {
       println("No output file was selected...");
       return;
     }
-    PrintWriter output = createWriter(savePath);
-    // output.println(rows+","+cols+","+speed);
+    if( match(savePath, ".bmp") == null )  savePath += ".bmp";
+    
+    PImage output = createImage(this.num_frames() * this.cols, this.rows, RGB);
 
     for(int f = 0; f < this.num_frames(); f++) {
       Frame frame = this.frame(f);
-      for(int y=0; y<frame.rows; y++) {
-        //invert matrix
-        byte[] row = frame.get_row(7-y);        
-        output.print(~row[0] + "," + ~row[1] + "," + ~row[2] + ",");
+      for(int y = 0; y < frame.rows; y++) {
+        for(int x = 0; x < frame.cols; x++) {
+          output.set(x + frame.cols * f, y, frame.get_pixel(x,y).get_color() );
+        }
       }
-      output.println();
     }
-
-    output.flush(); // Writes the remaining data to the file
-    output.close(); // Finishes the file
+    output.save(savePath); //TODO add scaling??
     println("SAVED to " + savePath);
   }
 
@@ -140,8 +140,12 @@ class Matrix {
       println("No file was selected...");
       return this;
     }
+    if( match(loadPath, ".mtx") != null ) return load_mtx(loadPath); 
+    return load_bmp(loadPath);
+  }
 
-    Matrix matrix = new Matrix( this.cols, this.rows); //actually we have to read values from File!
+  Matrix load_mtx(String loadPath) {
+    Matrix matrix = new Matrix(this.cols, this.rows); //actually we have to read values from File!
     Frame frame = matrix.current_frame();
     BufferedReader reader = createReader(loadPath);
     String line = "";
@@ -166,7 +170,29 @@ class Matrix {
     return matrix;
   }
 
+  Matrix load_bmp(String loadPath) {
+    Matrix matrix = new Matrix(this.cols, this.rows);
+
+    PImage input = loadImage(loadPath);
+    input.loadPixels();
+    
+    int num_frames = input.width / this.cols / SCALE; 
+    Frame frame = matrix.current_frame();
+    for(int f = 0; f < num_frames; f++) {      
+      for(int y = 0; y < frame.rows; y++) {
+        for(int x = 0; x < frame.cols; x++) {
+          color c = input.pixels[(x + frame.cols * f + y * frame.cols * num_frames) * SCALE];
+          frame.get_pixel(x, y).set_color(c);
+        }
+      }
+      frame = matrix.add_frame();
+    }
+    matrix.delete_frame();
+    return matrix;
+  }
+
 }
+
 
 
 
