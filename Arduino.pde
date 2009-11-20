@@ -31,13 +31,18 @@ class Arduino {
   boolean auto_detect_and_set_port(PApplet app) {
     String[] ports = Serial.list();
     for(int i = 0; i < ports.length; i++) {
+      if(match(ports[i], "tty") == null) continue;
+      //println(ports[i]);      
       try {
         port = new Serial(app, ports[i], BAUD_RATE);
         command(PING);
         if( wait_and_read_serial(1000) == HELLO) return true;
         port.stop();
       }
-      catch(Exception e) {      
+      //catch(gnu.io.PortInUseException e) {
+      //}
+      catch(Exception e) {
+        //if(port != null) port.stop();
       }
     }
     port = null;
@@ -152,5 +157,6 @@ class Arduino {
     return port.read();
   }
 }
+
 
 
