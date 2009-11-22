@@ -118,7 +118,7 @@ class Frame {
     if( this.get_pixel(x,y).equal(pc) ) {
       this.frame = null;
       this.thumb = null;
-      return this.get_pixel(x,y).invert();
+      return this.get_pixel(x,y).next_color();
     }
     return set_pixel(x, y, pc);
   }

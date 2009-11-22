@@ -214,10 +214,6 @@ class ActionToggleButton extends ActionButton {
 
 class ColorButton extends RectButton {
 
-  ColorButton(int ix, int iy) {
-    this(ix, iy, 134, 25);
-  }
-
   ColorButton(int ix, int iy, int iwidth, int iheight) {
     super(ix, iy, iwidth, iheight, matrix.current_color.get_color(), matrix.current_color.get_color());
   }
@@ -228,20 +224,23 @@ class ColorButton extends RectButton {
 
   public boolean pressed() {
     if(!super.pressed()) return false;
-    matrix.current_color.invert();
+    matrix.current_color.next_color();
     return true;
   }
 }
 
 class MiniColorButton extends RectButton {
 
-  MiniColorButton(int ix, int iy, int iwidth, int iheight, color icolor) {
-    super(ix, iy, iwidth, iheight, icolor, icolor);
+  PixelColor px;
+  
+  MiniColorButton(int ix, int iy, int iwidth, int iheight, PixelColor icolor) {
+    super(ix, iy, iwidth, iheight, icolor.get_color(), icolor.get_color());
+    this.px = icolor;    
   }
 
   public boolean pressed() {
     if(!super.pressed()) return false;
-    matrix.current_color.set_color(this.current_color());
+    matrix.current_color.set_color(this.px);
     return true;
   }
 }

@@ -19,7 +19,7 @@ class Matrix {
   Matrix(int cols, int rows ) {
     this.cols = cols; //X
     this.rows = rows; //Y
-    this.current_color = new PixelColor().invert();
+    this.current_color = new PixelColor();
     add_frame();
   }
 
@@ -119,7 +119,7 @@ class Matrix {
       return;
     }
     if( match(savePath, ".bmp") == null )  savePath += ".bmp";
-    
+
     PImage output = createImage(this.num_frames() * this.cols, this.rows, RGB);
 
     for(int f = 0; f < this.num_frames(); f++) {
@@ -175,7 +175,7 @@ class Matrix {
 
     PImage input = loadImage(loadPath);
     input.loadPixels();
-    
+
     int num_frames = input.width / this.cols / SCALE; 
     Frame frame = matrix.current_frame();
     for(int f = 0; f < num_frames; f++) {      
@@ -192,6 +192,7 @@ class Matrix {
   }
 
 }
+
 
 
 
