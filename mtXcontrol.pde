@@ -200,6 +200,12 @@ void keyReleased() {
   if( keyCode == 157 ) keyMac  = false;
 }
 
+void serialEvent(Serial myPort) {
+  int l = myPort.read();
+  println(l);
+//  arduino.received(l);
+}
+
 /* +++++++++++++++ modes +++++++++++++++ */
 
 void toggle_mode() {

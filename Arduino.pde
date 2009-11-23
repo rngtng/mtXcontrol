@@ -17,7 +17,9 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
-    Serial port;
+    ArrayList buffer;
+
+  Serial port;
 
   public boolean standalone = true;
 
@@ -25,6 +27,7 @@ class Arduino {
   boolean mirror_rows = true;
 
   Arduino(PApplet app) {
+    buffer = new ArrayList();
     standalone = !auto_detect_and_set_port(app);
   }
 
@@ -35,8 +38,10 @@ class Arduino {
       //println(ports[i]);      
       try {
         port = new Serial(app, ports[i], BAUD_RATE);
+        port.buffer(0);
+        sleep(2000);
         command(PING);
-        if( wait_and_read_serial(1000) == HELLO) return true;
+        if( wait_and_read_serial(100) == HELLO) return true;
         port.stop();
       }
       //catch(gnu.io.PortInUseException e) {
@@ -147,16 +152,31 @@ class Arduino {
     }
   }
 
+  public void received(int l) {
+    buffer.add(l);
+  }
+
   private int wait_and_read_serial(int timeout) throws Exception {
     int cnt = 0;
-    while( port.available() < 1 ) {
-      delay( 1 );
+    while( cnt < 1000 ) { // true || buffer.size() < 1 ) {
+      print(".");
+      sleep(1000);
       cnt++;
       if(cnt > timeout) throw new Exception();
     }
-    return port.read();
+    return int( (Integer) buffer.remove(0));
+  }
+
+  private void sleep( int ms) {
+    try {
+      Thread.sleep(1000);
+    } 
+    catch(InterruptedException e) { 
+    } 
   }
 }
+
+
 
 
 
