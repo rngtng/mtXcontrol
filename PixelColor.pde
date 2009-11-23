@@ -57,9 +57,14 @@ class PixelColor {
   }
 
   public void set_color(color c) {
-    this.r = int(red(c)   / COLORS_R.length) - 1;
-    this.g = int(green(c) / COLORS_G.length) - 1;
-    this.b = int(blue(c)  / COLORS_B.length) - 1;
+    int l_index = COLORS_R.length - 1;
+    this.r = int(red(c)   / COLORS_R[l_index] * l_index);
+
+    l_index = COLORS_G.length - 1;
+    this.g = int(green(c) / COLORS_G[l_index] * l_index);
+
+    l_index = COLORS_B.length - 1;
+    this.b = int(blue(c)  / COLORS_B[l_index] * l_index);
   }
 
   public PixelColor clone() {
@@ -74,9 +79,4 @@ class PixelColor {
     return (this.r*(COLORS_G.length) + this.g)*(COLORS_B.length) + b; 
   }
 }
-
-
-
-
-
 
