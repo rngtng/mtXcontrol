@@ -29,7 +29,8 @@ int hide_button_index;
 
 void setup() {
   matrix = new Matrix(8, 8);
-  arduino = new Arduino(this);
+  arduino = new Arduino();
+  arduino.start(this);
   size(780,720);
   smooth();
   noStroke();
@@ -203,7 +204,7 @@ void keyReleased() {
 void serialEvent(Serial myPort) {
   int l = myPort.read();
   println(l);
-//  arduino.received(l);
+  arduino.received(l);
 }
 
 /* +++++++++++++++ modes +++++++++++++++ */

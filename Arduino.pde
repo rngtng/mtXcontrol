@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 class Arduino {
-  int BAUD_RATE  = 9600;
+  int DEFAULT_BAUD_RATE  = 9600;
 
   int CRTL  = 255;
   int RESET = 255;
@@ -17,27 +17,48 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
-    ArrayList buffer;
-
+  ArrayList buffer;
   Serial port;
+  Strin port_name;
 
   public boolean standalone = true;
 
   boolean mirror_cols = true;
   boolean mirror_rows = true;
 
-  Arduino(PApplet app) {
-    buffer = new ArrayList();
-    standalone = !auto_detect_and_set_port(app);
+  Arduino() {
+    this(DEFAULT_BAUD_RATE);
   }
 
-  boolean auto_detect_and_set_port(PApplet app) {
-    String[] ports = Serial.list();
-    for(int i = 0; i < ports.length; i++) {
-      if(match(ports[i], "tty") == null) continue;
-      //println(ports[i]);      
+  Arduino(String _port_name) {
+    this(_port_name, DEFAULT_BAUD_RATE);
+  }
+
+  Arduino(int _baud) {
+    this(null, _baud);
+  }
+
+  Arduino(String _port_name, int _baud) {
+    port_name = _port_name;
+    baud = _baud;
+    buffer = new ArrayList();
+    port = null;
+  }
+
+  void start(PApplet app) {
+     if(port_name != null) standalone = set_port(app, port_name);
+     if port == null ) {
+       String[] ports = Serial.list();
+       for(int i = 0; i < ports.length; i++) {
+         if(match(ports[i], "tty") == null) continue;
+         standalone = set_port(app, ports[i]);
+       }
+     }
+  }
+
+  boolean set_port(PApplet app, String port_name) {
       try {
-        port = new Serial(app, ports[i], BAUD_RATE);
+        port = new Serial(app, port_name, this.baud);
         port.buffer(0);
         sleep(2000);
         command(PING);
@@ -49,10 +70,10 @@ class Arduino {
       catch(Exception e) {
         //if(port != null) port.stop();
       }
-    }
     port = null;
-    return false; 
+    return false;
   }
+
 
   /* +++++++++++++++++++++++++++ */
 
@@ -82,9 +103,9 @@ class Arduino {
     println( "Frames:" + frames);
     // int cols  = wait_and_read_serial();
     Matrix matrix = new Matrix(8,8);
-    Frame frame = matrix.current_frame();    
+    Frame frame = matrix.current_frame();
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ )
-    { 
+    {
       println("Frame Nr: " + frame_nr);
       for( int y = frame.rows - 1; y >= 0; y-- ) {
         frame.set_row(y, wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
@@ -146,7 +167,7 @@ class Arduino {
   private int wait_and_read_serial() {
     try {
       return wait_and_read_serial(1000);
-    } 
+    }
     catch( Exception e) {
       return wait_and_read_serial(); //endless loop, as we have not timeout
     }
@@ -170,9 +191,9 @@ class Arduino {
   private void sleep( int ms) {
     try {
       Thread.sleep(1000);
-    } 
-    catch(InterruptedException e) { 
-    } 
+    }
+    catch(InterruptedException e) {
+    }
   }
 }
 

@@ -120,13 +120,21 @@ class Matrix {
     }
     if( match(savePath, ".bmp") == null )  savePath += ".bmp";
 
-    PImage output = createImage(this.num_frames() * this.cols, this.rows, RGB);
+    int width = int(Math.sqrt(this.num_frames()));
+    while( this.num_frames() % width != 0) {
+      width--;
+    }
+    int height =  this.num_frames() / width;
 
-    for(int f = 0; f < this.num_frames(); f++) {
-      Frame frame = this.frame(f);
-      for(int y = 0; y < frame.rows; y++) {
-        for(int x = 0; x < frame.cols; x++) {
-          output.set(x + frame.cols * f, y, frame.get_pixel(x,y).get_color() );
+    PImage output = createImage( width * this.cols, height * this.rows, RGB);
+
+    for(int w = 0; w < width; w++) {
+      for(int h = 0; f < height; h++) {
+        Frame frame = this.frame(w*height + h);
+        for(int y = 0; y < frame.rows; y++) {
+          for(int x = 0; x < frame.cols; x++) {
+            output.set(x + frame.cols * w, y + frame.rows * h, frame.get_pixel(x,y).get_color() );
+          }
         }
       }
     }
@@ -176,12 +184,13 @@ class Matrix {
     PImage input = loadImage(loadPath);
     input.loadPixels();
 
-    int num_frames = input.width / this.cols / SCALE; 
+    int num_frames =  (input.width / this.cols / SCALE) * (input.height / this.rows / SCALE); 
     Frame frame = matrix.current_frame();
-    for(int f = 0; f < num_frames; f++) {      
+    for(int f = 0; f < num_frames; f++) {
+      int off = f * frame.cols * frame.rows;
       for(int y = 0; y < frame.rows; y++) {
         for(int x = 0; x < frame.cols; x++) {
-          color c = input.pixels[(x + frame.cols * f + y * frame.cols * num_frames) * SCALE];
+          color c = input.pixels[off +  y * frame.cols + x) * SCALE];
           frame.get_pixel(x, y).set_color(c);
         }
       }
@@ -192,8 +201,4 @@ class Matrix {
   }
 
 }
-
-
-
-
 
