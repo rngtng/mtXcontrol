@@ -19,14 +19,11 @@ class Button extends GuiElement
   }
 
   public boolean pressed() {
-    if(!this.over || this.disabled) return false;
-    boolean old_locked = this.locked;
-    this.locked = !this.locked;
-    return this.locked != old_locked;
+    return (this.over && !this.disabled);  
   }
 
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
-    return !this.disabled && this.shortcut != null;
+    return (this.shortcut != null &&  !this.disabled);
   }
   
   public boolean over() {
@@ -156,7 +153,6 @@ class ActionButton extends TextButton {
   public boolean pressed() {
     if(!super.pressed()) return false;
     perform_action();
-    this.locked = !this.locked;
     return true;
   }
 
@@ -168,7 +164,6 @@ class ActionButton extends TextButton {
     if(alt) code = "a+" + code;
     if(!this.shortcut.equals(code+char(key_code)) && !this.shortcut.equals(code+key_code)) return false; //no shortcut defined
     perform_action();
-    this.locked = !this.locked;
     return true;
   }
 
@@ -207,6 +202,7 @@ class ActionToggleButton extends ActionButton {
   }
 
   protected void perform_action() {
+    
      if(this.shortcut == "10") toggle_mode(); // ENTER
      if(this.shortcut == "a+10") arduino.toggle(matrix.current_frame()); // ENTER
   }
