@@ -171,6 +171,8 @@ void keyPressed() {
   if(keyCode == 18)  keyAlt  = true; //alt
   if(keyCode == 157) keyMac  = true; //mac
 
+  //println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
+  
   for(int i = 0; i < buttons.length; i++ ) {
     if(buttons[i] == null) break;
     update = buttons[i].key_pressed(keyCode, keyMac, keyCtrl, keyAlt);  
@@ -192,7 +194,6 @@ void keyPressed() {
       if( keyCode == 39) speed_down();   //arrow right
     }
   }
-  //println("pressed " + key + " " + keyCode);
 }
 
 void keyReleased() {
@@ -202,9 +203,7 @@ void keyReleased() {
 }
 
 void serialEvent(Serial myPort) {
-  int l = myPort.read();
-  println(l);
-  arduino.received(l);
+  arduino.received( myPort.read() );
 }
 
 /* +++++++++++++++ modes +++++++++++++++ */
@@ -214,10 +213,9 @@ void toggle_mode() {
   record = !record;
   for(int i = hide_button_index; i < buttons.length; i++ ) {
     if(buttons[i] == null) break;
-    if(record) buttons[i].toggle(); 
-    else buttons[i].hide();
+    if(record) buttons[i].toggle(); else buttons[i].hide();
   }
-  buttons[hide_button_index-1].disable();
+  if(record) buttons[hide_button_index-1].enable(); else buttons[hide_button_index-1].disable();
 }
 
 void speed_up() {

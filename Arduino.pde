@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 class Arduino {
-  int DEFAULT_BAUD_RATE  = 9600;
+  final static int DEFAULT_BAUD_RATE  = 9600;
 
   int CRTL  = 255;
   int RESET = 255;
@@ -17,9 +17,11 @@ class Arduino {
   int SPEED_INC = 128; //B1000 0000
   int SPEED_DEC = 1;   //B0000 0001
 
+  int baud;
+  
   ArrayList buffer;
   Serial port;
-  Strin port_name;
+  String port_name;
 
   public boolean standalone = true;
 
@@ -47,27 +49,32 @@ class Arduino {
 
   void start(PApplet app) {
      if(port_name != null) standalone = set_port(app, port_name);
-     if port == null ) {
-       String[] ports = Serial.list();
+     if( port == null ) {
+       String[] ports = Serial.list();       
        for(int i = 0; i < ports.length; i++) {
          if(match(ports[i], "tty") == null) continue;
          standalone = set_port(app, ports[i]);
+         if(port != null) return;
        }
      }
   }
 
   boolean set_port(PApplet app, String port_name) {
+      println(port_name);
       try {
         port = new Serial(app, port_name, this.baud);
         port.buffer(0);
-        sleep(2000);
-        command(PING);
-        if( wait_and_read_serial(100) == HELLO) return true;
-        port.stop();
+        if(wait_and_read_serial(20) == 252) {
+          command(PING);
+          if(wait_and_read_serial(20) == HELLO) return true;         
+          port.stop();
+        }
+        println("No response");        
       }
       //catch(gnu.io.PortInUseException e) {
       //}
       catch(Exception e) {
+         println("Failed");
         //if(port != null) port.stop();
       }
     port = null;
@@ -166,10 +173,11 @@ class Arduino {
 
   private int wait_and_read_serial() {
     try {
-      return wait_and_read_serial(1000);
+      return wait_and_read_serial(50);
     }
-    catch( Exception e) {
-      return wait_and_read_serial(); //endless loop, as we have not timeout
+    catch( Exception e) {  
+      println("Matrix Timeout");
+      return 0;
     }
   }
 
@@ -179,18 +187,19 @@ class Arduino {
 
   private int wait_and_read_serial(int timeout) throws Exception {
     int cnt = 0;
-    while( cnt < 1000 ) { // true || buffer.size() < 1 ) {
-      print(".");
-      sleep(1000);
+    timeout = timeout;
+    while( cnt < timeout && buffer.size() < 1) {
+      //print(".");
+      sleep(100);
       cnt++;
       if(cnt > timeout) throw new Exception();
     }
     return int( (Integer) buffer.remove(0));
   }
 
-  private void sleep( int ms) {
+  private void sleep(int ms) {
     try {
-      Thread.sleep(1000);
+      Thread.sleep(ms);
     }
     catch(InterruptedException e) {
     }
