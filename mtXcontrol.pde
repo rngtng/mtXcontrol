@@ -3,7 +3,8 @@ PFont fontA;
 PFont fontLetter;
 
 Matrix matrix;
-Arduino arduino;
+//Arduino 
+Device device;
 
 int border = 10;
 
@@ -29,8 +30,9 @@ int hide_button_index;
 
 void setup() {
   matrix = new Matrix(8, 8);
-  arduino = new Arduino();
-  arduino.start(this);
+  device = new LaunchpadDevice(this); //new Arduino();
+  //  device.start(this);
+
   size(780,720);
   smooth();
   noStroke();
@@ -51,17 +53,21 @@ color button_color_over = #999999;
   int button_size = 15;
 
   for(int i = 0; i < matrix.rows; i++ ) {
-    buttons[button_index++] = new RectButton( offX + matrix.width() + offset, offY + i * matrix.rad + matrix.border / 2, button_size, matrix.rad - matrix.border, button_color, button_color_over);
+    int x = offX + matrix.width() + offset;
+    int y = offY + i * matrix.rad + matrix.border / 2;
+    buttons[button_index++] = new RectButton( x, y, button_size, matrix.rad - matrix.border, button_color, button_color_over);
   }
   for(int i = 0; i < matrix.cols; i++ ) {
-    buttons[button_index++] = new RectButton( offX + i * matrix.rad + matrix.border / 2, offY + matrix.width() + offset, matrix.rad - matrix.border, button_size, button_color, button_color_over);
+    int x = offX + i * matrix.rad + matrix.border / 2;
+    int y = offY + matrix.width() + offset;
+    buttons[button_index++] = new RectButton( x, y, matrix.rad - matrix.border, button_size, button_color, button_color_over);
   }
   buttons[button_index++] = new SquareButton( offX + matrix.width() + offset, offY + matrix.width() + offset, button_size, button_color, button_color_over );
 
   int button_x = offX + matrix.width() + offset + 30;
   buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += 30);
   buttons[button_index++] = new ActionToggleButton( "Matrix: FREE",  "Matrix: SLAVE", "a+10", button_x, y_pos += 30);
-  if(arduino.port == null) buttons[button_index-1].disable();
+  if(device.enabled()) buttons[button_index-1].disable();
 
   buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, 59, 10);
 
@@ -69,12 +75,12 @@ color button_color_over = #999999;
   buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",    "m+L", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+L", button_x + 67, y_pos,       65, 25);
-  if(arduino.port == null) buttons[button_index-1].disable();
+  if(device.enabled()) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Save to:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",    "m+S", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+S", button_x + 67, y_pos,       65, 25);
-  if(arduino.port == null) buttons[button_index-1].disable();
+  if(device.enabled()) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
   buttons[button_index++] = new ColorButton( button_x, y_pos += 30, 134, 25);
@@ -106,8 +112,10 @@ color button_color_over = #999999;
   buttons[button_index++] = new ActionButton( "Clear",  "C", button_x, y_pos += 30);
 }
 
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
 void draw()
-{
+{  
   if(update) {
     background(41);
     image(matrix.current_frame_image(), offX, offY);
@@ -119,14 +127,14 @@ void draw()
 
     fill(255); //white
     if(!record) {
-      text( "Speed: " + current_speed, offX + matrix.width() + 65, 110);
+      text("Speed: " + current_speed, offX + matrix.width() + 65, 110);
     }
 
-    if(arduino.port == null) {
-      text( "No Matrix found, running in standalone mode", 120, 20);  
+    if(!device.enabled()) {
+      text("No Matrix found, running in standalone mode", 120, 20);  
     }
 
-    arduino.write_frame(matrix.current_frame());
+    device.write_frame(matrix.current_frame());
     update = false;
   }
   if(!record) next_frame();
@@ -172,7 +180,7 @@ void keyPressed() {
   if(keyCode == 157) keyMac  = true; //mac
 
   //println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
-  
+
   for(int i = 0; i < buttons.length; i++ ) {
     if(buttons[i] == null) break;
     update = buttons[i].key_pressed(keyCode, keyMac, keyCtrl, keyAlt);  
@@ -180,8 +188,8 @@ void keyPressed() {
   }
 
   if(keyAlt) {
-    if(keyCode == 37) arduino.speed_up();   //arrow left
-    if(keyCode == 39) arduino.speed_down(); //arrow right
+    if(keyCode == 37) device.speed_up();   //arrow left
+    if(keyCode == 39) device.speed_down(); //arrow right
   }
   else if(keyCtrl) {
     if(keyCode >= 48) matrix.current_frame().set_letter(char(keyCode), fontLetter, matrix.current_color);
@@ -203,7 +211,7 @@ void keyReleased() {
 }
 
 void serialEvent(Serial myPort) {
-  arduino.received( myPort.read() );
+  // device.received( myPort.read() );
 }
 
 /* +++++++++++++++ modes +++++++++++++++ */
@@ -213,9 +221,11 @@ void toggle_mode() {
   record = !record;
   for(int i = hide_button_index; i < buttons.length; i++ ) {
     if(buttons[i] == null) break;
-    if(record) buttons[i].toggle(); else buttons[i].hide();
+    if(record) buttons[i].toggle(); 
+    else buttons[i].hide();
   }
-  if(record) buttons[hide_button_index-1].enable(); else buttons[hide_button_index-1].disable();
+  if(record) buttons[hide_button_index-1].enable(); 
+  else buttons[hide_button_index-1].disable();
 }
 
 void speed_up() {
@@ -226,5 +236,6 @@ void speed_up() {
 void speed_down() {
   current_speed++;
 }
+
 
 

@@ -1,6 +1,6 @@
 import processing.serial.*;
 
-class Arduino {
+class RainbowduinoDevice implements Device{
   final static int DEFAULT_BAUD_RATE  = 9600;
 
   int CRTL  = 255;
@@ -24,42 +24,45 @@ class Arduino {
   String port_name;
 
   public boolean standalone = true;
+  public boolean enabled = false;
 
-  boolean mirror_cols = true;
-  boolean mirror_rows = true;
+  private boolean mirror_cols = true;
+  private boolean mirror_rows = true;
 
-  Arduino() {
+  RainbowduinoDevice() {
     this(DEFAULT_BAUD_RATE);
   }
 
-  Arduino(String _port_name) {
+  RainbowduinoDevice(String _port_name) {
     this(_port_name, DEFAULT_BAUD_RATE);
   }
 
-  Arduino(int _baud) {
+  RainbowduinoDevice(int _baud) {
     this(null, _baud);
   }
 
-  Arduino(String _port_name, int _baud) {
+  RainbowduinoDevice(String _port_name, int _baud) {
     port_name = _port_name;
     baud = _baud;
     buffer = new ArrayList();
     port = null;
+    standalone = true;
   }
 
-  void start(PApplet app) {
+  public void start(PApplet app) {
      if(port_name != null) standalone = set_port(app, port_name);
      if( port == null ) {
        String[] ports = Serial.list();       
        for(int i = 0; i < ports.length; i++) {
          if(match(ports[i], "tty") == null) continue;
-         standalone = set_port(app, ports[i]);
-         if(port != null) return;
+         enabled = set_port(app, ports[i]);
+         if(enabled) return;
        }
      }
+     standalone = false;
   }
 
-  boolean set_port(PApplet app, String port_name) {
+  public boolean set_port(PApplet app, String port_name) {
       println(port_name);
       try {
         port = new Serial(app, port_name, this.baud);
@@ -81,16 +84,15 @@ class Arduino {
     return false;
   }
 
-
   /* +++++++++++++++++++++++++++ */
 
-  void write_frame(Frame frame) {
+  public void write_frame(Frame frame) {
     if(frame == null || standalone) return;
     command( WRITE_FRAME );
     send_frame(frame);
   }
 
-  void write_matrix(Matrix matrix) {
+  public void write_matrix(Matrix matrix) {
     print("Start Writing Matrix - ");
     write_frame(matrix.frame(0));
     command( WRITE_EEPROM );
@@ -102,7 +104,7 @@ class Arduino {
     println("Done");
   }
 
-  Matrix read_matrix() {
+  public Matrix read_matrix() {
     if(standalone) toggle(matrix.current_frame());
     print("Start Reading Matrix - ");
     command( READ_EEPROM );
@@ -124,7 +126,7 @@ class Arduino {
     return matrix;
   }
 
-  void toggle(Frame frame) {
+  public void toggle(Frame frame) {
     if(standalone) {
       standalone = false;
       write_frame(frame);
@@ -134,18 +136,26 @@ class Arduino {
     standalone = true;
   }
 
-  void speed_up() {
+  public void speed_up() {
     if(!standalone) return;
     command(SPEED);
     send(SPEED_INC);
   }
 
-  void speed_down() {
+  public void speed_down() {
     if(!standalone) return;
     command(SPEED);
     send(SPEED_DEC);
   }
 
+  public void received(int l) {
+    buffer.add(l);
+  }
+
+  boolean enabled() {
+    return enabled;
+  }
+  
   /* +++++++++++++++++++ */
 
   private void command( int command ) {
@@ -165,7 +175,7 @@ class Arduino {
     delay(2);
   }
 
-  void send_frame(Frame frame) {
+  private void send_frame(Frame frame) {
     for(int y = 0; y < frame.rows; y++) {
       send_row(frame.get_row( mirror_rows ? (frame.rows - y - 1) : y ));
     }
@@ -179,10 +189,6 @@ class Arduino {
       println("Matrix Timeout");
       return 0;
     }
-  }
-
-  public void received(int l) {
-    buffer.add(l);
   }
 
   private int wait_and_read_serial(int timeout) throws Exception {
