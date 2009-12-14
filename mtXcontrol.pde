@@ -3,7 +3,6 @@ PFont fontA;
 PFont fontLetter;
 
 Matrix matrix;
-//Arduino 
 Device device;
 
 int border = 10;
@@ -16,7 +15,7 @@ int current_speed = 15;
 
 boolean record  = true;
 boolean keyCtrl = false;
-boolean keyMac  =false;
+boolean keyMac  = false;
 boolean keyAlt  = false;
 
 boolean update = true;
@@ -30,7 +29,8 @@ int hide_button_index;
 
 void setup() {
   matrix = new Matrix(8, 8);
-  device = new LaunchpadDevice(this); //new Arduino();
+  device = new LaunchpadDevice(this); 
+  //  device = new RainbowduinoDevice();
   //  device.start(this);
 
   size(780,720);
@@ -67,7 +67,7 @@ color button_color_over = #999999;
   int button_x = offX + matrix.width() + offset + 30;
   buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += 30);
   buttons[button_index++] = new ActionToggleButton( "Matrix: FREE",  "Matrix: SLAVE", "a+10", button_x, y_pos += 30);
-  if(device.enabled()) buttons[button_index-1].disable();
+  if(! (device instanceof StandaloneDevice) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, 59, 10);
 
@@ -75,12 +75,12 @@ color button_color_over = #999999;
   buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",    "m+L", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+L", button_x + 67, y_pos,       65, 25);
-  if(device.enabled()) buttons[button_index-1].disable();
+  if(! (device instanceof StandaloneDevice) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Save to:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",    "m+S", button_x,      y_pos += 30, 65, 25);
   buttons[button_index++] = new ActionButton( "Matrix",  "a+S", button_x + 67, y_pos,       65, 25);
-  if(device.enabled()) buttons[button_index-1].disable();
+  if(! (device instanceof StandaloneDevice) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
   buttons[button_index++] = new ColorButton( button_x, y_pos += 30, 134, 25);
@@ -147,7 +147,7 @@ void next_frame() {
   if(current_delay < 1) {
     current_delay = current_speed;
     matrix.next_frame();
-    update = true;
+    mark_for_update();
   }
   current_delay--;
 }
@@ -192,8 +192,12 @@ void keyPressed() {
     if(keyCode == 39) device.speed_down(); //arrow right
   }
   else if(keyCtrl) {
-    if(keyCode >= 48) matrix.current_frame().set_letter(char(keyCode), fontLetter, matrix.current_color);
-    update = true;
+    PixelColor pc = null;
+    if(keyCode >= 48) pc = matrix.current_frame().set_letter(char(keyCode), fontLetter, matrix.current_color);
+    if( pc != null )  {
+      matrix.current_color = pc;
+      mark_for_update(); 
+    }
     return;
   }
   else {
@@ -214,8 +218,11 @@ void serialEvent(Serial myPort) {
   // device.received( myPort.read() );
 }
 
-/* +++++++++++++++ modes +++++++++++++++ */
+void mark_for_update() {
+  update = true;
+}
 
+/* +++++++++++++++ modes +++++++++++++++ */
 void toggle_mode() {
   matrix.current_frame_nr = 0;
   record = !record;
@@ -236,6 +243,8 @@ void speed_up() {
 void speed_down() {
   current_speed++;
 }
+
+
 
 
 

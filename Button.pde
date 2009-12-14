@@ -174,8 +174,8 @@ class ActionButton extends TextButton {
     if(this.button_text == ">") matrix.current_frame().shift_right();
     if(this.shortcut    == "m+L") { matrix = matrix.load_from_file(); keyMac  = false;}
     if(this.shortcut    == "m+S") { matrix.save_to_file(); keyMac  = false;}
-   // if(this.shortcut    == "a+L") matrix = arduino.read_matrix();
-   // if(this.shortcut    == "a+S") arduino.write_matrix(matrix);
+    if(this.shortcut    == "a+L" && device instanceof StandaloneDevice) matrix = ((StandaloneDevice) device).read_matrix();
+    if(this.shortcut    == "a+S" && device instanceof StandaloneDevice) ((StandaloneDevice) device).write_matrix(matrix);
     if(this.button_text == "Add")    matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();
@@ -202,9 +202,8 @@ class ActionToggleButton extends ActionButton {
   }
 
   protected void perform_action() {
-    
      if(this.shortcut == "10") toggle_mode(); // ENTER
-  //   if(this.shortcut == "a+10") arduino.toggle(matrix.current_frame()); // ENTER
+     if(this.shortcut == "a+10" && device instanceof StandaloneDevice) ((StandaloneDevice) device).toggle(matrix.current_frame()); // ENTER
   }
 }
 

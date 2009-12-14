@@ -1,6 +1,6 @@
 import processing.serial.*;
 
-class RainbowduinoDevice implements Device{
+class RainbowduinoDevice implements Device, StandaloneDevice {
   final static int DEFAULT_BAUD_RATE  = 9600;
 
   int CRTL  = 255;
@@ -105,6 +105,7 @@ class RainbowduinoDevice implements Device{
   }
 
   public Matrix read_matrix() {
+    PixelColor pc;
     if(standalone) toggle(matrix.current_frame());
     print("Start Reading Matrix - ");
     command( READ_EEPROM );
@@ -117,7 +118,8 @@ class RainbowduinoDevice implements Device{
     {
       println("Frame Nr: " + frame_nr);
       for( int y = frame.rows - 1; y >= 0; y-- ) {
-        frame.set_row(y, wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
+        pc = new PixelColor(wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
+        frame.set_row(y, pc);
       }
       frame = matrix.add_frame();
     }
