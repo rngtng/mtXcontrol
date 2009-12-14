@@ -153,6 +153,7 @@ class Matrix {
   }
 
   Matrix load_mtx(String loadPath) {
+    PixelColor pc;
     Matrix matrix = new Matrix(this.cols, this.rows); //actually we have to read values from File!
     Frame frame = matrix.current_frame();
     BufferedReader reader = createReader(loadPath);
@@ -164,7 +165,8 @@ class Matrix {
           String[] str = line.split(",");
           for(int y = 0; y < frame.rows; y++) {
             //invert matrix
-            frame.set_row(7-y, ~Integer.parseInt(str[y*3]), ~Integer.parseInt(str[y*3 + 1]), ~Integer.parseInt(str[y*3 + 2]));
+            pc = new PixelColor(~Integer.parseInt(str[y*3]), ~Integer.parseInt(str[y*3 + 1]), ~Integer.parseInt(str[y*3 + 2]) );
+            frame.set_row(7-y, pc );
           }
           frame = matrix.add_frame();
         }

@@ -97,14 +97,6 @@ class Frame {
     return pc;
   }
 
-  public PixelColor set_row(int y, int r, int g, int b) {
-    PixelColor pc = null;
-    for( int x = 0; x < this.cols; x++ ) {
-      pc = set_pixel(x, y, new PixelColor( (r >> x) & 1, (g >> x) & 1, (b >> x) & 1 ) );
-    }
-    return pc;
-  }
-
   public PixelColor set_col(int x, PixelColor pc) {
     for( int y = 0; y < this.rows; y++ ) {
       pc = set_colored_pixel(x, y, pc);
@@ -185,11 +177,12 @@ class Frame {
     return (y * this.cols) + x;
   }
 
-  private void set_letter(char letter, PFont font, PixelColor pc) {
-    set_letter(letter, font, pc, 50);
+  private PixelColor set_letter(char letter, PFont font, PixelColor pc) {
+    return set_letter(letter, font, pc, 50);
   }
 
-  private void set_letter(char letter, PFont font, PixelColor pc, int trashhold) {
+  private PixelColor set_letter(char letter, PFont font, PixelColor pc, int trashhold) {
+    PixelColor new_pc = null;
     int offset = 0;
     this.pg.beginDraw();
     this.pg.fill(#FF0000);  //red
@@ -202,17 +195,14 @@ class Frame {
       int sum = 0;
       for(int col = 0; col < 8; col++) {
         if( this.get_pixs(row, col) > trashhold) {
-          //this.set_colored_pixel(col, row-offset, pc);
-          this.set_pixel(col, row-offset, pc);
+          new_pc = this.set_colored_pixel(col, row-offset, pc);          
           sum++;
-        }
-        else {
-          this.set_pixel(col,row-offset,null);
         }
       }
       if(sum == 0 && offset < 2) offset++;
-      if(row-offset == 7) return; //exit earlier in case we dont have lower parts
+      if(row-offset == 7) return new_pc; //exit earlier in case we dont have lower parts
     }
+    return new_pc;
   }
 
   private int get_pixs(int x, int y) {
