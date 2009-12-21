@@ -1,3 +1,6 @@
+import themidibus.*;
+import com.rngtng.launchpad.*;
+
 
 PFont fontA;
 PFont fontLetter;
@@ -21,17 +24,17 @@ boolean keyAlt  = false;
 boolean update = true;
 Button[] buttons;
 
-GuiElement[] elements;
-
 int hide_button_index;
 
 /* +++++++++++++++++++++++++++++ */
 
 void setup() {
+  frame.setIconImage( getToolkit().getImage("mtxcontrol.ico") );
+
   matrix = new Matrix(8, 8);
   device = new LaunchpadDevice(this); 
   //  device = new RainbowduinoDevice();
-  //  device.start(this);
+  // ((RainbowduinoDevice) device).start(this);
 
   size(780,720);
   smooth();
@@ -215,7 +218,7 @@ void keyReleased() {
 }
 
 void serialEvent(Serial myPort) {
-  // device.received( myPort.read() );
+  // ((RainbowduinoDevice) device).received( myPort.read() );
 }
 
 void mark_for_update() {
@@ -243,6 +246,7 @@ void speed_up() {
 void speed_down() {
   current_speed++;
 }
+
 
 
 

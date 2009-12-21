@@ -1,5 +1,3 @@
-import themidibus.*;
-import com.rngtng.launchpad.*; //Import the library
 
 class LaunchpadDevice implements Device, LaunchpadListener { 
 
@@ -9,10 +7,12 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   private LColor[] buttonColors = new LColor[16];
 
+  boolean colorButtonPressed = false;
+
   LaunchpadDevice(PApplet app) {
     parent = app;
     launchpad = new Launchpad(app);
-    launchpad.reset();
+    launchpad.flashing_auto();    
     launchpad.addListener(this);
     enabled = true;
   }
@@ -22,19 +22,28 @@ class LaunchpadDevice implements Device, LaunchpadListener {
     for( int y = 0; y < frame.rows; y++ ) {
       for( int x = 0; x < frame.cols; x++ ) {
         PixelColor p = frame.get_pixel(x,y);
-        colors[y * frame.cols + x] = new LColor(p.r, p.g); 
+        colors[y * frame.cols + x] = new LColor(p.r + p.g); 
       }
     }
-    for( int r = 0; r < 4; r++ ) {
-      colors[64 + r] = (r == matrix.current_color.r) ? new LColor(LColor.RED_HIGH, LColor.GREEN_HIGH) : new LColor(r, 0);
+    if(colorButtonPressed) {
+      for( int r = 0; r < 4; r++ ) {
+        colors[64 + r] = (r == matrix.current_color.r) ? new LColor(r, LColor.GREEN_OFF, LColor.FLASHING) : new LColor(r);
+      }
+      for( int g = 0; g < 4; g++ ) {
+        colors[68 + g] = (g == matrix.current_color.g) ? new LColor(LColor.RED_OFF, g, LColor.FLASHING) : new LColor(LColor.RED_OFF, g); 
+      }     
     }
-    for( int g = 0; g < 4; g++ ) {
-      colors[68 + g] = (g == matrix.current_color.g) ? new LColor(LColor.RED_HIGH, LColor.GREEN_HIGH) : new LColor(0, g); 
-    }     
-
-    /* for( int y = 0; y < 8; y++ ) {
-     colors[72 + y] = LColor(0,0); 
-     } */
+    colors[72] = new LColor(LColor.GREEN_LOW);
+    colors[73] = new LColor(LColor.GREEN_LOW);     
+    
+    colors[74] = new LColor(LColor.YELLOW_LOW);
+    colors[75] = new LColor(LColor.YELLOW_LOW); 
+    
+    colors[76] = new LColor(LColor.RED_LOW);
+    colors[77] = new LColor(LColor.RED_LOW);     
+    
+    colors[78] = new LColor(matrix.current_color.r + matrix.current_color.g); 
+    colors[79] = (record) ? new LColor(LColor.GREEN_LOW) : new LColor(LColor.RED_LOW); 
 
     launchpad.change_all(colors);
   }
@@ -55,39 +64,70 @@ class LaunchpadDevice implements Device, LaunchpadListener {
   public void received(byte l) {   
   }
 
-  ////////////////////////////// Listener 
-  ////////////////////////////////////
+  //////////////////////////////    Listener   ////////////////////////////////////
   public void launchpadGridPressed(int x, int y) {
-    if(matrix.click(x * matrix.rad, y * matrix.rad, false)) mark_for_update();
+    if(colorButtonPressed) {      
+      matrix.current_color = matrix.current_frame().get_pixel(x, y).clone();
+    }
+    else {
+      matrix.click(x * matrix.rad, y * matrix.rad, false);
+    }
+    mark_for_update();
   }  
 
   public void launchpadGridReleased(int x, int y) {
   }
 
   public void launchpadButtonPressed(int buttonCode) {
-    launchpad.changeButton(buttonCode, LColor.RED_HIGH, LColor.GREEN_HIGH);      
+    if(buttonCode == LButton.USER2) {
+      colorButtonPressed = true;
+    }
+    else {
+      launchpad.changeButton(buttonCode, LColor.YELLOW_HIGH);      
+    }
+    mark_for_update();    
   }  
 
   public void launchpadButtonReleased(int buttonCode) {
     // launchpad.changeButton(buttonCode, c);
-    if( buttonCode == Launchpad.BUTTON_UP) {
+    switch(buttonCode) {
+    case LButton.UP:
+      matrix.add_frame();
+      break;
+    case LButton.DOWN:
+      matrix.delete_frame();
+      break;
+    case LButton.LEFT:
+      matrix.previous_frame();
+      break;
+    case  LButton.RIGHT:  
+      matrix.next_frame();
+      break;
+    case  LButton.SESSION:        
+      matrix.copy_frame();
+      break;
+    case  LButton.USER1: 
+      matrix.paste_frame();    
+      break;
+    case  LButton.USER2:        
+      colorButtonPressed = false;
+      break;
+    case  LButton.MIXER:        
+      toggle_mode();
+      break;      
     }
-    if( buttonCode == Launchpad.BUTTON_DOWN) {
-    }  
-    if( buttonCode == Launchpad.BUTTON_LEFT)   {
-    }
-    if( buttonCode == Launchpad.BUTTON_RIGHT) {
-    }          
     mark_for_update();    
   }
- 
-  public void launchpadSceneButtonPressed(int buttonCode) {
-    int number = Launchpad.sceneButtonCodeToNumber(buttonCode);
-    if( number < 5) { 
-       matrix.current_color.r = number - 1;
-    } 
-    else {
-      matrix.current_color.g = number - 5;
+
+  public void launchpadSceneButtonPressed(int button) {
+    int number = LButton.sceneButtonNumber(button);
+    if(colorButtonPressed) {
+      if( number < 5) { 
+        matrix.current_color.r = number - 1;
+      } 
+      else {
+        matrix.current_color.g = number - 5;
+      }
     }
     mark_for_update();
   }  
@@ -97,18 +137,26 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   /*
   private LColor color_button(int buttonCode) {
-   if( buttonCode == Launchpad.BUTTON_SCENE1) return new LColor(LColor.RED_HIGH,   LColor.GREEN_OFF);
-   if( buttonCode == Launchpad.BUTTON_SCENE2) return new LColor(LColor.RED_MEDIUM, LColor.GREEN_OFF);
-   if( buttonCode == Launchpad.BUTTON_SCENE3) return new LColor(LColor.RED_LOW,    LColor.GREEN_OFF);
-   if( buttonCode == Launchpad.BUTTON_SCENE4) return new LColor(LColor.RED_OFF,    LColor.GREEN_OFF);
-   if( buttonCode == Launchpad.BUTTON_SCENE5) return new LColor(LColor.RED_OFF,    LColor.GREEN_HIGH);
-   if( buttonCode == Launchpad.BUTTON_SCENE6) return new LColor(LColor.RED_OFF,    LColor.GREEN_MEDIUM);
-   if( buttonCode == Launchpad.BUTTON_SCENE7) return new LColor(LColor.RED_OFF,    LColor.GREEN_LOW);
-   if( buttonCode == Launchpad.BUTTON_SCENE8) return new LColor(LColor.RED_OFF,    LColor.GREEN_OFF);
+   if( buttonCode == LButton.SCENE1) return new LColor(LColor.RED_HIGH,   LColor.GREEN_OFF);
+   if( buttonCode == LButton.SCENE2) return new LColor(LColor.RED_MEDIUM, LColor.GREEN_OFF);
+   if( buttonCode == LButton.SCENE3) return new LColor(LColor.RED_LOW,    LColor.GREEN_OFF);
+   if( buttonCode == LButton.SCENE4) return new LColor(LColor.RED_OFF,    LColor.GREEN_OFF);
+   if( buttonCode == LButton.SCENE5) return new LColor(LColor.RED_OFF,    LColor.GREEN_HIGH);
+   if( buttonCode == LButton.SCENE6) return new LColor(LColor.RED_OFF,    LColor.GREEN_MEDIUM);
+   if( buttonCode == LButton.SCENE7) return new LColor(LColor.RED_OFF,    LColor.GREEN_LOW);
+   if( buttonCode == LButton.SCENE8) return new LColor(LColor.RED_OFF,    LColor.GREEN_OFF);
    return null;
    }  */
 
 }
+
+
+
+
+
+
+
+
 
 
 

@@ -44,7 +44,7 @@ class Matrix {
     if( x > this.width() + 25 || y > this.height() + 25) return false; //25 pixel right and bottom for row editing
     PixelColor pc = this.current_frame().update(x / rad, y / rad, current_color, !dragged);
     if( pc == null ) return false;
-    current_color = pc;
+    current_color = pc.clone();
     return true;
   }
 
@@ -104,6 +104,7 @@ class Matrix {
   }
 
   Frame delete_frame() {
+    matrix.copy_frame();
     if(this.num_frames() > 1) {
       frames.remove(current_frame_nr);
       current_frame_nr = current_frame_nr % num_frames();
