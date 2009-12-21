@@ -28,7 +28,7 @@
 	<key>Java</key>
 	<dict>
 		<key>VMOptions</key>
-		<string></string>
+		<string> -Xms64m -Xmx256m</string>
 		<key>MainClass</key>
 		<string>mtXcontrol</string>
 		<key>JVMVersion</key>
@@ -39,7 +39,7 @@
 		  <string>ppc</string>
 		</array> 
 		<key>ClassPath</key>
-		<string>$JAVAROOT/mtXcontrol.jar:$JAVAROOT/core.jar:$JAVAROOT/serial.jar:$JAVAROOT/RXTXcomm.jar</string>
+		<string>$JAVAROOT/mtXcontrol.jar:$JAVAROOT/core.jar:$JAVAROOT/themidibus.jar:$JAVAROOT/launchpad.jar:$JAVAROOT/serial.jar:$JAVAROOT/RXTXcomm.jar</string>
 
 		<key>Properties</key>
 		<!-- http://developer.apple.com/releasenotes/Java/java141/system_properties/chapter_4_section_1.html#//apple_ref/doc/uid/TP30000285 -->
