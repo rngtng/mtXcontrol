@@ -3,14 +3,12 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   public Launchpad launchpad;
   private boolean enabled;
-  private PApplet parent;
 
   private LColor[] buttonColors = new LColor[16];
 
   boolean colorButtonPressed = false;
 
   LaunchpadDevice(PApplet app) {
-    parent = app;
     launchpad = new Launchpad(app);
     launchpad.flashing_auto();    
     launchpad.addListener(this);
@@ -22,17 +20,20 @@ class LaunchpadDevice implements Device, LaunchpadListener {
     for( int y = 0; y < frame.rows; y++ ) {
       for( int x = 0; x < frame.cols; x++ ) {
         PixelColor p = frame.get_pixel(x,y);
-        colors[y * frame.cols + x] = new LColor(p.r + p.g); 
+        colors[y * frame.cols + x] = new LColor(p.r, p.g); 
       }
     }
     if(colorButtonPressed) {
       for( int r = 0; r < 4; r++ ) {
-        colors[64 + r] = (r == matrix.current_color.r) ? new LColor(r, LColor.GREEN_OFF, LColor.FLASHING) : new LColor(r);
+        colors[64 + r] = new LColor(r);
+        if(matrix.current_color.r == r ) colors[64 + r].setMode(LColor.BUFFERED);
       }
       for( int g = 0; g < 4; g++ ) {
-        colors[68 + g] = (g == matrix.current_color.g) ? new LColor(LColor.RED_OFF, g, LColor.FLASHING) : new LColor(LColor.RED_OFF, g); 
+        colors[68 + g] = new LColor(LColor.RED_OFF, g); 
+        if(matrix.current_color.g == g ) colors[68 + g].setMode(LColor.BUFFERED);
       }     
     }
+    
     colors[72] = new LColor(LColor.GREEN_LOW);
     colors[73] = new LColor(LColor.GREEN_LOW);     
     
@@ -42,10 +43,18 @@ class LaunchpadDevice implements Device, LaunchpadListener {
     colors[76] = new LColor(LColor.RED_LOW);
     colors[77] = new LColor(LColor.RED_LOW);     
     
-    colors[78] = new LColor(matrix.current_color.r + matrix.current_color.g); 
+    colors[78] = new LColor(matrix.current_color.r, matrix.current_color.g); 
     colors[79] = (record) ? new LColor(LColor.GREEN_LOW) : new LColor(LColor.RED_LOW); 
-
-    launchpad.change_all(colors);
+    
+    launchpad.flashing_on();
+    launchpad.changeAll(colors);
+    
+    if(colorButtonPressed) {
+      launchpad.flashing_off();
+      launchpad.changeSceneButton(LButton.sceneButtonCode(matrix.current_color.r+1), LColor.YELLOW_MEDIUM + LColor.BUFFERED);
+      launchpad.changeSceneButton(LButton.sceneButtonCode(matrix.current_color.g+5), LColor.YELLOW_MEDIUM + LColor.BUFFERED);      
+    }    
+    launchpad.flashing_auto();
   }
 
   void write_matrix(Matrix matrix) {
