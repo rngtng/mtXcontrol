@@ -33,8 +33,7 @@ void setup() {
 
   matrix = new Matrix(8, 8);
   device = new LaunchpadDevice(this); 
-  //  device = new RainbowduinoDevice();
-  // ((RainbowduinoDevice) device).start(this);
+//  device = new RainbowduinoDevice(this);
 
   size(780,720);
   smooth();
@@ -215,10 +214,6 @@ void keyReleased() {
   if( keyCode == 17 )  keyCtrl = false;
   if( keyCode == 18 )  keyAlt  = false;
   if( keyCode == 157 ) keyMac  = false;
-}
-
-void serialEvent(Serial myPort) {
-  // ((RainbowduinoDevice) device).received( myPort.read() );
 }
 
 void mark_for_update() {
