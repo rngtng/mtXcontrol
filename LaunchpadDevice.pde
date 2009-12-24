@@ -9,8 +9,7 @@ class LaunchpadDevice implements Device, LaunchpadListener {
   boolean colorButtonPressed = false;
 
   LaunchpadDevice(PApplet app) {
-    launchpad = new Launchpad(app);
-    launchpad.flashing_auto();    
+    launchpad = new Launchpad(app);   
     launchpad.addListener(this);
     enabled = true;
   }
@@ -33,31 +32,28 @@ class LaunchpadDevice implements Device, LaunchpadListener {
         if(matrix.current_color.g == g ) colors[68 + g].setMode(LColor.BUFFERED);
       }     
     }
-    
+
     colors[72] = new LColor(LColor.GREEN_LOW);
     colors[73] = new LColor(LColor.GREEN_LOW);     
-    
+
     colors[74] = new LColor(LColor.YELLOW_LOW);
     colors[75] = new LColor(LColor.YELLOW_LOW); 
-    
+
     colors[76] = new LColor(LColor.RED_LOW);
     colors[77] = new LColor(LColor.RED_LOW);     
-    
+
     colors[78] = new LColor(matrix.current_color.r, matrix.current_color.g); 
     colors[79] = (record) ? new LColor(LColor.GREEN_LOW) : new LColor(LColor.RED_LOW); 
-    
-    launchpad.flashing_on();
+
+    launchpad.bufferingMode(Launchpad.BUFFER0, Launchpad.BUFFER0);
     launchpad.changeAll(colors);
-    
+
     if(colorButtonPressed) {
-      launchpad.flashing_off();
+      launchpad.bufferingMode(Launchpad.BUFFER0, Launchpad.BUFFER1, Launchpad.MODE_COPY);
       launchpad.changeSceneButton(LButton.sceneButtonCode(matrix.current_color.r+1), LColor.YELLOW_MEDIUM + LColor.BUFFERED);
       launchpad.changeSceneButton(LButton.sceneButtonCode(matrix.current_color.g+5), LColor.YELLOW_MEDIUM + LColor.BUFFERED);      
     }    
-    launchpad.flashing_auto();
-  }
-
-  void write_matrix(Matrix matrix) {
+    launchpad.flashingAuto();
   }
 
   void speed_up() {   
@@ -68,9 +64,6 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   boolean enabled() {
     return enabled;
-  }
-
-  public void received(byte l) {   
   }
 
   //////////////////////////////    Listener   ////////////////////////////////////
@@ -144,20 +137,8 @@ class LaunchpadDevice implements Device, LaunchpadListener {
   public void launchpadSceneButtonReleased(int buttonCode) {
   }
 
-  /*
-  private LColor color_button(int buttonCode) {
-   if( buttonCode == LButton.SCENE1) return new LColor(LColor.RED_HIGH,   LColor.GREEN_OFF);
-   if( buttonCode == LButton.SCENE2) return new LColor(LColor.RED_MEDIUM, LColor.GREEN_OFF);
-   if( buttonCode == LButton.SCENE3) return new LColor(LColor.RED_LOW,    LColor.GREEN_OFF);
-   if( buttonCode == LButton.SCENE4) return new LColor(LColor.RED_OFF,    LColor.GREEN_OFF);
-   if( buttonCode == LButton.SCENE5) return new LColor(LColor.RED_OFF,    LColor.GREEN_HIGH);
-   if( buttonCode == LButton.SCENE6) return new LColor(LColor.RED_OFF,    LColor.GREEN_MEDIUM);
-   if( buttonCode == LButton.SCENE7) return new LColor(LColor.RED_OFF,    LColor.GREEN_LOW);
-   if( buttonCode == LButton.SCENE8) return new LColor(LColor.RED_OFF,    LColor.GREEN_OFF);
-   return null;
-   }  */
-
 }
+
 
 
 

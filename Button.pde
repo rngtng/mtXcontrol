@@ -203,7 +203,7 @@ class ActionToggleButton extends ActionButton {
 
   protected void perform_action() {
      if(this.shortcut == "10") toggle_mode(); // ENTER
-     if(this.shortcut == "a+10" && device instanceof StandaloneDevice) ((StandaloneDevice) device).toggle(matrix.current_frame()); // ENTER
+     if(this.shortcut == "a+10" && device instanceof StandaloneDevice) ((StandaloneDevice) device).toggle(); // ENTER
   }
 }
 

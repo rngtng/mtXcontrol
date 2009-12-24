@@ -1,3 +1,6 @@
+import com.rngtng.rainbowduino.*;
+import processing.serial.*;
+
 import themidibus.*;
 import com.rngtng.launchpad.*;
 
@@ -32,8 +35,8 @@ void setup() {
   frame.setIconImage( getToolkit().getImage("mtxcontrol.ico") );
 
   matrix = new Matrix(8, 8);
-  device = new LaunchpadDevice(this); 
-//  device = new RainbowduinoDevice(this);
+  //device = new LaunchpadDevice(this); 
+  device = new RainbowduinoDevice(this);
 
   size(780,720);
   smooth();
@@ -241,6 +244,7 @@ void speed_up() {
 void speed_down() {
   current_speed++;
 }
+
 
 
 

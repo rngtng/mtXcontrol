@@ -1,9 +1,7 @@
-import processing.serial.*;
 
-/*
 class RainbowduinoDevice implements Device, StandaloneDevice {
 
-  public Rainbowduino rainboduino;
+  public Rainbowduino rainbowduino;
   public boolean enabled = false;
 
   public boolean standalone = true;
@@ -17,97 +15,94 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   RainbowduinoDevice(PApplet app, String port_name) {
-        this(app, port_name, 0);
+    this(app, port_name, 0);
   }
-  
+
   RainbowduinoDevice(PApplet app, int baud_rate) {
     this(app, null, baud_rate);
   }
 
   RainbowduinoDevice(PApplet app, String port_name, int baud_rate) {
-    rainboduino = new Rainboduino(app);
-    rainboduino.init(port_name, baud_rate);
+    rainbowduino = new Rainbowduino(app);
+    rainbowduino.init(port_name, baud_rate);
   }
 
-  /* +++++++++++++++++++++++++++ /
+  /* +++++++++++++++++++++++++++ */
+  public void write_frame(Frame frame) {    
+    write_frame(0, frame);
+  }
 
-  public void write_frame(Frame frame) {
+  public void write_frame(int num, Frame frame) {    
     if(frame == null || standalone) return;
-    command( WRITE_FRAME );
-    send_frame(frame);
+    rainbowduino.bufferSetAt(num, get_frame_rows(frame));
   }
 
   public void write_matrix(Matrix matrix) {
     print("Start Writing Matrix - ");
-    write_frame(matrix.frame(0));
-    command( WRITE_EEPROM );
-    send(matrix.num_frames());
-    //send(matrix.rows*3);
     for(int f = 0; f < matrix.num_frames(); f++) {
-      send_frame(matrix.frame(f));
+      write_frame(f, matrix.frame(f));
     }
+    rainbowduino.bufferSave();
     println("Done");
   }
 
   public Matrix read_matrix() {
-    PixelColor pc;
-    if(standalone) toggle(matrix.current_frame());
-    print("Start Reading Matrix - ");
-    command( READ_EEPROM );
-    int frames = wait_and_read_serial();
-    println( "Frames:" + frames);
-    // int cols  = wait_and_read_serial();
     Matrix matrix = new Matrix(8,8);
-    Frame frame = matrix.current_frame();
-    for( int frame_nr = 0; frame_nr < frames; frame_nr++ )
-    {
+
+    print("Start Reading Matrix - ");
+    int frames = rainbowduino.bufferLoad(); //return num length
+    println( "Frames:" + frames);
+
+    for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) {    
       println("Frame Nr: " + frame_nr);
-      for( int y = frame.rows - 1; y >= 0; y-- ) {
-        pc = new PixelColor(wait_and_read_serial(), wait_and_read_serial(), wait_and_read_serial());
-        frame.set_row(y, pc);
-      }
-      frame = matrix.add_frame();
-    }
+      Frame frame = matrix.current_frame();
+      frame.set_pixels( rainbowduino.bufferGetAt(frame_nr) );
+      matrix.add_frame();
+    }           
     matrix.delete_frame();
     println("Done");
     return matrix;
   }
 
-  public void toggle(Frame frame) {
+  public void toggle() {
+    rainbowduino.reset();
     if(standalone) {
       standalone = false;
-      write_frame(frame);
+      rainbowduino.start();
       return;
-    }
-    command(RESET);
+    }    
     standalone = true;
   }
 
-  private void write_frame(Frame frame) {
-    for(int y = 0; y < frame.rows; y++) {
-      send_row(frame.get_row( mirror_rows ? (frame.rows - y - 1) : y ));
-    }
-  }
-
   public void speed_up() {
-    if(!standalone) return;
-    command(SPEED);
-    send(SPEED_INC);
+    rainbowduino.speedUp();
   }
 
   public void speed_down() {
-    if(!standalone) return;
-    command(SPEED);
-    send(SPEED_DEC);
+    rainbowduino.speedDown();
   }
 
   boolean enabled() {
-    return enabled;
+    return true;
   }  
+
+  ////////////////////////////////////////////////////  
+  private byte[] get_frame_rows(Frame frame) {
+    byte[] res = new byte[3*frame.rows];
+    for( int y = 0; y < frame.rows; y++ ) {
+      for( int x = 0; x < frame.cols; x++ ) {
+        PixelColor p = frame.get_pixel(x,y);
+        res[3*y + 0] |= (p.r & 1) << x;
+        res[3*y + 1] |= (p.g & 1) << x;
+        res[3*y + 2] |= (p.b & 1) << x;
+      }
+    }  
+    return res;  
+  }
 }
 
 
-*/
+
 
 
 

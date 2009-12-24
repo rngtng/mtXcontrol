@@ -5,13 +5,13 @@ class PixelColor {
 
   int[] COLORS_R = {
     //0,255};
-  0,105,170,255};
+    0,105,170,255  };
   int[] COLORS_G = {
-  //  0,255};
-  0,105,170,255};    
+    //  0,255};
+    0,105,170,255  };    
   int[] COLORS_B = {
-  //  0,255};
-  0};  
+    //  0,255};
+    0  };  
 
   PixelColor() {
     this(0,0,0);
@@ -79,4 +79,5 @@ class PixelColor {
     return (this.r*(COLORS_G.length) + this.g)*(COLORS_B.length) + b; 
   }
 }
+
 
