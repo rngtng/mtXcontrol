@@ -1,8 +1,9 @@
+import themidibus.*;
+import com.rngtng.launchpad.*;
 
 class LaunchpadDevice implements Device, LaunchpadListener { 
 
   public Launchpad launchpad;
-  private boolean enabled;
 
   private LColor[] buttonColors = new LColor[16];
 
@@ -10,10 +11,27 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   LaunchpadDevice(PApplet app) {
     launchpad = new Launchpad(app);   
-    launchpad.addListener(this);
-    enabled = true;
+    if(enabled()) launchpad.addListener(this);
   }
 
+  void setColorScheme() {
+    PixelColorScheme.R = new int[]{
+      0,105,170,255};   
+    PixelColorScheme.G = new int[]{
+      0,105,170,255};   
+    PixelColorScheme.B = new int[]{
+      0};   
+  }
+  
+  boolean draw_as_circle() {
+    return false;
+  }
+  
+  boolean enabled() {
+    return launchpad.connected();
+  }
+  
+  /* +++++++++++++++++++++++++++ */  
   void write_frame(Frame frame) {
     LColor[] colors = new LColor[80];
     for( int y = 0; y < frame.rows; y++ ) {
@@ -54,16 +72,6 @@ class LaunchpadDevice implements Device, LaunchpadListener {
       launchpad.changeSceneButton(LButton.sceneButtonCode(matrix.current_color.g+5), LColor.YELLOW_MEDIUM + LColor.BUFFERED);      
     }    
     launchpad.flashingAuto();
-  }
-
-  void speed_up() {   
-  }
-
-  void speed_down() {   
-  }
-
-  boolean enabled() {
-    return enabled;
   }
 
   //////////////////////////////    Listener   ////////////////////////////////////
@@ -138,6 +146,8 @@ class LaunchpadDevice implements Device, LaunchpadListener {
   }
 
 }
+
+
 
 
 

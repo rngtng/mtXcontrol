@@ -1,15 +1,13 @@
+static class PixelColorScheme {
+  public static int[] R = {};
+  public static int[] G = {};
+  public static int[] B = {};
+}
+
 class PixelColor {
   public int r;
   public int g;
   public int b;
-
-  int[] COLORS_R = {0,255};   
-  int[] COLORS_G = {0,255};
-  int[] COLORS_B = {0,255};
-  
-  //int[] COLORS_R = {0,105,170,255}; 
-  //int[] COLORS_G = {0,105,170,255  };    
-  //int[] COLORS_B = {0};  
 
   PixelColor() {
     this(0,0,0);
@@ -25,7 +23,7 @@ class PixelColor {
   }
 
   public int numColors() {
-    return COLORS_R.length * COLORS_G.length * COLORS_B.length;
+    return PixelColorScheme.R.length * PixelColorScheme.G.length * PixelColorScheme.B.length;
   }
 
 
@@ -49,20 +47,20 @@ class PixelColor {
 
   public void set_color_index(int i) {
     i = i % numColors();
-    this.r = i / (COLORS_G.length * COLORS_B.length);
-    this.g = (i / COLORS_B.length) - (this.r * COLORS_G.length) ;
-    this.b = (i - (this.r * COLORS_G.length + this.g) * COLORS_B.length);
+    this.r = i / (PixelColorScheme.G.length * PixelColorScheme.B.length);
+    this.g = (i / PixelColorScheme.B.length) - (this.r * PixelColorScheme.G.length) ;
+    this.b = (i - (this.r * PixelColorScheme.G.length + this.g) * PixelColorScheme.B.length);
   }
 
   public void set_color(color c) {
-    int l_index = COLORS_R.length - 1;
-    this.r = int(red(c)   / COLORS_R[l_index] * l_index);
+    int l_index = PixelColorScheme.R.length - 1;
+    this.r = int(red(c)   / PixelColorScheme.R[l_index] * l_index);
 
-    l_index = COLORS_G.length - 1;
-    this.g = int(green(c) / COLORS_G[l_index] * l_index);
+    l_index = PixelColorScheme.G.length - 1;
+    this.g = int(green(c) / PixelColorScheme.G[l_index] * l_index);
 
-    l_index = COLORS_B.length - 1;
-    this.b = int(blue(c)  / COLORS_B[l_index] * l_index);
+    l_index = PixelColorScheme.B.length - 1;
+    this.b = int(blue(c)  / PixelColorScheme.B[l_index] * l_index);
   }
 
   public PixelColor clone() {
@@ -70,12 +68,13 @@ class PixelColor {
   }
 
   public color get_color() {
-    return color(COLORS_R[this.r], COLORS_G[this.g], COLORS_B[this.b]);
+    return color(PixelColorScheme.R[this.r], PixelColorScheme.G[this.g], PixelColorScheme.B[this.b]);
   } 
 
   public int to_int() {
-    return (this.r*(COLORS_G.length) + this.g)*(COLORS_B.length) + b; 
+    return (this.r*(PixelColorScheme.G.length) + this.g)*(PixelColorScheme.B.length) + b; 
   }
 }
+
 
 

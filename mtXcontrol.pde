@@ -1,9 +1,3 @@
-import processing.serial.*;
-import com.rngtng.rainbowduino.*;
-
-import themidibus.*;
-import com.rngtng.launchpad.*;
-
 
 PFont fontA;
 PFont fontLetter;
@@ -35,8 +29,10 @@ void setup() {
   frame.setIconImage( getToolkit().getImage("mtxcontrol.ico") );
 
   matrix = new Matrix(8, 8);
-  //device = new LaunchpadDevice(this); 
-  device = new RainbowduinoDevice(this);
+  device = new LaunchpadDevice(this); 
+  if(!device.enabled()) device = new RainbowduinoDevice(this);
+
+  device.setColorScheme();
 
   size(780,720);
   smooth();
@@ -71,21 +67,21 @@ color button_color_over = #999999;
 
   int button_x = offX + matrix.width() + offset + 30;
   buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += 30);
-  buttons[button_index++] = new ActionToggleButton( "Matrix: FREE",  "Matrix: SLAVE", "a+10", button_x, y_pos += 30);
-  if(! (device instanceof StandaloneDevice) ) buttons[button_index-1].disable();
+  buttons[button_index++] = new ActionToggleButton( "Device: FREE",  "Device: SLAVE", "a+10", button_x, y_pos += 30);
+  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, 59, 10);
 
   hide_button_index = button_index;
   buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",    "m+L", button_x,      y_pos += 30, 65, 25);
-  buttons[button_index++] = new ActionButton( "Matrix",  "a+L", button_x + 67, y_pos,       65, 25);
-  if(! (device instanceof StandaloneDevice) ) buttons[button_index-1].disable();
+  buttons[button_index++] = new ActionButton( "Device",  "a+L", button_x + 67, y_pos,       65, 25);
+  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Save to:", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "File",    "m+S", button_x,      y_pos += 30, 65, 25);
-  buttons[button_index++] = new ActionButton( "Matrix",  "a+S", button_x + 67, y_pos,       65, 25);
-  if(! (device instanceof StandaloneDevice) ) buttons[button_index-1].disable();
+  buttons[button_index++] = new ActionButton( "Device",  "a+S", button_x + 67, y_pos,       65, 25);
+  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
   buttons[button_index++] = new ColorButton( button_x, y_pos += 30, 134, 25);
@@ -93,9 +89,9 @@ color button_color_over = #999999;
 
   PixelColor pc = new PixelColor(); 
   int off = 140 / pc.numColors();
-  for(int r = 0; r < pc.COLORS_R.length; r++) {
-    for(int g = 0; g < pc.COLORS_G.length; g++) {
-      for(int b = 0; b < pc.COLORS_B.length; b++) {   
+  for(int r = 0; r < PixelColorScheme.R.length; r++) {
+    for(int g = 0; g < PixelColorScheme.G.length; g++) {
+      for(int b = 0; b < PixelColorScheme.B.length; b++) {   
         buttons[button_index++] = new MiniColorButton( button_x + pc.to_int() * off, y_pos, off, 14, pc.clone() );
         pc.next_color();
       }
@@ -106,15 +102,15 @@ color button_color_over = #999999;
   buttons[button_index++] = new ActionButton( "Add",    " ", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "Delete", "D", button_x, y_pos += 30);
 
-  buttons[button_index++] = new ActionButton( "^", "c+38", button_x + 47,  y_pos += 50, 40, 25);
-  buttons[button_index++] = new ActionButton( "<", "c+37", button_x,       y_pos += 20, 40, 25);
-  buttons[button_index++] = new ActionButton( ">", "c+39", button_x + 94,  y_pos,       40, 25);
-  buttons[button_index++] = new ActionButton( "v", "c+40", button_x + 47,  y_pos += 15, 40, 25);
+  buttons[button_index++] = new ActionButton( "^",   "c+38", button_x + 47,  y_pos += 50, 40, 25);
+  buttons[button_index++] = new ActionButton( "<",   "c+37", button_x,       y_pos += 20, 40, 25);
+  buttons[button_index++] = new ActionButton( ">",   "c+39", button_x + 94,  y_pos,       40, 25);
+  buttons[button_index++] = new ActionButton( "v",   "c+40", button_x + 47,  y_pos += 15, 40, 25);
 
   buttons[button_index++] = new ActionButton( "Paste",  "m+V", button_x, y_pos += 50);
   buttons[button_index++] = new ActionButton( "Copy",   "m+C", button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "Fill",   "F", button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "Clear",  "C", button_x, y_pos += 30);
+  buttons[button_index++] = new ActionButton( "Fill",   "F",   button_x, y_pos += 30);
+  buttons[button_index++] = new ActionButton( "Clear",  "C",   button_x, y_pos += 30);
 }
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -122,9 +118,11 @@ color button_color_over = #999999;
 void draw()
 {  
   if(update) {
-    background(41);
+    background(45);
+    fill(50);
+    rect(offX - matrix.border / 2, offY - matrix.border / 2, matrix.width() + matrix.border, matrix.height() + matrix.border);
     image(matrix.current_frame_image(), offX, offY);
-
+    
     for(int i = 0; i < buttons.length; i++ ) {
       if(buttons[i] == null) break;
       buttons[i].display();
@@ -136,7 +134,7 @@ void draw()
     }
 
     if(!device.enabled()) {
-      text("No Matrix found, running in standalone mode", 120, 20);  
+      text("No output device found, running in standalone mode", 120, 20);  
     }
 
     device.write_frame(matrix.current_frame());
@@ -193,8 +191,10 @@ void keyPressed() {
   }
 
   if(keyAlt) {
-    if(keyCode == 37) device.speed_up();   //arrow left
-    if(keyCode == 39) device.speed_down(); //arrow right
+    if(device instanceof StandaloneDevice) {
+      if(keyCode == 37) ((StandaloneDevice) device).speed_up();   //arrow left
+      if(keyCode == 39) ((StandaloneDevice) device).speed_down(); //arrow right
+    }
   }
   else if(keyCtrl) {
     PixelColor pc = null;

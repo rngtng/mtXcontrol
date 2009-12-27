@@ -1,3 +1,5 @@
+import processing.serial.*;
+import com.rngtng.rainbowduino.*;
 
 class RainbowduinoDevice implements Device, StandaloneDevice {
 
@@ -25,13 +27,30 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     running = false;
   }
 
+  void setColorScheme() {
+    PixelColorScheme.R = new int[]{
+      0,255    };   
+    PixelColorScheme.G = new int[]{
+      0,255    };   
+    PixelColorScheme.B = new int[]{
+      0,255    };   
+  }
+    
+  boolean draw_as_circle() {
+    return true;
+  }
+
+  boolean enabled() {
+    return rainbowduino.connected();
+  }    
+  
   /* +++++++++++++++++++++++++++ */
   public void write_frame(Frame frame) {    
     write_frame(0, frame);
   }
 
   public void write_frame(int num, Frame frame) {    
-    if(frame == null || running) return;
+    if(frame == null || running || !enabled() ) return;
     rainbowduino.bufferSetAt(num, get_frame_rows(frame));
   }
 
@@ -85,9 +104,6 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     rainbowduino.speedDown();
   }
 
-  boolean enabled() {
-    return rainbowduino.connected();
-  }  
 
   ////////////////////////////////////////////////////  
   private int[] get_frame_rows(Frame frame) {
@@ -103,6 +119,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     return res;  
   }
 }
+
+
 
 
 

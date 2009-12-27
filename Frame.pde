@@ -38,10 +38,16 @@ class Frame {
     canvas.background(55);
     canvas.smooth();
     canvas.noStroke();
+    canvas.rectMode(CENTER);
     for(int y = 0; y < this.rows; y++) {
       for(int x = 0; x < this.cols; x++) {
         canvas.fill(this.get_pixel(x,y).get_color());
-        canvas.ellipse( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
+        if(device.draw_as_circle()) {
+          canvas.ellipse( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
+        }
+        else {  
+          canvas.rect( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
+        }  
       }
     }
   //  println( "drawn" );
