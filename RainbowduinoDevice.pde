@@ -24,7 +24,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   RainbowduinoDevice(PApplet app, String port_name, int baud_rate) {
     rainbowduino = new Rainbowduino(app);
-    rainbowduino.init(port_name, baud_rate);
+    rainbowduino.initPort(port_name, baud_rate, true);
   }
 
   /* +++++++++++++++++++++++++++ */
@@ -50,7 +50,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     Matrix matrix = new Matrix(8,8);
 
     print("Start Reading Matrix - ");
-    int frames = rainbowduino.bufferLoad(); //return num length
+    rainbowduino.bufferLoad();
+    int frames =  rainbowduino.bufferLength();//return num length
     println( "Frames:" + frames);
 
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) {    
@@ -87,8 +88,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }  
 
   ////////////////////////////////////////////////////  
-  private byte[] get_frame_rows(Frame frame) {
-    byte[] res = new byte[3*frame.rows];
+  private int[] get_frame_rows(Frame frame) {
+    int[] res = new int[3*frame.rows];
     for( int y = 0; y < frame.rows; y++ ) {
       for( int x = 0; x < frame.cols; x++ ) {
         PixelColor p = frame.get_pixel(x,y);

@@ -1,5 +1,5 @@
-import com.rngtng.rainbowduino.*;
 import processing.serial.*;
+import com.rngtng.rainbowduino.*;
 
 import themidibus.*;
 import com.rngtng.launchpad.*;
