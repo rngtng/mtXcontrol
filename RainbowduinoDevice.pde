@@ -2,13 +2,8 @@
 class RainbowduinoDevice implements Device, StandaloneDevice {
 
   public Rainbowduino rainbowduino;
-  public boolean enabled = false;
 
-  public boolean standalone = true;
-
-
-  private boolean mirror_cols = true;
-  private boolean mirror_rows = true;
+  public boolean running;
 
   RainbowduinoDevice(PApplet app) {
     this(app, null, 0);
@@ -26,6 +21,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     rainbowduino = new Rainbowduino(app);
     rainbowduino.initPort(port_name, baud_rate, true);
     rainbowduino.brightnessSet(4);
+    rainbowduino.reset();
+    running = false;
   }
 
   /* +++++++++++++++++++++++++++ */
@@ -34,7 +31,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   public void write_frame(int num, Frame frame) {    
-    if(frame == null || standalone) return;
+    if(frame == null || running) return;
     rainbowduino.bufferSetAt(num, get_frame_rows(frame));
   }
 
@@ -71,13 +68,13 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   public void toggle() {
-    rainbowduino.reset();
-    if(standalone) {
-      standalone = false;
-      rainbowduino.start();
+    if(running) {
+      running = false;
+      rainbowduino.stop();
       return;
-    }    
-    standalone = true;
+    } 
+    running = true;
+    rainbowduino.start();   
   }
 
   public void speed_up() {
@@ -89,7 +86,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   boolean enabled() {
-    return true;
+    return rainbowduino.connected();
   }  
 
   ////////////////////////////////////////////////////  
