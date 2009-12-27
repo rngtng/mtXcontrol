@@ -10,7 +10,6 @@ class Button extends GuiElement
   public color highlightcolor;
   boolean over = false;
   //  boolean pressed = false;
-  boolean locked = false;
   String shortcut = null;
   
   Button(int ix, int iy,  color icolor, color ihighlight) {
@@ -187,6 +186,7 @@ class ActionButton extends TextButton {
 
 class ActionToggleButton extends ActionButton {
   String button_text2;
+  boolean locked = false;
 
   ActionToggleButton(String itext, String itext2, String ishortcut, int ix, int iy)  {
     this(itext, itext2, ishortcut, ix, iy, 134, 25, #444444, #999999);
@@ -202,8 +202,8 @@ class ActionToggleButton extends ActionButton {
   }
 
   protected void perform_action() {
-     if(this.shortcut == "10") toggle_mode(); // ENTER
-     if(this.shortcut == "a+10" && device instanceof StandaloneDevice) ((StandaloneDevice) device).toggle(); // ENTER
+     if(this.shortcut == "10") { locked = !locked; toggle_mode(); } // ENTER
+     if(this.shortcut == "a+10" && device instanceof StandaloneDevice)  { locked = !locked; ((StandaloneDevice) device).toggle(); } // ENTER
   }
 }
 
