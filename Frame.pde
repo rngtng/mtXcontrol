@@ -56,15 +56,7 @@ class Frame {
   public void fill(PixelColor pc) {
     this.set_pixels(pc);
   }
-  
-    public void set_pixels(int[] content) {
-      for( int y = 0; y < this.rows; y++ ) {
-  //      pc = new PixelColor(content);
-    //    frame.set_row(y, pc);
-      }    
-  }
-  
-
+    
   public void set_pixels(PixelColor pc) {
     for( int y = 0; y < this.rows; y++ ) {
       for( int x = 0; x < this.cols; x++ ) {
@@ -84,7 +76,6 @@ class Frame {
   public PixelColor get_pixel(int x, int y) {
     return pixs[pos(x,y)];
   }
-
 
   public PixelColor set_row(int y, PixelColor pc) {
     for( int x = 0; x < this.cols; x++ ) {

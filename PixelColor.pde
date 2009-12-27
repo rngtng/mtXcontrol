@@ -3,15 +3,13 @@ class PixelColor {
   public int g;
   public int b;
 
-  int[] COLORS_R = {
-    //0,255};
-    0,105,170,255  };
-  int[] COLORS_G = {
-    //  0,255};
-    0,105,170,255  };    
-  int[] COLORS_B = {
-    //  0,255};
-    0  };  
+  int[] COLORS_R = {0,255};   
+  int[] COLORS_G = {0,255};
+  int[] COLORS_B = {0,255};
+  
+  //int[] COLORS_R = {0,105,170,255}; 
+  //int[] COLORS_G = {0,105,170,255  };    
+  //int[] COLORS_B = {0};  
 
   PixelColor() {
     this(0,0,0);
