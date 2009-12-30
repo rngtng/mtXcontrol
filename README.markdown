@@ -102,6 +102,7 @@ Launchpad:
 * ctrl+<left/right ARROW> - Move Frame in direction
 
 Rainbowduino:
+
 * alt+ENTER - connect/disconnect
 * alt+<left/right ARROW> - Adjust speed
 * alt+ctrl+<left/right ARROW> - Adjust brightness 
