@@ -175,6 +175,7 @@ class ActionButton extends TextButton {
     if(this.shortcut    == "m+S") { matrix.save_to_file(); keyMac  = false;}
     if(this.shortcut    == "a+L" && device instanceof StandaloneDevice) matrix = ((StandaloneDevice) device).read_matrix();
     if(this.shortcut    == "a+S" && device instanceof StandaloneDevice) ((StandaloneDevice) device).write_matrix(matrix);
+    if(this.shortcut    == "C") matrix.current_color.next_color();
     if(this.button_text == "Add")    matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();
@@ -207,10 +208,10 @@ class ActionToggleButton extends ActionButton {
   }
 }
 
-class ColorButton extends RectButton {
+class ColorButton extends ActionButton {
 
-  ColorButton(int ix, int iy, int iwidth, int iheight) {
-    super(ix, iy, iwidth, iheight, matrix.current_color.get_color(), matrix.current_color.get_color());
+  ColorButton(String ishortcut, int ix, int iy, int iwidth, int iheight) {
+    super("", ishortcut, ix, iy, iwidth, iheight, matrix.current_color.get_color(), matrix.current_color.get_color());
   }
 
   protected color current_color() {

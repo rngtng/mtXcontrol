@@ -16,9 +16,12 @@ Download binaries and sources here: [github mtXControl Project](http://github.co
 * [Rainbowduino + 8x8 RGB LED Matrix](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html)
 
 If you're using Rainbowduino you'll need to upload firmware:
+
 * [Arduino IDE](http://arduino.cc/en/Main/Software) 
 
+
 optional:
+
 * [Processing IDE](http://processing.org/download/)
 * [Rainbowduino Processing Library](http://rngtng.github.com/rainbowduino)
 * [Launchpad Processing Library](http://rngtng.github.com/launchpad)
@@ -65,16 +68,21 @@ To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your
 * Font configuration
 * Support for multiple Rainbowduinos
 * More colors (12bit Support)
-* XBee Support
-
+* improved color chooser
+* manual device selection
+* UI & design updated, (help wanted!!!)
+* XBee Support (does this require extra implementations?)
+* extend Launchpad support (improved input handling)
+* fix bug: mtXcontrol hangs when opening laod/save dialog on clicking button (not shortcut)
 
 ## Keyboard shortcuts:
 * ENTER - switch between record/play Mode
 * <left/right ARROW> - Frame forward/backward (Record Mode) or Speed (Play Mode)
 * SPACE - Insert Frame after current Frame
 * D - Delete Frame
-* C - Clear frame
+* X - Clear frame
 * F - fill frame
+* C - select next color
 
 * command+S - Save to File (Bitmap)
 * command+L - Load File (Bitmap OR text (.mtx))
@@ -86,7 +94,8 @@ To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your
 
 Rainbowduino:
 * alt+ENTER - connect/disconnect
-* alt+<left/right ARROW> - Adjust brightness (Record Mode) or Speed (Play Mode)
+* alt+<left/right ARROW> - Adjust speed
+* alt+ctrl+<left/right ARROW> - Adjust brightness 
 * alt+L - load from EEPROM
 * alt+S - save to EEPROM
 
@@ -107,12 +116,21 @@ Right Buttons are turn into color chooser when User2 pressed. Blinking button in
 
 # v1.1
 * added launchpad support
-* specified devices API
-* moved rainbowduino part to separate library, updated firmware
-* rainbowduino brightness control
+* specified devices API to include future devices easily
 * dynamic colorscheme
 * device auto detection
 * added icon
+* minor bugfixes and deisgn updates
+* new shortcut (C) to select color, use (X) to delete frame
+
+Rainbowduino specific:
+
+* moved to separate library, see [Rainbowduino Processing Library](http://rngtng.github.com/rainbowduino) for future updates
+* added handshake and timeout for saver connection
+* increased baud rate
+* extended API for ping, buffer writing/reading and many more
+* brightness control
+* fixed save/load more than 8 frames bug
 
 # v1.02
 * save/load to images

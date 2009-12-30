@@ -13,6 +13,9 @@ public interface StandaloneDevice {
   public void write_matrix(Matrix matrix);
   public void toggle();       
   
-  void speed_up();
-  void speed_down(); 
+  void speedUp();
+  void speedDown(); 
+  
+  void brightnessUp();
+  void brightnessDown();
 }

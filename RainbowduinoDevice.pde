@@ -7,6 +7,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   public boolean running;
 
+  int bright = 4;
+
   RainbowduinoDevice(PApplet app) {
     this(app, null, 0);
   }
@@ -22,20 +24,20 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   RainbowduinoDevice(PApplet app, String port_name, int baud_rate) {
     rainbowduino = new Rainbowduino(app);
     rainbowduino.initPort(port_name, baud_rate, true);
-    rainbowduino.brightnessSet(4);
+    rainbowduino.brightnessSet(this.bright);
     rainbowduino.reset();
     running = false;
   }
 
   void setColorScheme() {
     PixelColorScheme.R = new int[]{
-      0,255    };   
+      0,255        };   
     PixelColorScheme.G = new int[]{
-      0,255    };   
+      0,255        };   
     PixelColorScheme.B = new int[]{
-      0,255    };   
+      0,255        };   
   }
-    
+
   boolean draw_as_circle() {
     return true;
   }
@@ -43,7 +45,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   boolean enabled() {
     return rainbowduino.connected();
   }    
-  
+
   /* +++++++++++++++++++++++++++ */
   public void write_frame(Frame frame) {    
     write_frame(0, frame);
@@ -93,17 +95,28 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
       return;
     } 
     running = true;
+    rainbowduino.bufferLoad();
     rainbowduino.start();   
   }
 
-  public void speed_up() {
+  public void speedUp() {
     rainbowduino.speedUp();
   }
 
-  public void speed_down() {
+  public void speedDown() {
     rainbowduino.speedDown();
   }
 
+  public void brightnessUp() {
+    this.bright++;
+    rainbowduino.brightnessSet(this.bright);
+  }
+
+  public void brightnessDown() {
+    this.bright--;
+    if(this.bright < 1) this.bright = 1;
+    rainbowduino.brightnessSet(this.bright);
+  }
 
   ////////////////////////////////////////////////////  
   private int[] get_frame_rows(Frame frame) {
@@ -119,6 +132,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     return res;  
   }
 }
+
 
 
 

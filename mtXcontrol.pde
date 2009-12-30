@@ -69,7 +69,7 @@ color button_color_over = #999999;
 
   int button_x = offX + matrix.width() + offset + 30;
   buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += 30);
-  buttons[button_index++] = new ActionToggleButton( "Device: FREE",  "Device: SLAVE", "a+10", button_x, y_pos += 30);
+  buttons[button_index++] = new ActionToggleButton( "Device: SLAVE",  "Device: FREE", "a+10", button_x, y_pos += 30);
   if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, 59, 10);
@@ -86,7 +86,7 @@ color button_color_over = #999999;
   if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
-  buttons[button_index++] = new ColorButton( button_x, y_pos += 30, 134, 25);
+  buttons[button_index++] = new ColorButton( "C", button_x, y_pos += 30, 134, 25);
   y_pos += 30;
 
   PixelColor pc = new PixelColor(); 
@@ -104,15 +104,15 @@ color button_color_over = #999999;
   buttons[button_index++] = new ActionButton( "Add",    " ", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "Delete", "D", button_x, y_pos += 30);
 
-  buttons[button_index++] = new ActionButton( "^",   "c+38", button_x + 47,  y_pos += 50, 40, 25);
-  buttons[button_index++] = new ActionButton( "<",   "c+37", button_x,       y_pos += 20, 40, 25);
-  buttons[button_index++] = new ActionButton( ">",   "c+39", button_x + 94,  y_pos,       40, 25);
-  buttons[button_index++] = new ActionButton( "v",   "c+40", button_x + 47,  y_pos += 15, 40, 25);
+  buttons[button_index++] = new ActionButton( "^", "c+38", button_x + 47,  y_pos += 50, 40, 25);
+  buttons[button_index++] = new ActionButton( "<", "c+37", button_x,       y_pos += 20, 40, 25);
+  buttons[button_index++] = new ActionButton( ">", "c+39", button_x + 94,  y_pos,       40, 25);
+  buttons[button_index++] = new ActionButton( "v", "c+40", button_x + 47,  y_pos += 15, 40, 25);
 
   buttons[button_index++] = new ActionButton( "Paste",  "m+V", button_x, y_pos += 50);
   buttons[button_index++] = new ActionButton( "Copy",   "m+C", button_x, y_pos += 30);
   buttons[button_index++] = new ActionButton( "Fill",   "F",   button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "Clear",  "C",   button_x, y_pos += 30);
+  buttons[button_index++] = new ActionButton( "Clear",  "X",   button_x, y_pos += 30);
 }
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -194,8 +194,14 @@ void keyPressed() {
 
   if(keyAlt) {
     if(device instanceof StandaloneDevice) {
-      if(keyCode == 37) ((StandaloneDevice) device).speed_up();   //arrow left
-      if(keyCode == 39) ((StandaloneDevice) device).speed_down(); //arrow right
+      if(keyCtrl) {
+        if(keyCode == 37) ((StandaloneDevice) device).brightnessDown();   //arrow left
+        if(keyCode == 39) ((StandaloneDevice) device).brightnessUp(); //arrow right        
+      }
+      else {        
+        if(keyCode == 37) ((StandaloneDevice) device).speedUp();   //arrow left
+        if(keyCode == 39) ((StandaloneDevice) device).speedDown(); //arrow right        
+      }
     }
   }
   else if(keyCtrl) {
