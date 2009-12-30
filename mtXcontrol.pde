@@ -1,4 +1,6 @@
-
+/*
+ * mtXcontrol - a LED Matrix Editor - version 1.1
+ */
 PFont fontA;
 PFont fontLetter;
 
@@ -30,7 +32,7 @@ void setup() {
 
   matrix = new Matrix(8, 8);
   device = new LaunchpadDevice(this); 
-  if(!device.enabled()) device = new RainbowduinoDevice(this);
+  if(device == null || !device.enabled()) device = new RainbowduinoDevice(this);
 
   device.setColorScheme();
 

@@ -1,66 +1,76 @@
-# mtXcontrol - a Rainbowduino Editor -
+# mtXcontrol - a LED Matrix Editor -
 
-*mtXcontrol* is an editor written in [Processing](http://processing.org) to easily create image sequences for the [Rainbowduino controller](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html). The Rainbowduino is a 8x8 RGB LED driver controllr created by seeedstudio, based on the Arduino Project.
+*mtXcontrol* is an editor written in [Processing](http://processing.org) to easily create image sequences for several output devices containing multicolor LED matrix. By now, the [Rainbowduino controller](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html) and the
+[Novation Launchpad](http://www.novationmusic.com/products/launchpad) are supported. Its generic API allows to added other in- and output
+devices easily.
 
-With *mtXcontrol* Editor you can draw points, lines &amp; rows in different colors, create multiple frames and manipulate them. Add, delete, move, fill, copy &amp; paste of frames is supported. Play all frames by different speed, realtime update the controller and save your work to file or upload it to Rainbowduino to make it standalone (mind: due to 256kb memory only up to 10 frames can be stored by now). A special feature is typing letters and numbers. Future versions aim to support multiple controllers and 
+*mtXcontrol* auto detects and connects to your device. Once connected, you can draw points, lines &amp; rows in different colors, create multiple frames and manipulate them. Add, delete, move, fill, copy &amp; paste of frames is supported. Play all frames by different speed, realtime update the device and save your work as image file. If supported (e.g. Rainbowduino), update the sequence on your device and run it standalone. One special feature is typing letters and numbers. Future versions aim to support multiple devices, different color depth and many more.
 
 [Check out this short demo video](http://www.vimeo.com/6924030)
 
+Download binaries and sources here: [github mtXControl Project](http://github.com/rngtng/mtXcontrol)
 
-Download sources here: [github mtXControl Project](http://github.com/rngtng/mtXcontrol)
-
-## Mini HowTo:
-mtXcontrol consits of two parts:  One is the Editor program which you run on your computer, the other is the firmware you have to upload to your rainbowduino first. [See instruction here](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it).  The firmware makes use of the Rainbowduino.h Library to manipulate the Matrix easily. Make sure to put it into your Arduino Library. Connect your Rainbowduino via USB to your computer, upload firmware and you are ready to go - happy mtXcontrol drawing!
-
-
-## Requirements
+## Requirements:
 * Mac/Win/Linux System running Java
-* Processing IDE, get it from [here](http://processing.org/download/)
-* Arduino IDE, get it from [here](http://arduino.cc/en/Main/Software)
-* Rainbowduino + 8x8 RGB LED Matrix, get it from [here](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html)
+* [Novation Launchpad](http://www.novationmusic.com/products/launchpad) OR
+* [Rainbowduino + 8x8 RGB LED Matrix](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html)
 
+If you're using Rainbowduino you'll need to upload firmware:
+* [Arduino IDE](http://arduino.cc/en/Main/Software) 
 
-## Step-by-Step Instructions
+optional:
+* [Processing IDE](http://processing.org/download/)
+* [Rainbowduino Processing Library](http://rngtng.github.com/rainbowduino)
+* [Launchpad Processing Library](http://rngtng.github.com/launchpad)
+
+## Launchpad HowTo:
+Plug your Launchpad and start mtXcontrol. The device is auto detected - start drawing and pushing buttons!!
+
+## Rainbowudino HowTo:
+To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your rainbowduino first. [See instruction here](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it).  The firmware makes use of the Rainbowduino.h Library to manipulate the Matrix easily. Make sure to put it into your Arduino Library. Connect your Rainbowduino via USB to your computer, upload firmware and you are ready to go - happy mtXcontrol drawing!
+
+### Rainbowduino Step-by-Step Instructions:
 1. Load the latest Arduino environment on the PC
 2. Confirm the ability to upload a simple sketch to the Arduino, making sure to select the correct processor type
 3. Upload the "blank" sketch to the Arduino so that it acts like a pass-through connection
 4. connect the Rainbowduino to the Arduino as indicated in the [blog picture](http://www.rngtng.com/2009/06/25/rainbowduino-here-it-is-and-how-to-program-it) 
 5. Using the Arduino IDE, load the firmware.pde sketch and then transfer it. The Arduino serves as the middle-man so that the microcontroller on the Rainbowduino can be reprogrammed. Important note is to change the processor type to 168 if you have a 328 Arduino.
-6. A brand new Rainbowduino should now go from displaying the multi-colored test pattern to all white LEDs.
+6. A brand new Rainbowduino should stay blank. now go from displaying the multi-colored test pattern to all white LEDs.
 7. Close the Arduino IDE. Load the latest Processing IDE (although similar in appearance, they are not the same). Remember to leave everything connected as displayed in the blog photo.
 8. Load the mtXControl application and compile and run it. The display should go blank.
-9. Use the application to design your animation. For a preview, switch to 'Matrix: Slave' mode (alt + ENTER) or second button form top, which displays your drawings in realtime on the Matrix.
-10. Then Save it to the Matrix.
+9. Use the application to design your animation. For a preview, switch to 'Device: Slave' mode (alt + ENTER) or second button form top, which displays your drawings in realtime on the Matrix.
+10. Then save it to the Matrix.
 11. Close the Processing IDE. Disconnect the USB cable from your PC to the Arduino and undo the connections between the Arduino and the Rainbowduino.
 12. Power the Rainbowduino up by itself (either with an AC adaptor or a battery) and the animation should display.
 (Big thanks to *Bob* putting [those steps together](http://www.seeedstudio.com/forum/viewtopic.php?f=11&t=435&start=10))
 
 
 ## Full list of Features:
-* Draw multicolor points, line and rows  (8bit color support)
+* multiple Device support including auto detection
+* Draw multicolor points, line and rows (4bit color support)
 * Add, delete, clear, fill, *copy &amp; paste*, move frames
 * *Draw letters and numbers*, Font configureable
-* Save to &amp; foad from *Bitmap file*
-* Upload and Download to Matrix *EEPROM* (mind: due to 256kb memory only up to 10 frames). 
+* Save to &amp; load from *Bitmap file*
 * Frame preview, easily navigate through
-* Standalone Mode or realtime Rainbowudino Update
 * Keyboard shortcut for each function
-* auto port & matrix detection
+* Rainbowduino:
+  * Standalone Mode or realtime  Update
+  * Upload and Download to Matrix *EEPROM* (mind: due to 256kb memory only up to 10 frames). 
+* Launchpad: 
+  * full input support to choose color, frame & pixel
 
 
 ## Future ideas:
 * Use compression to save more frames to EEPROM - Join discussion [here](http://stackoverflow.com/questions/1606102/arduino-lightweight-compression-algorithm-to-store-data-in-eeprom)
 * Font configuration
 * Support for multiple Rainbowduinos
-* Standard import/export file format
-* Support other devices (launchpad/RG Matrix)
 * More colors (12bit Support)
 * XBee Support
 
 
 ## Keyboard shortcuts:
-* ENTER - switch between record /place Mode
-* <left/right ARROW> - Frame forward/backward (Record Mode) or Speed in Place Mode
+* ENTER - switch between record/play Mode
+* <left/right ARROW> - Frame forward/backward (Record Mode) or Speed (Play Mode)
 * SPACE - Insert Frame after current Frame
 * D - Delete Frame
 * C - Clear frame
@@ -72,16 +82,47 @@ mtXcontrol consits of two parts:  One is the Editor program which you run on you
 * command+V - Paste Frame
 
 * ctrl+<LETTER> - Insert this Letter/Number
-* crtl+<left/right ARROW> - Move Frame in direction
+* ctrl+<left/right ARROW> - Move Frame in direction
 
-* alt+ENTER - connect/disconnect to Rainbowduino
-* alt+<left/right ARROW> - Adjust speed on Rainbowduino
-* alt+L - download from Rainbowduino
-* alt+S - upload from Rainbowduino
+Rainbowduino:
+* alt+ENTER - connect/disconnect
+* alt+<left/right ARROW> - Adjust brightness (Record Mode) or Speed (Play Mode)
+* alt+L - load from EEPROM
+* alt+S - save to EEPROM
 
+## Launchpad input:
+Top Buttons:
+* Arrow up - new frame
+* Arrow down - delete frame
+* Arrow left - previous frame
+* Arrow right - next frame
+* Session - copy frame
+* User1 - insert frame
+* User2 - color preview, hold to select
+* Mixer - switch between record/play Mode
 
-## Other
-This project won the [seeedstudio carnival 2009](http://www.seeedstudio.com/forum/viewtopic.php?f=11&amp;t=397) See the [announcement and discussions](http://www.seeedstudio.com/forum/viewtopic.php?f=11&t=435&start=0) there.
+Right Buttons are turn into color chooser when User2 pressed. Blinking button indicates selected color, e.g. full red + full green = yellow. Pushing grid button selects color of pushed button.
+
+## Changelog:
+
+# v1.1
+* added launchpad support
+* specified devices API
+* moved rainbowduino part to separate library, updated firmware
+* rainbowduino brightness control
+* dynamic colorscheme
+* device auto detection
+* added icon
+
+# v1.02
+* save/load to images
+* nice error message if not connected
+
+# v1.01
+* bugfixes
+
+# v1.0
+* initial release
 
 ## License
 The MIT License
@@ -93,7 +134,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-
