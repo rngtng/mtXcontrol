@@ -15,3 +15,5 @@ rm ~/Desktop/latest_mtXcontrol_and_firmware_windows.zip
 mkdir application.windows/firmware
 cp ~/Sites/java/rainbowduino/firmware/*.* application.windows/firmware
 zip -x .DS_Store -r ~/Desktop/latest_mtXcontrol_and_firmware_windows.zip application.windows/
+
+rm -rf application.*
