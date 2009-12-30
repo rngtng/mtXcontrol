@@ -13,7 +13,7 @@ int offY = 30;
 int offX = 30;
 
 int current_delay = 0;
-int current_speed = 15;
+int current_speed = 10;
 
 boolean record  = true;
 boolean keyCtrl = false;

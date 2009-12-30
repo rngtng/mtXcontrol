@@ -73,7 +73,11 @@ To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your
 * UI & design updated, (help wanted!!!)
 * XBee Support (does this require extra implementations?)
 * extend Launchpad support (improved input handling)
-* fix bug: mtXcontrol hangs when opening laod/save dialog on clicking button (not shortcut)
+* fix bug: mtXcontrol hangs when opening load/save dialog on clicking button (not shortcut)
+* autoload last sequence from file?
+* sequence scripting
+* sequence transitions, e.g. scrolling left/right, fading
+* sequence backups
 
 ## Keyboard shortcuts:
 * ENTER - switch between record/play Mode

@@ -91,7 +91,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   public void toggle() {
     if(running) {
       running = false;
-      rainbowduino.stop();
+      rainbowduino.reset();
       return;
     } 
     running = true;
