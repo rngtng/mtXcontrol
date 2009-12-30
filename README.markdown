@@ -1,10 +1,10 @@
 # mtXcontrol - a LED Matrix Editor -
 
 *mtXcontrol* is an editor written in [Processing](http://processing.org) to easily create image sequences for several output devices containing multicolor LED matrix. By now, the [Rainbowduino controller](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html) and the
-[Novation Launchpad](http://www.novationmusic.com/products/launchpad) are supported. Its generic API allows to added other in- and output
+[Novation Launchpad](http://www.novationmusic.com/products/launchpad) are supported. Its generic API allows to add other in- and output
 devices easily.
 
-*mtXcontrol* auto detects and connects to your device. Once connected, you can draw points, lines &amp; rows in different colors, create multiple frames and manipulate them. Add, delete, move, fill, copy &amp; paste of frames is supported. Play all frames by different speed, realtime update the device and save your work as image file. If supported (e.g. Rainbowduino), update the sequence on your device and run it standalone. One special feature is typing letters and numbers. Future versions aim to support multiple devices, different color depth and many more.
+*mtXcontrol* Editor auto detects and connects to your device. Once connected, you can draw points, lines &amp; rows in different colors, create multiple frames and manipulate them. Add, delete, move, fill, copy &amp; paste of frames is supported. Play all frames by different speed, realtime update the device and save your work as image file. If supported (e.g. Rainbowduino), update the sequence on your device and run it standalone. One special feature is typing letters and numbers. Future versions aim to support multiple devices, different color depth and many more.
 
 [Check out this short demo video](http://www.vimeo.com/6924030)
 
@@ -56,10 +56,13 @@ To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your
 * Save to &amp; load from *Bitmap file*
 * Frame preview, easily navigate through
 * Keyboard shortcut for each function
-* Rainbowduino:
+
+Rainbowduino:
+
   * Standalone Mode or realtime  Update
   * Upload and Download to Matrix *EEPROM* (mind: due to 256kb memory only up to 10 frames). 
-* Launchpad: 
+  
+Launchpad: 
   * full input support to choose color, frame & pixel
 
 
@@ -78,6 +81,8 @@ To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your
 * sequence scripting
 * sequence transitions, e.g. scrolling left/right, fading
 * sequence backups
+* more and updated Docs, screencasts, howtos
+* testing!!
 
 ## Keyboard shortcuts:
 * ENTER - switch between record/play Mode

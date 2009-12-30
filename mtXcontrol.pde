@@ -28,7 +28,7 @@ int hide_button_index;
 /* +++++++++++++++++++++++++++++ */
 
 void setup() {
-  frame.setIconImage( getToolkit().getImage("mtxcontrol.ico") );
+  frame.setIconImage( getToolkit().getImage("sketch.ico") );
 
   matrix = new Matrix(8, 8);
   device = new LaunchpadDevice(this); 
