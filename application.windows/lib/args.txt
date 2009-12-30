@@ -1,3 +1,0 @@
- -Xms64m -Xmx256m
-mtXcontrol
-mtXcontrol.jar,core.jar,themidibus.jar,launchpad.jar,serial.jar,RXTXcomm.jar
