@@ -125,7 +125,8 @@ class Frame {
     if(!ignore_last && x == last_x && y == last_y) return null;
     last_x = x;
     last_y = y;
-    return set_colored_pixel(x, y, pc);
+    if(color_mode) return set_pixel(x, y, pc);
+    return set_colored_pixel(x, y, pc);    
   }
 
   public Frame clone() {

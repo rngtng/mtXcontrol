@@ -225,8 +225,10 @@ class MiniColorButton extends RectButton {
   public boolean display() {
     if( !super.display() ) return false;
     if(matrix.current_color.equal(this.px)) {
-     stroke(#FFFF00);
-      rect(this.x-1, this.y-1, this.width, this.height+2);
+      stroke(#FFFF00);
+      strokeWeight(2);
+      rect(this.x-1, this.y-1, this.width-1, this.height+2);
+      strokeWeight(0);
     }
     return true;
   }  

@@ -71,12 +71,9 @@ Launchpad:
 * Font configuration
 * Support for multiple Rainbowduinos
 * More colors (12bit Support)
-* improved color chooser
 * manual device selection
 * UI & design updated, (help wanted!!!)
 * XBee Support (does this require extra implementations?)
-* extend Launchpad support (improved input handling)
-* fix bug: mtXcontrol hangs when opening load/save dialog on clicking button (not shortcut)
 * autoload last sequence from file?
 * sequence scripting
 * sequence transitions, e.g. scrolling left/right, fading
@@ -92,6 +89,7 @@ Launchpad:
 * X - Clear frame
 * F - fill frame
 * C+<left/right ARROW> - select previous/next color
+* C+ clicking the grid draw in fixed color
 
 * command+S - Save to File (Bitmap)
 * command+L - Load File (Bitmap OR text (.mtx))
@@ -134,12 +132,13 @@ Right Buttons are turn into color chooser when User2 pressed. Blinking button in
 # v1.11
 * updated minicolorbutton to be selected if current color
 * removed color button
-* added new shortcut  C+<left/right ARROW> - to select previous/next color
+* added new shortcut 'C+<left/right ARROW>' - to select previous/next color
+* added new shortcut 'C' to fix current drawing color when clicking the grid
 * button action onClick which fixed load/save dialog hanging bug
 
 Launchpad:
 
-* differn button behaviours depended on play/record mode
+* updated button behaviours depended on play/record mode
 * added speed control for play mode
 
 # v1.1
