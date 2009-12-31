@@ -16,22 +16,22 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   void setColorScheme() {
     PixelColorScheme.R = new int[]{
-      0,105,170,255};   
+      0,105,170,255        };   
     PixelColorScheme.G = new int[]{
-      0,105,170,255};   
+      0,105,170,255        };   
     PixelColorScheme.B = new int[]{
-      0};   
+      0        };   
   }
-  
+
   boolean draw_as_circle() {
     return false;
   }
-  
+
   boolean enabled() {
     return launchpad.connected();
   }
-  
-  /* +++++++++++++++++++++++++++ */  
+
+  /* +++++++++++++++++++++++++++ */
   void write_frame(Frame frame) {
     LColor[] colors = new LColor[80];
     for( int y = 0; y < frame.rows; y++ ) {
@@ -51,17 +51,22 @@ class LaunchpadDevice implements Device, LaunchpadListener {
       }     
     }
 
-    colors[72] = new LColor(LColor.GREEN_LOW);
-    colors[73] = new LColor(LColor.GREEN_LOW);     
+    if( record ) {
+      colors[72] = new LColor(LColor.GREEN_LOW);
+      colors[73] = new LColor(LColor.GREEN_LOW);     
+
+      colors[76] = new LColor(LColor.RED_LOW);
+      colors[77] = new LColor(LColor.RED_LOW);     
+
+      colors[78] = new LColor(matrix.current_color.r, matrix.current_color.g);
+      colors[79] = new LColor(LColor.GREEN_LOW); 
+    }
+    else {
+      colors[79] = new LColor(LColor.RED_LOW); 
+    } 
 
     colors[74] = new LColor(LColor.YELLOW_LOW);
     colors[75] = new LColor(LColor.YELLOW_LOW); 
-
-    colors[76] = new LColor(LColor.RED_LOW);
-    colors[77] = new LColor(LColor.RED_LOW);     
-
-    colors[78] = new LColor(matrix.current_color.r, matrix.current_color.g); 
-    colors[79] = (record) ? new LColor(LColor.GREEN_LOW) : new LColor(LColor.RED_LOW); 
 
     launchpad.bufferingMode(Launchpad.BUFFER0, Launchpad.BUFFER0);
     launchpad.changeAll(colors);
@@ -76,6 +81,7 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   //////////////////////////////    Listener   ////////////////////////////////////
   public void launchpadGridPressed(int x, int y) {
+    if(!record) return;
     if(colorButtonPressed) {      
       matrix.current_color = matrix.current_frame().get_pixel(x, y).clone();
     }
@@ -89,6 +95,7 @@ class LaunchpadDevice implements Device, LaunchpadListener {
   }
 
   public void launchpadButtonPressed(int buttonCode) {
+    if(!record) return;
     if(buttonCode == LButton.USER2) {
       colorButtonPressed = true;
     }
@@ -100,32 +107,20 @@ class LaunchpadDevice implements Device, LaunchpadListener {
 
   public void launchpadButtonReleased(int buttonCode) {
     // launchpad.changeButton(buttonCode, c);
-    switch(buttonCode) {
-    case LButton.UP:
-      matrix.add_frame();
-      break;
-    case LButton.DOWN:
-      matrix.delete_frame();
-      break;
-    case LButton.LEFT:
-      matrix.previous_frame();
-      break;
-    case  LButton.RIGHT:  
-      matrix.next_frame();
-      break;
-    case  LButton.SESSION:        
-      matrix.copy_frame();
-      break;
-    case  LButton.USER1: 
-      matrix.paste_frame();    
-      break;
-    case  LButton.USER2:        
-      colorButtonPressed = false;
-      break;
-    case  LButton.MIXER:        
-      toggle_mode();
-      break;      
+    if( record ) {
+      if(buttonCode == LButton.UP)      matrix.add_frame();
+      if(buttonCode == LButton.DOWN)    matrix.delete_frame();
+      if(buttonCode == LButton.LEFT)    matrix.previous_frame();
+      if(buttonCode == LButton.RIGHT)   matrix.next_frame();
+      if(buttonCode == LButton.SESSION) matrix.copy_frame();
+      if(buttonCode == LButton.USER1)   matrix.paste_frame();
+      if(buttonCode == LButton.USER2)   colorButtonPressed = false;          
     }
+    else {
+      if(buttonCode == LButton.LEFT)    speed_down();
+      if(buttonCode == LButton.RIGHT)   speed_up();
+    }
+    if(buttonCode == LButton.MIXER)   toggle_mode();
     mark_for_update();    
   }
 
@@ -146,6 +141,8 @@ class LaunchpadDevice implements Device, LaunchpadListener {
   }
 
 }
+
+
 
 
 
