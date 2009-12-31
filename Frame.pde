@@ -80,6 +80,7 @@ class Frame {
   }
 
   public PixelColor get_pixel(int x, int y) {
+    if(x < 0 || y < 0 || x > width || y > height ) return null;
     return pixs[pos(x,y)];
   }
 
