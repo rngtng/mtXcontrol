@@ -32,8 +32,8 @@ class FrameChooser extends RectButton {
       text(frame_nr + 1, frame_x + 20, frame_y + 62);    
   }
    
-  public boolean pressed() {
-    if(!super.pressed()) return false;
+  public boolean clicked() {
+    if(!super.clicked()) return false;
     int frame_nr =  this.get_frame_nr( (mouseX - this.x) / this.frame_width );
     if( frame_nr >= matrix.num_frames()) return false;
     matrix.current_frame_nr = frame_nr;

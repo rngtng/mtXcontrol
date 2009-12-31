@@ -91,7 +91,7 @@ Launchpad:
 * D - Delete Frame
 * X - Clear frame
 * F - fill frame
-* C - select next color
+* C+<left/right ARROW> - select previous/next color
 
 * command+S - Save to File (Bitmap)
 * command+L - Load File (Bitmap OR text (.mtx))
@@ -110,7 +110,8 @@ Rainbowduino:
 * alt+S - save to EEPROM
 
 ## Launchpad input:
-Top Buttons:
+Top Buttons, Record Mode
+
 * Arrow up - new frame
 * Arrow down - delete frame
 * Arrow left - previous frame
@@ -118,11 +119,28 @@ Top Buttons:
 * Session - copy frame
 * User1 - insert frame
 * User2 - color preview, hold to select
-* Mixer - switch between record/play Mode
+* Mixer - switch to play Mode
+
+Top Buttons, Play Mode
+
+* Arrow left - decrease speed
+* Arrow right - increase speed
+* Mixer - switch to record Mode
 
 Right Buttons are turn into color chooser when User2 pressed. Blinking button indicates selected color, e.g. full red + full green = yellow. Pushing grid button selects color of pushed button.
 
 ## Changelog:
+
+# v1.11
+* updated minicolorbutton to be selected if current color
+* removed color button
+* added new shortcut  C+<left/right ARROW> - to select previous/next color
+* button action onClick which fixed load/save dialog hanging bug
+
+Launchpad:
+
+* differn button behaviours depended on play/record mode
+* added speed control for play mode
 
 # v1.1
 * added launchpad support

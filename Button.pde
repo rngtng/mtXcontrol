@@ -9,7 +9,7 @@ class Button extends GuiElement
 {
   public color highlightcolor;
   boolean over = false;
-  //  boolean pressed = false;
+  //  boolean clicked = false;
   String shortcut = null;
   
   Button(int ix, int iy,  color icolor, color ihighlight) {
@@ -17,7 +17,7 @@ class Button extends GuiElement
     this.highlightcolor = ihighlight;
   }
 
-  public boolean pressed() {
+  public boolean clicked() {
     return (this.over && !this.disabled);  
   }
 
@@ -149,8 +149,8 @@ class ActionButton extends TextButton {
     this.shortcut = ishortcut;
   }
 
-  public boolean pressed() {
-    if(!super.pressed()) return false;
+  public boolean clicked() {
+    if(!super.clicked()) return false;
     perform_action();
     return true;
   }
@@ -175,7 +175,6 @@ class ActionButton extends TextButton {
     if(this.shortcut    == "m+S") { matrix.save_to_file(); keyMac  = false;}
     if(this.shortcut    == "a+L" && device instanceof StandaloneDevice) matrix = ((StandaloneDevice) device).read_matrix();
     if(this.shortcut    == "a+S" && device instanceof StandaloneDevice) ((StandaloneDevice) device).write_matrix(matrix);
-    if(this.shortcut    == "C") matrix.current_color.next_color();
     if(this.button_text == "Add")    matrix.add_frame();
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();
@@ -208,23 +207,6 @@ class ActionToggleButton extends ActionButton {
   }
 }
 
-class ColorButton extends ActionButton {
-
-  ColorButton(String ishortcut, int ix, int iy, int iwidth, int iheight) {
-    super("", ishortcut, ix, iy, iwidth, iheight, matrix.current_color.get_color(), matrix.current_color.get_color());
-  }
-
-  protected color current_color() {
-    return matrix.current_color.get_color();
-  }
-
-  public boolean pressed() {
-    if(!super.pressed()) return false;
-    matrix.current_color.next_color();
-    return true;
-  }
-}
-
 class MiniColorButton extends RectButton {
 
   PixelColor px;
@@ -234,9 +216,18 @@ class MiniColorButton extends RectButton {
     this.px = icolor;    
   }
 
-  public boolean pressed() {
-    if(!super.pressed()) return false;
+  public boolean clicked() {
+    if(!super.clicked()) return false;
     matrix.current_color.set_color(this.px);
     return true;
   }
+  
+  public boolean display() {
+    if( !super.display() ) return false;
+    if(matrix.current_color.equal(this.px)) {
+     stroke(#FFFF00);
+      rect(this.x-1, this.y-1, this.width, this.height+2);
+    }
+    return true;
+  }  
 }

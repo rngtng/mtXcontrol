@@ -22,6 +22,11 @@ class PixelColor {
     return this;
   }
 
+  public PixelColor previous_color() {
+    this.set_color_index(this.to_int()-1);
+    return this;
+  }
+  
   public int numColors() {
     return PixelColorScheme.R.length * PixelColorScheme.G.length * PixelColorScheme.B.length;
   }
@@ -47,6 +52,7 @@ class PixelColor {
 
   public void set_color_index(int i) {
     i = i % numColors();
+    if(i < 0) i += numColors();
     this.r = i / (PixelColorScheme.G.length * PixelColorScheme.B.length);
     this.g = (i / PixelColorScheme.B.length) - (this.r * PixelColorScheme.G.length) ;
     this.b = (i - (this.r * PixelColorScheme.G.length + this.g) * PixelColorScheme.B.length);

@@ -16,6 +16,8 @@ int current_delay = 0;
 int current_speed = 10;
 
 boolean record  = true;
+boolean color_mode  = false;
+
 boolean keyCtrl = false;
 boolean keyMac  = false;
 boolean keyAlt  = false;
@@ -86,7 +88,6 @@ color button_color_over = #999999;
   if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
   buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
-  buttons[button_index++] = new ColorButton( "C", button_x, y_pos += 30, 134, 25);
   y_pos += 30;
 
   PixelColor pc = new PixelColor(); 
@@ -94,7 +95,7 @@ color button_color_over = #999999;
   for(int r = 0; r < PixelColorScheme.R.length; r++) {
     for(int g = 0; g < PixelColorScheme.G.length; g++) {
       for(int b = 0; b < PixelColorScheme.B.length; b++) {   
-        buttons[button_index++] = new MiniColorButton( button_x + pc.to_int() * off, y_pos, off, 14, pc.clone() );
+        buttons[button_index++] = new MiniColorButton( button_x + pc.to_int() * off, y_pos, off, 20, pc.clone() );
         pc.next_color();
       }
     }
@@ -160,38 +161,52 @@ void next_frame() {
 /* +++++++++++++++ ACTIONS +++++++++++++++ */
 void mouseDragged() {
   if(!record) return;
-  update = update || matrix.click(mouseX - offX, mouseY - offY, true);
+  if(matrix.click(mouseX - offX, mouseY - offY, true)) mark_for_update();
 }
 
 void mousePressed() {
-  for(int i = 0; i < buttons.length; i++ ) {
-    if(buttons[i] == null) break;
-    update = update || buttons[i].pressed();
-  }
   if(!record) return;
-  update = matrix.click(mouseX - offX, mouseY - offY, false) || update;
+  if(matrix.click(mouseX - offX, mouseY - offY, false)) mark_for_update();
 }
 
 void mouseMoved() {
   for(int i = 0; i < buttons.length; i++ ) {
     if(buttons[i] == null) break;
-    update = update || buttons[i].over();
+    if(buttons[i].over()) mark_for_update();
   }
 }
+
+void mouseClicked() {
+  for(int i = 0; i < buttons.length; i++ ) {
+    if(buttons[i] == null) break;
+    if(buttons[i].clicked()) mark_for_update();
+  }
+}
+
 
 void keyPressed() {
   if(keyCode == 17)  keyCtrl = true; //control
   if(keyCode == 18)  keyAlt  = true; //alt
   if(keyCode == 157) keyMac  = true; //mac
-
+  if(keyCode == 67) color_mode = true; //C
+  
   //println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
+
+  if(color_mode) {
+     if(keyCode == 37) matrix.current_color.previous_color(); //arrow left
+     if(keyCode == 39) matrix.current_color.next_color();  //arrow right   
+     mark_for_update();
+     return;
+  }
 
   for(int i = 0; i < buttons.length; i++ ) {
     if(buttons[i] == null) break;
-    update = buttons[i].key_pressed(keyCode, keyMac, keyCtrl, keyAlt);  
-    if(update) return;
+    if(buttons[i].key_pressed(keyCode, keyMac, keyCtrl, keyAlt)) {
+      mark_for_update();  
+      return;
+    }
   }
-
+   
   if(keyAlt) {
     if(device instanceof StandaloneDevice) {
       if(keyCtrl) {
@@ -225,6 +240,7 @@ void keyReleased() {
   if( keyCode == 17 )  keyCtrl = false;
   if( keyCode == 18 )  keyAlt  = false;
   if( keyCode == 157 ) keyMac  = false;
+  if( keyCode == 67 ) color_mode = false;
 }
 
 void mark_for_update() {
