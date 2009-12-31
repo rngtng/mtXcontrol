@@ -73,7 +73,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     println( "Frames:" + frames);
 
     for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) {    
-      println("Frame Nr: " + frame_nr);
+      //println("Frame Nr: " + frame_nr);
       Frame frame = matrix.current_frame();
       int frame_byte[] = rainbowduino.bufferGetAt(frame_nr);
       for(int y = 0; y < 8; y++ ) {

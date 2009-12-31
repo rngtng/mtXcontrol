@@ -117,8 +117,8 @@ class LaunchpadDevice implements Device, LaunchpadListener {
       if(buttonCode == LButton.USER2)   colorButtonPressed = false;          
     }
     else {
-      if(buttonCode == LButton.LEFT)    speed_down();
-      if(buttonCode == LButton.RIGHT)   speed_up();
+      if(buttonCode == LButton.LEFT)    speed_up();
+      if(buttonCode == LButton.RIGHT)   speed_down();
     }
     if(buttonCode == LButton.MIXER)   toggle_mode();
     mark_for_update();    
