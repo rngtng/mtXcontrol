@@ -19,10 +19,8 @@ PFont fontLetter;
 Matrix matrix;
 Device device;
 
-int border = 10;
-
-int offY = 30;
-int offX = 30;
+int offY = 15;
+int offX = 15;
 
 int current_delay = 0;
 int current_speed = 10;
@@ -52,7 +50,7 @@ void setup() {
 
   device.setColorScheme();
 
-  size(780,720);
+  size(980,720);
   smooth();
   noStroke();
   fontA = loadFont("Courier-Bold-32.vlw");
@@ -62,7 +60,7 @@ void setup() {
 }
 
 void setup_buttons() {
-  buttons = new Button[60]; // width + height + ???
+  buttons = new Button[160]; // width + height + ???
   int offset = 10;
   int button_index = 0;
   int y_pos = 0;
@@ -78,17 +76,17 @@ color button_color_over = #999999;
   }
   for(int i = 0; i < matrix.cols; i++ ) {
     int x = offX + i * matrix.rad + matrix.border / 2;
-    int y = offY + matrix.width() + offset;
+    int y = offY + matrix.height() + offset;
     buttons[button_index++] = new RectButton( x, y, matrix.rad - matrix.border, button_size, button_color, button_color_over);
   }
   buttons[button_index++] = new SquareButton( offX + matrix.width() + offset, offY + matrix.width() + offset, button_size, button_color, button_color_over );
 
   int button_x = offX + matrix.width() + offset + 30;
-  buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += 30);
+  buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += offY);
   buttons[button_index++] = new ActionToggleButton( "Device: SLAVE",  "Device: FREE", "a+10", button_x, y_pos += 30);
   if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
-  buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, 59, 10);
+  buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, matrix.width(), matrix.height());
 
   hide_button_index = button_index;
   buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
@@ -206,11 +204,9 @@ void keyPressed() {
   
   //println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
 
-  if(color_mode) {
-     if(keyCode == 37) matrix.current_color.previous_color(); //arrow left
-     if(keyCode == 39) matrix.current_color.next_color();  //arrow right   
-     mark_for_update();
-     return;
+  if(color_mode && !keyMac) {
+     if(keyCode == 37) { matrix.current_color.previous_color(); mark_for_update(); return;}//arrow left
+     if(keyCode == 39) { matrix.current_color.next_color();  mark_for_update(); return;} //arrow right   
   }
 
   for(int i = 0; i < buttons.length; i++ ) {

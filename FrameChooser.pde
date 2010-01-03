@@ -1,12 +1,19 @@
 class FrameChooser extends RectButton {
 
-  int frame_width;
   int show_frames;
   
-  FrameChooser(int ix, int iy, int iwidth, int ishow_frames) {
-    super(ix, iy, iwidth * ishow_frames, iwidth, #111111, #FFFF00);
-    this.frame_width = iwidth;
-    this.show_frames = ishow_frames;
+  int thumb_rad = 5;
+  int thumb_border = 1;
+  int thumb_width, thumb_height;
+  
+  int frame_border = 15;
+    
+  FrameChooser(int ix, int iy, int iwidth, int iheight) {
+    super(ix, iy, iwidth, iheight, #111111, #FFFF00);
+    PGraphics thumb = matrix.current_frame().draw_thumb(thumb_rad, thumb_border);    
+    this.thumb_width = thumb.width;
+    this.thumb_height = thumb.height;
+    this.show_frames = floor(iwidth / (this.thumb_width + frame_border));    
     this.enable();
   }
 
@@ -15,26 +22,28 @@ class FrameChooser extends RectButton {
     int frame_nr;
     for(int nr = 0; nr < this.show_frames; nr++) {
       frame_nr = this.get_frame_nr(nr);      
-      display_frame(this.x + this.frame_width * nr, this.y, frame_nr);
+      display_frame(this.x + (this.thumb_width + frame_border) * nr , this.y, frame_nr);
     }
     return true;
   }
   
-  private void display_frame(int frame_x, int frame_y, int frame_nr) {
+  private void display_frame(int frame_x, int frame_y, int frame_nr) {      
+      if( frame_nr >= 0 && frame_nr < matrix.num_frames())  { 
+        image(matrix.frame(frame_nr).draw_thumb(thumb_rad, thumb_border), frame_x + 1, frame_y + 1);
+        fill(255); //white
+        noStroke();
+        textFont(fontA, 15);
+        String ttext = "" + (frame_nr + 1);
+        text(ttext, frame_x + ((thumb_width - textWidth(ttext)) / 2), frame_y + thumb_height + 17);    
+      }
       noFill();
       stroke( (frame_nr == matrix.current_frame_nr) ? this.highlightcolor : this.basecolor );      
-      rect(frame_x, this.y, this.frame_width - 10, this.frame_width - 10);    
-      if( frame_nr < 0 || frame_nr >= matrix.num_frames()) return;
-      image(matrix.frame(frame_nr).draw_thumb(6, 4), frame_x + 1, frame_y + 1);
-      fill(255); //white
-      noStroke();
-      textFont(fontA, 15);
-      text(frame_nr + 1, frame_x + 20, frame_y + 62);    
+      rect(frame_x, frame_y, thumb_width+2, thumb_height+2);
   }
    
   public boolean clicked() {
     if(!super.clicked()) return false;
-    int frame_nr =  this.get_frame_nr( (mouseX - this.x) / this.frame_width );
+    int frame_nr =  this.get_frame_nr( (mouseX - this.x) / this.thumb_width );
     if( frame_nr >= matrix.num_frames()) return false;
     matrix.current_frame_nr = frame_nr;
     return true;      
