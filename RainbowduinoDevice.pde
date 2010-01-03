@@ -31,11 +31,11 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   void setColorScheme() {
     PixelColorScheme.R = new int[]{
-      0,255        };   
+      0,255            };   
     PixelColorScheme.G = new int[]{
-      0,255        };   
+      0,255            };   
     PixelColorScheme.B = new int[]{
-      0,255        };   
+      0,255            };   
   }
 
   boolean draw_as_circle() {
@@ -53,7 +53,13 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   public void write_frame(int num, Frame frame) {    
     if(frame == null || running || !enabled() ) return;
-    rainbowduino.bufferSetAt(num, get_frame_rows(frame));
+    int slave_nr = 0;
+    for( int y = 0; y < frame.rows; y += rainbowduino.height ) {
+      for( int x = 0; x < frame.cols; x += rainbowduino.width ) {
+        rainbowduino.slaveActiv(slave_nr += 1);
+        rainbowduino.bufferSetAt(num, get_frame_rows(frame, x, y));
+      }
+    }
   }
 
   public void write_matrix(Matrix matrix) {
@@ -119,11 +125,11 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   ////////////////////////////////////////////////////  
-  private int[] get_frame_rows(Frame frame) {
+  private int[] get_frame_rows(Frame frame, int x_off, int y_off) {
     int[] res = new int[3*frame.rows];
-    for( int y = 0; y < frame.rows; y++ ) {
-      for( int x = 0; x < frame.cols; x++ ) {
-        PixelColor p = frame.get_pixel(x,y);
+    for( int y = 0; y < rainbowduino.height; y++ ) {
+      for( int x = 0; x < rainbowduino.width; x++ ) {
+        PixelColor p = frame.get_pixel(x + x_off, y + y_off); 
         res[3*y + 0] |= (p.r & 1) << x;
         res[3*y + 1] |= (p.g & 1) << x;
         res[3*y + 2] |= (p.b & 1) << x;
@@ -132,6 +138,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     return res;  
   }
 }
+
 
 
 
