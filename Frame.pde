@@ -34,6 +34,7 @@ class Frame {
 
   public PGraphics draw_canvas(int draw_rad, int draw_border) {
     PGraphics canvas = createGraphics(this.cols * draw_rad, this.rows * draw_rad, P2D);
+    int ssize = draw_rad - draw_border;
     canvas.beginDraw();
     canvas.background(55);
     canvas.smooth();
@@ -43,10 +44,10 @@ class Frame {
       for(int x = 0; x < this.cols; x++) {
         canvas.fill(this.get_pixel(x,y).get_color());
         if(device.draw_as_circle()) {
-          canvas.ellipse( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
+          canvas.ellipse( draw_rad * (x + 0.5), draw_rad * (y + 0.5), ssize, ssize);
         }
         else {  
-          canvas.rect( draw_rad * (x + 0.5), draw_rad * (y + 0.5), draw_rad-border, draw_rad-border);
+          canvas.rect( draw_rad * (x + 0.5), draw_rad * (y + 0.5), ssize, ssize);
         }  
       }
     }
