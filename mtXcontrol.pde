@@ -1,5 +1,17 @@
 /*
  * mtXcontrol - a LED Matrix Editor - version 1.1
+ *
+ * By now this application supports Novation launchpad and Seeedstudion Rainbowduino. For both device additional
+ * libraries are needed:
+ *
+ * For launchad get the processing library here: http://rngtng.github.com/launchpad
+ * For rainbowduino get the processing library here: http://rngtng.github.com/rainbowduino. 
+ *
+ * Alternatively, you could delete the accordant device files LaunchpadDevice.pde / RainbowduinoDevice.pde and
+ * its object instantiation arround line 50 in this file
+ *
+ * See Readme.markdown for more
+ *
  */
 PFont fontA;
 PFont fontLetter;
@@ -33,8 +45,10 @@ void setup() {
   frame.setIconImage( getToolkit().getImage("sketch.ico") );
 
   matrix = new Matrix(8, 8);
-  device = new LaunchpadDevice(this); 
-  if(device == null || !device.enabled()) device = new RainbowduinoDevice(this);
+  
+  //Device instantiation, try to find Launchpad first, fallback to Rainbowduino
+  device = new LaunchpadDevice(this); //delete this line (and LaunchpadDevice.pde) if no Launchpad support wanted
+  if(device == null || !device.enabled()) device = new RainbowduinoDevice(this); //delete this line (and RainbowduinoDevice.pde) if no Rainbowduino support wanted
 
   device.setColorScheme();
 
