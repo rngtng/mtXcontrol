@@ -1,13 +1,15 @@
+#!/usr/bin/ruby
+
 # require
 require 'rubygems'
 require 'net/github-upload'
 
-DEBUG = true
+DEBUG = false
 
 # setup
 login = `git config github.user`.chomp  # your login for github
 token = `git config github.token`.chomp # your token for github
-repos = 'mtXcontrol'               # your repos name (like 'taberareloo')
+repos = 'mtXcontrol'                    # your repos name (like 'taberareloo')
 gh = Net::GitHub::Upload.new(
   :login => login,
   :token => token
@@ -16,15 +18,15 @@ gh = Net::GitHub::Upload.new(
 all_os = { :linux => "Linux", :macosx => "Mac OS X (32bit)", :windows => "Windows"}
 
 def exec(command)
-  puts command
+ # puts command
   system(command) unless DEBUG
 end
 
-all_os.keys.each do |os, human_os|
+all_os.each do |os, human_os|
   file = "latest_mtXcontrol_and_firmware_#{os}.zip"
 
   # rename
-  exec "mv application.#{os} mtXcontrol"
+  next unless exec "mv application.#{os} mtXcontrol"
 
   if( os == :macosx )  #patch Mac Os X file to use java 1.6
       exec "mv mtXcontrol/mtXcontrol.app/Contents/Info.plist mtXcontrol/mtXcontrol.app/Contents/Info_old.plist"
@@ -40,7 +42,7 @@ all_os.keys.each do |os, human_os|
   #zip file
   exec "zip -x .DS_Store -r #{file} mtXcontrol/"
       
-  direct_link = DEBUG ? "debug" : gh.upload( :repos => repos, :file  => file, :description => "Latest mtXcontrol for #{human_os}" )
+  direct_link = DEBUG ? "debug" : gh.replace( :repos => repos, :file  => file, :description => "Latest mtXcontrol - #{human_os}")
   
   exec "rm #{file}"
   exec "rm -rf mtXcontrol"
