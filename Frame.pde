@@ -51,7 +51,7 @@ class Frame {
         }  
       }
     }
-  //  println( "drawn" );
+    //  println( "drawn" );
     canvas.endDraw();
     return canvas;
   }
@@ -63,7 +63,7 @@ class Frame {
   public void fill(PixelColor pc) {
     this.set_pixels(pc);
   }
-    
+
   public void set_pixels(PixelColor pc) {
     for( int y = 0; y < this.rows; y++ ) {
       for( int x = 0; x < this.cols; x++ ) {
@@ -212,4 +212,6 @@ class Frame {
     }
     return trashhold / (this.letter_scale * this.letter_scale);
   }
+
 }
+

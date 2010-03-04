@@ -1,3 +1,4 @@
+
 static class PixelColorScheme {
   public static int[] R = {};
   public static int[] G = {};
@@ -81,6 +82,4 @@ class PixelColor {
     return (this.r*(PixelColorScheme.G.length) + this.g)*(PixelColorScheme.B.length) + b; 
   }
 }
-
-
 
