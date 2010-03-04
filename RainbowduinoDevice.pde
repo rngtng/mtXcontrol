@@ -84,7 +84,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
       int frame_byte[] = rainbowduino.bufferGetAt(frame_nr);
       for(int y = 0; y < 8; y++ ) {
         for(int x = 0; x < 8; x++ ) {
-          frame.set_pixel(x,y, new PixelColor((frame_byte[3*y+0] >> x) & 1, (frame_byte[3*y+1] >> x) & 1, (frame_byte[3*y+2] >> x) & 1 ) );          
+          int[] ab = xy2ab(x,y);
+          frame.set_pixel(ab[0], ab[1], new PixelColor((frame_byte[3*y+0] >> x) & 1, (frame_byte[3*y+1] >> x) & 1, (frame_byte[3*y+2] >> x) & 1 ) );          
         }
       }      
       matrix.add_frame();
@@ -124,15 +125,24 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     rainbowduino.brightnessSet(this.bright);
   }
 
+  private int[] xy2ab(int x, int y) {
+    return new int[]{x, y};
+  }
+
+  private int[] ab2xy(int a, int b) {
+    return new int[]{a, b};
+  }
+
   ////////////////////////////////////////////////////  
-  private int[] get_frame_rows(Frame frame, int x_off, int y_off) {
+  protected int[] get_frame_rows(Frame frame, int x_off, int y_off) {
     int[] res = new int[3*frame.rows];
     for( int y = 0; y < rainbowduino.height; y++ ) {
       for( int x = 0; x < rainbowduino.width; x++ ) {
         PixelColor p = frame.get_pixel(x + x_off, y + y_off); 
-        res[3*y + 0] |= (p.r & 1) << x;
-        res[3*y + 1] |= (p.g & 1) << x;
-        res[3*y + 2] |= (p.b & 1) << x;
+        int[] ab = xy2ab(x,y);
+        res[3*ab[1] + 0] |= (p.r & 1) << ab[0];
+        res[3*ab[1] + 1] |= (p.g & 1) << ab[0];
+        res[3*ab[1] + 2] |= (p.b & 1) << ab[0];
       }
     }  
     return res;  
