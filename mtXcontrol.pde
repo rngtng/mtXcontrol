@@ -1,5 +1,5 @@
 /*
- * mtXcontrol - a LED Matrix Editor - version 1.1
+ * mtXcontrol - a LED Matrix Editor - version 1.2
  *
  * By now this application supports Novation launchpad and Seeedstudion Rainbowduino. For both device additional
  * libraries are needed:
@@ -19,7 +19,7 @@ PFont fontLetter;
 Matrix matrix;
 Device device;
 
-int offY = 15;
+int offY = 55;
 int offX = 15;
 
 int current_delay = 0;
@@ -37,18 +37,20 @@ Button[] buttons;
 
 int hide_button_index;
 
+PixelColor global_color = new PixelColor();
+
 /* +++++++++++++++++++++++++++++ */
 
 void setup() {
   frame.setIconImage( getToolkit().getImage("sketch.ico") );
-
-  matrix = new Matrix(24, 8);
   
   //Device instantiation, try to find Launchpad first, fallback to Rainbowduino
   device = new LaunchpadDevice(this); //delete this line (and LaunchpadDevice.pde) if no Launchpad support wanted
   if(device == null || !device.enabled()) device = new RainbowduinoDevice(this); //delete this line (and RainbowduinoDevice.pde) if no Rainbowduino support wanted
 
   device.setColorScheme();
+
+  matrix = new Matrix(8,8);
 
   size(980,720);
   smooth();
@@ -63,7 +65,7 @@ void setup_buttons() {
   buttons = new Button[160]; // width + height + ???
   int offset = 10;
   int button_index = 0;
-  int y_pos = 0;
+  int y_pos = 10;
 
 color button_color = #333333;
 color button_color_over = #999999;
@@ -81,25 +83,26 @@ color button_color_over = #999999;
   }
   buttons[button_index++] = new SquareButton( offX + matrix.width() + offset, offY + matrix.width() + offset, button_size, button_color, button_color_over );
 
-  int button_x = offX + matrix.width() + offset + 30;
-  buttons[button_index++] = new ActionToggleButton( "Mode: RECORD",  "Mode: PLAY",    "10",   button_x, y_pos += offY);
-  buttons[button_index++] = new ActionToggleButton( "Device: SLAVE",  "Device: FREE", "a+10", button_x, y_pos += 30);
+  int button_x = offset; //offX + matrix.width() + offset + 30;
+  buttons[button_index++] = new ActionToggleButton( "Mode: RECORD", "Mode: PLAY", "10",   button_x, y_pos);
+
+  buttons[button_index++] = new TextElement( "Load from:",      button_x += 150, y_pos);
+  buttons[button_index++] = new ActionButton( "File",    "m+L", button_x += 100, y_pos, 65, 25);
+  buttons[button_index++] = new ActionButton( "Device",  "a+L", button_x += 67,  y_pos, 65, 25);
   if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
 
+  buttons[button_index++] = new TextElement( "Save to:",        button_x += 100, y_pos);
+  buttons[button_index++] = new ActionButton( "File",    "m+S", button_x += 80, y_pos, 65, 25);
+  buttons[button_index++] = new ActionButton( "Device",  "a+S", button_x += 67,  y_pos, 65, 25);
+  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
+
+  buttons[button_index++] = new ActionToggleButton( "Device: SLAVE",  "Device: FREE", "a+10", width - 150, y_pos);
+  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
+  hide_button_index = button_index;
+  
   buttons[button_index++] = new FrameChooser(offX, offY + matrix.height() + 40, matrix.width(), matrix.height());
 
-  hide_button_index = button_index;
-  buttons[button_index++] = new TextElement( "Load from:", button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "File",    "m+L", button_x,      y_pos += 30, 65, 25);
-  buttons[button_index++] = new ActionButton( "Device",  "a+L", button_x + 67, y_pos,       65, 25);
-  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
-
-  buttons[button_index++] = new TextElement( "Save to:", button_x, y_pos += 30);
-  buttons[button_index++] = new ActionButton( "File",    "m+S", button_x,      y_pos += 30, 65, 25);
-  buttons[button_index++] = new ActionButton( "Device",  "a+S", button_x + 67, y_pos,       65, 25);
-  if(! (device instanceof StandaloneDevice && device.enabled()) ) buttons[button_index-1].disable();
-
-  buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 40);
+  buttons[button_index++] = new TextElement( "Color:", button_x, y_pos += 140);
   y_pos += 30;
 
   PixelColor pc = new PixelColor(); 
@@ -149,7 +152,7 @@ void draw()
     }
 
     if(!device.enabled()) {
-      text("No output device found, running in standalone mode", 120, 20);  
+      text("No output device found, running in standalone mode", 120, 220);  
     }
 
     device.write_frame(matrix.current_frame());
@@ -173,12 +176,12 @@ void next_frame() {
 /* +++++++++++++++ ACTIONS +++++++++++++++ */
 void mouseDragged() {
   if(!record) return;
-  if(matrix.click(mouseX - offX, mouseY - offY, true)) mark_for_update();
+  if(matrix.click(mouseX - offX, mouseY - offY, global_color, true)) mark_for_update();
 }
 
 void mousePressed() {
   if(!record) return;
-  if(matrix.click(mouseX - offX, mouseY - offY, false)) mark_for_update();
+  if(matrix.click(mouseX - offX, mouseY - offY, global_color, false)) mark_for_update();
 }
 
 void mouseMoved() {
@@ -205,8 +208,8 @@ void keyPressed() {
   //println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
 
   if(color_mode && !keyMac) {
-     if(keyCode == 37) { matrix.current_color.previous_color(); mark_for_update(); return;}//arrow left
-     if(keyCode == 39) { matrix.current_color.next_color();  mark_for_update(); return;} //arrow right   
+     if(keyCode == 37) { global_color.previous_color(); mark_for_update(); return;}//arrow left
+     if(keyCode == 39) { global_color.next_color();  mark_for_update(); return;} //arrow right   
   }
 
   for(int i = 0; i < buttons.length; i++ ) {
@@ -230,13 +233,10 @@ void keyPressed() {
     }
   }
   else if(keyCtrl) {
-    PixelColor pc = null;
-    if(keyCode >= 48) pc = matrix.current_frame().set_letter(char(keyCode), fontLetter, matrix.current_color);
-    if( pc != null )  {
-      matrix.current_color = pc;
-      mark_for_update(); 
+    if(keyCode >= 48 ) {
+      if( matrix.current_frame().set_letter(char(keyCode), fontLetter, global_color) )  mark_for_update();
+      return;
     }
-    return;
   }
   else {
     if(!record) {
@@ -252,6 +252,12 @@ void keyReleased() {
   if( keyCode == 157 ) keyMac  = false;
   if( keyCode == 67 ) color_mode = false;
 }
+
+void rainbowduinoAvailable(Rainbowduino rainbowudino) {
+    matrix = new Matrix( (Device) rainbowudino);
+}
+
+/* +++++++++++++++ modes +++++++++++++++ */
 
 void mark_for_update() {
   update = true;

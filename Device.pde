@@ -5,6 +5,9 @@ public interface Device {
     
   boolean enabled();
   void write_frame(Frame frame);
+  
+  int width();
+  int height();
 }
 
 public interface StandaloneDevice {
