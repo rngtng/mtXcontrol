@@ -85,33 +85,28 @@ class Frame {
     return pixs[pos(x,y)];
   }
 
-  public PixelColor set_row(int y, PixelColor pc) {
+  public boolean set_row(int y, PixelColor pc) {
     for( int x = 0; x < this.cols; x++ ) {
-      pc = set_colored_pixel(x, y, pc);
+      set_colored_pixel(x, y, pc);
     }
-    return pc;
+    return true;
   }
 
-  public PixelColor set_col(int x, PixelColor pc) {
+  public boolean set_col(int x, PixelColor pc) {
     for( int y = 0; y < this.rows; y++ ) {
-      pc = set_colored_pixel(x, y, pc);
+      set_colored_pixel(x, y, pc);
     }
-    return pc;
+    return true;
   }
 
-  public PixelColor set_colored_pixel(int x, int y, PixelColor pc) {
+  public boolean set_colored_pixel(int x, int y, PixelColor pc) {
     if( x >= cols ) return set_row( y, pc);
     if( y >= rows)  return set_col( x, pc);
-    if( this.get_pixel(x,y).equal(pc) ) {
-      this.frame = null;
-      this.thumb = null;
-      return this.get_pixel(x,y).next_color();
-    }
+    if( this.get_pixel(x,y).equal(pc) ) pc.next_color();
     return set_pixel(x, y, pc);
   }
 
-  public PixelColor set_pixel(int x, int y, PixelColor pc) {
-    if( pc == null ) pc = new PixelColor();
+  public boolean set_pixel(int x, int y, PixelColor pc) {
     if(this.get_pixel(x,y) != null ) {
       this.get_pixel(x,y).set_color(pc);
     }
@@ -120,11 +115,11 @@ class Frame {
     }
     this.frame = null;
     this.thumb = null;
-    return this.get_pixel(x,y).clone();
+    return true;
   }
 
-  public PixelColor update(int x, int y, PixelColor pc, boolean ignore_last) {
-    if(!ignore_last && x == last_x && y == last_y) return null;
+  public boolean update(int x, int y, PixelColor pc, boolean ignore_last) {
+    if(!ignore_last && x == last_x && y == last_y) return false;
     last_x = x;
     last_y = y;
     if(color_mode) return set_pixel(x, y, pc);
@@ -173,12 +168,11 @@ class Frame {
     return (y * this.cols) + x;
   }
 
-  private PixelColor set_letter(char letter, PFont font, PixelColor pc) {
+  private boolean set_letter(char letter, PFont font, PixelColor pc) {
     return set_letter(letter, font, pc, 50);
   }
 
-  private PixelColor set_letter(char letter, PFont font, PixelColor pc, int trashhold) {
-    PixelColor new_pc = null;
+  private boolean set_letter(char letter, PFont font, PixelColor pc, int trashhold) {
     int offset = 0;
     this.pg.beginDraw();
     this.pg.fill(#FF0000);  //red
@@ -189,16 +183,17 @@ class Frame {
     this.pg.loadPixels();
     for(int row = 0; row < 10; row++) {
       int sum = 0;
+      //TODO check if first color is equal with current color, if yes -> next color!
       for(int col = 0; col < 8; col++) {
         if( this.get_pixs(row, col) > trashhold) {
-          new_pc = this.set_colored_pixel(col, row-offset, pc);          
+          this.set_pixel(col, row-offset, pc);
           sum++;
         }
       }
       if(sum == 0 && offset < 2) offset++;
-      if(row-offset == 7) return new_pc; //exit earlier in case we dont have lower parts
+      if(row-offset == 7) return true; //exit earlier in case we dont have lower parts
     }
-    return new_pc;
+    return true;
   }
 
   private int get_pixs(int x, int y) {

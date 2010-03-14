@@ -9,24 +9,17 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   int bright = 4;
 
-  RainbowduinoDevice(PApplet app) {
-    this(app, null, 0);
-  }
-
-  RainbowduinoDevice(PApplet app, String port_name) {
-    this(app, port_name, 0);
-  }
-
-  RainbowduinoDevice(PApplet app, int baud_rate) {
-    this(app, null, baud_rate);
-  }
-
-  RainbowduinoDevice(PApplet app, String port_name, int baud_rate) {
-    rainbowduino = new Rainbowduino(app);
-    rainbowduino.initPort(port_name, baud_rate, true);
+  RainbowduinoDevice(Rainbowduino _rainbowduino) {
+    rainbowduino = _rainbowduino;
+    if( enabled() ) {
     rainbowduino.brightnessSet(this.bright);
     rainbowduino.reset();
     running = false;
+    }
+  }
+
+  RainbowduinoDevice(PApplet app) {
+    this(new Rainbowduino(app));
   }
 
   void setColorScheme() {
@@ -43,9 +36,17 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   boolean enabled() {
-    return rainbowduino.connected();
+    return rainbowduino.isConnected();
   }    
 
+  int width() {
+    return Rainbowduino.width;
+  }
+  
+  int height() {
+    return Rainbowduino.height;
+  }
+  
   /* +++++++++++++++++++++++++++ */
   public void write_frame(Frame frame) {    
     write_frame(0, frame);

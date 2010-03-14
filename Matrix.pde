@@ -6,10 +6,8 @@ class Matrix {
   public int rad = 30;
   int border = 3;
 
-
   public int rows = 0;
   public int cols = 0;
-  public PixelColor current_color;
 
   Frame copy_frame;
 
@@ -17,11 +15,19 @@ class Matrix {
 
   int current_frame_nr;
 
+  Device outputDevice = null;
+
+  Matrix(Device _outputDevice) {
+    this.outputDevice = _outputDevice;
+    this.cols = _outputDevice.width(); //X
+    this.rows = _outputDevice.height(); //Y
+    add_frame();    
+  }
+
   Matrix(int cols, int rows ) {
     this.cols = cols; //X
     this.rows = rows; //Y
-    this.current_color = new PixelColor();
-    add_frame();
+    add_frame();    
   }
 
   public int width() {
@@ -40,13 +46,10 @@ class Matrix {
     return this.current_frame().draw_full(draw_rad, draw_border);
   }
 
-  public boolean click(int x, int y, boolean dragged) {
+  public boolean click(int x, int y, PixelColor current_color, boolean dragged) {
     if( x < 0 || y < 0) return false; //25 pixel right and bottom for row editing
     if( x > this.width() + 25 || y > this.height() + 25) return false; //25 pixel right and bottom for row editing
-    PixelColor pc = this.current_frame().update(x / rad, y / rad, current_color, !dragged);
-    if( pc == null ) return false;
-    current_color = pc.clone();
-    return true;
+    return this.current_frame().update(x / rad, y / rad, current_color, !dragged);
   }
 
   int num_frames() {

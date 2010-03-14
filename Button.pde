@@ -179,7 +179,7 @@ class ActionButton extends TextButton {
     if(this.button_text == "Delete") matrix.delete_frame();
     if(this.button_text == "Copy")   matrix.copy_frame();
     if(this.button_text == "Paste")  matrix.paste_frame();
-    if(this.button_text == "Fill")   matrix.current_frame().fill(matrix.current_color);
+    if(this.button_text == "Fill")   matrix.current_frame().fill(global_color);
     if(this.button_text == "Clear")  matrix.current_frame().clear();
   }
 }
@@ -218,13 +218,13 @@ class MiniColorButton extends RectButton {
 
   public boolean clicked() {
     if(!super.clicked()) return false;
-    matrix.current_color.set_color(this.px);
+    global_color.set_color(this.px);
     return true;
   }
   
   public boolean display() {
     if( !super.display() ) return false;
-    if(matrix.current_color.equal(this.px)) {
+    if(global_color.equal(this.px)) {
       stroke(#FFFF00);
       strokeWeight(2);
       rect(this.x-1, this.y-1, this.width-1, this.height+2);
