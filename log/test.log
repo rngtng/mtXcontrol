@@ -1,0 +1,155 @@
+Unable to load frame, underlying cause no such file to load -- frame 
+
+ /Library/Ruby/Site/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+/Library/Ruby/Site/1.8/rubygems/custom_require.rb:31:in `require'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:158:in `require'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:265:in `require_or_load'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:224:in `depend_on'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:136:in `require_dependency'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:850:in `try_to_load_dependency'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:862:in `each'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:862:in `require_fixture_classes'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:845:in `fixtures'
+./test/test_helper.rb:35
+./test/unit/frame_test.rb:1:in `require'
+./test/unit/frame_test.rb:1
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5
+Unable to load frame, underlying cause no such file to load -- frame 
+
+ /Library/Ruby/Site/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+/Library/Ruby/Site/1.8/rubygems/custom_require.rb:31:in `require'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:158:in `require'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:265:in `require_or_load'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:224:in `depend_on'
+/Library/Ruby/Gems/1.8/gems/activesupport-2.3.2/lib/active_support/dependencies.rb:136:in `require_dependency'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:850:in `try_to_load_dependency'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:865:in `require_fixture_classes'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:862:in `each'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:862:in `require_fixture_classes'
+/Library/Ruby/Gems/1.8/gems/activerecord-2.3.2/lib/active_record/fixtures.rb:845:in `fixtures'
+./test/test_helper.rb:35
+./test/functional/frame_controller_test.rb:1:in `require'
+./test/functional/frame_controller_test.rb:1
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `load'
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5:in `each'
+/Library/Ruby/Gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader.rb:5
+  [4;36;1mMatrix Create (0.4ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-07 21:27:10', 5, 5, NULL, '2009-06-07 21:27:10')[0m
+  [4;36;1mMatrix Create (0.4ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-07 21:28:20', 5, 5, NULL, '2009-06-07 21:28:20')[0m
+  [4;35;1mMatrix Create (0.4ms)[0m   [0mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-07 21:28:20', 5, 5, NULL, '2009-06-07 21:28:20')[0m
+  [4;36;1mMatrix Load (0.4ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Create (0.4ms)[0m   [0mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-07 21:29:19', 5, 5, NULL, '2009-06-07 21:29:19')[0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Create (0.4ms)[0m   [0mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-07 21:33:28', 5, 5, NULL, '2009-06-07 21:33:28')[0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Create (0.4ms)[0m   [0mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-07 21:33:53', 5, 5, NULL, '2009-06-07 21:33:53')[0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.4ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.4ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.4ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.4ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:32:19', 5, 5, NULL, '2009-06-08 23:32:19')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.4ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:33:05', 5, 5, NULL, '2009-06-08 23:33:05')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.6ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.4ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.4ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:36:14', 5, 5, NULL, '2009-06-08 23:36:14')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:36:41', 5, 5, NULL, '2009-06-08 23:36:41')[0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:37:17', 5, 5, NULL, '2009-06-08 23:37:17')[0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:38:23', 5, 5, NULL, '2009-06-08 23:38:23')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.8ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:39:42', 5, 5, NULL, '2009-06-08 23:39:42')[0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-08 23:41:00', 5, 5, NULL, '2009-06-08 23:41:00')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-10 21:03:00', 5, 5, NULL, '2009-06-10 21:03:00')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.4ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-10 21:03:28', 5, 5, NULL, '2009-06-10 21:03:28')[0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-10 21:11:26', 5, 5, NULL, '2009-06-10 21:11:26')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-10 21:24:05', 5, 5, NULL, '2009-06-10 21:24:05')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-10 21:24:47', 5, 5, NULL, '2009-06-10 21:24:47')[0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;36;1mMatrix Load (0.3ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Create (0.3ms)[0m   [0;1mINSERT INTO "matrices" ("name", "updated_at", "x", "y", "frames", "created_at") VALUES('test', '2009-06-10 21:26:16', 5, 5, NULL, '2009-06-10 21:26:16')[0m
+  [4;35;1mMatrix Load (0.2ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;36;1mMatrix Load (0.2ms)[0m   [0;1mSELECT * FROM "matrices" WHERE ("matrices"."id" = 19155468) [0m
+  [4;35;1mMatrix Load (0.3ms)[0m   [0mSELECT * FROM "matrices" WHERE ("matrices"."id" = 914358341) [0m

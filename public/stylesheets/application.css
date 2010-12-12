@@ -1,0 +1,27 @@
+#content { margin: auto; width: 300px;}
+
+table { 
+  margin: 5px;
+}
+
+td.pixel {
+  background: red;
+  width: 50px;
+  height: 50px;  
+}
+
+td.pixel a {
+  color: red;
+}
+
+td.pixel.active {
+  background: green;
+}
+
+td.pixel.active a {
+  color: green;
+}
+
+.menu {
+  text-align: center;
+}
