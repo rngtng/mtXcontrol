@@ -3,9 +3,8 @@ class Matrix {
 
   ArrayList frames  = new ArrayList();
 
-  public int rad = 30;
-  int border = 3;
-
+  public int rad = 70;
+  int border = 10;
 
   public int rows = 0;
   public int cols = 0;

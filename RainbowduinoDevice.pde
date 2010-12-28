@@ -10,20 +10,12 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   int bright = 4;
 
   RainbowduinoDevice(PApplet app) {
-    this(app, null, 0);
+    RainbowduinoDetector.start(app);
+    this.rainbowduino = null;
   }
 
-  RainbowduinoDevice(PApplet app, String port_name) {
-    this(app, port_name, 0);
-  }
-
-  RainbowduinoDevice(PApplet app, int baud_rate) {
-    this(app, null, baud_rate);
-  }
-
-  RainbowduinoDevice(PApplet app, String port_name, int baud_rate) {
-    rainbowduino = new Rainbowduino(app);
-    rainbowduino.initPort(port_name, baud_rate, true);
+  public void init(Rainbowduino _rainbowduino) {
+    rainbowduino = _rainbowduino;
     rainbowduino.brightnessSet(this.bright);
     rainbowduino.reset();
     running = false;
@@ -31,11 +23,11 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   void setColorScheme() {
     PixelColorScheme.R = new int[]{
-      0,255            };   
+      0,255            };
     PixelColorScheme.G = new int[]{
-      0,255            };   
+      0,255            };
     PixelColorScheme.B = new int[]{
-      0,255            };   
+      0,255            };
   }
 
   boolean draw_as_circle() {
@@ -43,20 +35,20 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   }
 
   boolean enabled() {
-    return rainbowduino.connected();
-  }    
+    return (this.rainbowduino != null);
+  }
 
   /* +++++++++++++++++++++++++++ */
-  public void write_frame(Frame frame) {    
+  public void write_frame(Frame frame) {
     write_frame(0, frame);
   }
 
-  public void write_frame(int num, Frame frame) {    
+  public void write_frame(int num, Frame frame) {
     if(frame == null || running || !enabled() ) return;
     int slave_nr = 0;
     for( int y = 0; y < frame.rows; y += rainbowduino.height ) {
       for( int x = 0; x < frame.cols; x += rainbowduino.width ) {
-        rainbowduino.slaveActiv(slave_nr += 1);
+        //rainbowduino.slaveActiv(slave_nr += 1);
         rainbowduino.bufferSetAt(num, get_frame_rows(frame, x, y));
       }
     }
@@ -74,22 +66,22 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
   public Matrix read_matrix() {
     Matrix matrix = new Matrix(8,8);
 
-    print("Start Reading Matrix - ");    
+    print("Start Reading Matrix - ");
     int frames =  rainbowduino.bufferLoad(); //return num length
     println( "Frames:" + frames);
 
-    for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) {    
+    for( int frame_nr = 0; frame_nr < frames; frame_nr++ ) {
       //println("Frame Nr: " + frame_nr);
       Frame frame = matrix.current_frame();
       int frame_byte[] = rainbowduino.bufferGetAt(frame_nr);
       for(int y = 0; y < 8; y++ ) {
         for(int x = 0; x < 8; x++ ) {
           int[] ab = xy2ab(x,y);
-          frame.set_pixel(ab[0], ab[1], new PixelColor((frame_byte[3*y+0] >> x) & 1, (frame_byte[3*y+1] >> x) & 1, (frame_byte[3*y+2] >> x) & 1 ) );          
+          frame.set_pixel(ab[0], ab[1], new PixelColor((frame_byte[3*y+0] >> x) & 1, (frame_byte[3*y+1] >> x) & 1, (frame_byte[3*y+2] >> x) & 1 ) );
         }
-      }      
+      }
       matrix.add_frame();
-    }           
+    }
     matrix.delete_frame();
     println("Done");
     return matrix;
@@ -100,10 +92,10 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
       running = false;
       rainbowduino.reset();
       return;
-    } 
+    }
     running = true;
     rainbowduino.bufferLoad();
-    rainbowduino.start();   
+    rainbowduino.start();
   }
 
   public void speedUp() {
@@ -133,19 +125,19 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     return new int[]{a, b};
   }
 
-  ////////////////////////////////////////////////////  
+  ////////////////////////////////////////////////////
   protected int[] get_frame_rows(Frame frame, int x_off, int y_off) {
     int[] res = new int[3*frame.rows];
     for( int y = 0; y < rainbowduino.height; y++ ) {
       for( int x = 0; x < rainbowduino.width; x++ ) {
-        PixelColor p = frame.get_pixel(x + x_off, y + y_off); 
+        PixelColor p = frame.get_pixel(x + x_off, y + y_off);
         int[] ab = xy2ab(x,y);
         res[3*ab[1] + 0] |= (p.r & 1) << ab[0];
         res[3*ab[1] + 1] |= (p.g & 1) << ab[0];
         res[3*ab[1] + 2] |= (p.b & 1) << ab[0];
       }
-    }  
-    return res;  
+    }
+    return res;
   }
 }
 

@@ -2,19 +2,7 @@ public class RainbowduinoCubeDevice extends RainbowduinoDevice {
 
 
   RainbowduinoCubeDevice(PApplet app) {
-    this(app, null, 0);
-  }
-
-  RainbowduinoCubeDevice(PApplet app, String port_name) {
-    this(app, port_name, 0);
-  }
-
-  RainbowduinoCubeDevice(PApplet app, int baud_rate) {
-    this(app, null, baud_rate);
-  }
-
-  RainbowduinoCubeDevice(PApplet app, String port_name, int baud_rate) {
-    super( app, port_name, baud_rate);
+    super(app);
   }
 
   int[] mapping_xy2ab = new int[] {35,36,3,4,34,37,2,5,33,38,1,6,32,39,0,7};
