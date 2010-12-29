@@ -133,8 +133,8 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
         PixelColor p = frame.get_pixel(x + x_off, y + y_off);
         int[] ab = xy2ab(x,y);
         res[3*ab[1] + 0] |= (p.r & 1) << ab[0];
-        res[3*ab[1] + 1] |= (p.g & 1) << ab[0];
-        res[3*ab[1] + 2] |= (p.b & 1) << ab[0];
+        res[3*ab[1] + 1] |= (p.b & 1) << ab[0];
+        res[3*ab[1] + 2] |= (p.g & 1) << ab[0];
       }
     }
     return res;

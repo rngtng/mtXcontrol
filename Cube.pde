@@ -13,10 +13,6 @@ public class PFrame extends JFrame {
         s.init();
         show();
     }
-
-    public void draw() {
-  //    if( isShowing() ) s.redraw();
-    }
 }
 
 public class CubeApplet extends PApplet {
@@ -58,7 +54,7 @@ public class CubeApplet extends PApplet {
 
       background(120);
       lights();
-      smooth();
+      //smooth();
 
       camera( a2,  a2, distance, // eyeX, eyeY, eyeZ
               a2,  a2,  a2,
@@ -79,7 +75,9 @@ public class CubeApplet extends PApplet {
       noStroke();
       box (a* 1.5, a * 1.5, 1.0);
       popMatrix();
-
+      
+      // Line Grid
+      pushMatrix();
       stroke(100,100,100);
       for (int dim = 0; dim < 3; dim++) {
         for(int i = 0; i < 4; i++ ) {
@@ -90,7 +88,8 @@ public class CubeApplet extends PApplet {
         rotateX(PI/2);
         rotateY(PI/2);
       }
-
+      popMatrix();
+      
       noStroke();
       int scale = 10;
       Frame f = matrix.current_frame();
@@ -104,36 +103,38 @@ public class CubeApplet extends PApplet {
           int x1 = 2 + x / 4 - 2 * (int) (Math.floor(y / 4));
           int y1 = (int) (Math.ceil(Math.abs(x - 3.5)) - 1);
           int z1 = y % 4;
+
           translate(x1*scale, y1*scale, z1*scale);
           box(4);
           popMatrix();
         }
       }
       picker.stop();
+    }
 
-      noFill();
+    void drawDebug(PGraphics g) {
+      g.noFill();
       /*--- 0 == white ---*/
-      stroke(255,255,255);
-      box(4);
-
+      g.stroke(255,255,255);
+      g.box(4);
 
       /*--- x == red ---*/
-      translate(a,0,0);
-      stroke(255,0,0);
-      box(7);
-      translate(-a,0,0);
+      g.translate(a,0,0);
+      g.stroke(255,0,0);
+      g.box(7);
+      g.translate(-a,0,0);
 
       /*--- y == green ---*/
-      translate(0,a,0);
-      stroke(0,255,0);
-      box(7);
-      translate(0,-a,0);
+      g.translate(0,a,0);
+      g.stroke(0,255,0);
+      g.box(7);
+      g.translate(0,-a,0);
 
       /*--- z == blue ---*/
-      translate(0,0,a);
-      stroke(0,0,255);
-      box(7);
-      translate(0,0,-a);
+      g.translate(0,0,a);
+      g.stroke(0,0,255);
+      g.box(7);
+      g.translate(0,0,-a);
     }
 
     void mouseDragged() {
@@ -144,10 +145,8 @@ public class CubeApplet extends PApplet {
     void mouseClicked() {
       int id = picker.get(mouseX, mouseY);
       if (id > -1) {
-        println(id + " " + (id % 8) + " " + (id / 8) );
         matrix.clickRowCol(id % 8, id / 8, false);
         mark_for_update();
-        //spheres[id].changeColor();
       }
     }
 
@@ -159,4 +158,15 @@ public class CubeApplet extends PApplet {
          distance = min_distance;
       }
     }
+
+    void keyPressed() {
+      main.keyCode = keyCode;
+      main.keyPressed();
+    }
+
+    void keyReleased() {
+      main.keyCode = keyCode;
+      main.keyReleased();
+    }
+
 }

@@ -20,6 +20,7 @@ Matrix matrix;
 Device device;
 
 PFrame cubeFrame;
+PApplet main;
 
 int offY = 30;
 int offX = 30;
@@ -60,6 +61,7 @@ void setup() {
   setup_buttons();
   frameRate(15);
   cubeFrame = new PFrame();
+  main = this;
 }
 
 void setup_buttons() {
@@ -157,7 +159,6 @@ void draw()
 
     device.write_frame(matrix.current_frame());
     update = false;
-    cubeFrame.draw();
   }
   if(!record) next_frame();
 }
@@ -205,12 +206,19 @@ void keyPressed() {
   if(keyCode == 18)  keyAlt  = true; //alt
   if(keyCode == 157) keyMac  = true; //mac
   if(keyCode == 67) color_mode = true; //C
-
-  //println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
+  // println("pressed " + key + " " + keyCode + " " +keyMac+ " "+  keyCtrl + " "+ keyAlt );
 
   if(color_mode && !keyMac) {
      if(keyCode == 37) { matrix.current_color.previous_color(); mark_for_update(); return;}//arrow left
      if(keyCode == 39) { matrix.current_color.next_color();  mark_for_update(); return;} //arrow right
+  }
+
+  if(keyCode == 81) {
+    if(cubeFrame.isShowing()) {
+     cubeFrame.hide();
+    } else {
+     cubeFrame.show();
+    }
   }
 
   for(int i = 0; i < buttons.length; i++ ) {
