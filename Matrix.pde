@@ -48,6 +48,15 @@ class Matrix {
     return true;
   }
 
+  public boolean clickRowCol(int row, int col, boolean dragged) {
+    if( row < 0 || col < 0) return false; //25 pixel right and bottom for row editing
+    if( row > rows  || col > cols) return false; //25 pixel right and bottom for row editing
+    PixelColor pc = this.current_frame().update(row, col, current_color, !dragged);
+    if( pc == null ) return false;
+    current_color = pc.clone();
+    return true;
+  }
+
   int num_frames() {
     return frames.size();
   }
