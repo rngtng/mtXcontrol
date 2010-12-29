@@ -3,6 +3,8 @@ import processing.opengl.*;
 import javax.swing.JFrame;
 import picking.*;
 
+import damkjer.ocd.*;
+
 public class PFrame extends JFrame {
     CubeApplet s;
 
@@ -17,6 +19,7 @@ public class PFrame extends JFrame {
 
 public class CubeApplet extends PApplet {
     Picker picker;
+    Camera camera1;
 
     public boolean setupOk = false;
 
@@ -47,6 +50,9 @@ public class CubeApplet extends PApplet {
           }
         });
         setupOk = true;
+
+        camera1 = new Camera( this, (float)(a/2.0), (float)(a/2.0), a * 2.0, // eyeX, eyeY, eyeZ
+        (float)(a/2.0), (float)(a/2.0), (float)(a/2.0)); // centerX, centerY, centerZ
     }
 
     public void draw() {
@@ -56,9 +62,12 @@ public class CubeApplet extends PApplet {
       lights();
       //smooth();
 
+      //camera1.feed();
+
       camera( a2,  a2, distance, // eyeX, eyeY, eyeZ
               a2,  a2,  a2,
              0.0, 1.0, 0.0); // centerX, centerY, centerZ
+
 
       translate( a2, 0, a2);
       rotateY(rotY);
@@ -66,8 +75,9 @@ public class CubeApplet extends PApplet {
 
       translate( 0, a2, a2);
       rotateX(-rotX);
+      rotateX(PI/2);
       translate( 0, -a2, -a2);
-
+      
       // Basement
       pushMatrix();
       translate( a2, a2,  float(a) / -6.0);
@@ -75,7 +85,7 @@ public class CubeApplet extends PApplet {
       noStroke();
       box (a* 1.5, a * 1.5, 1.0);
       popMatrix();
-      
+
       // Line Grid
       pushMatrix();
       stroke(100,100,100);
@@ -89,7 +99,7 @@ public class CubeApplet extends PApplet {
         rotateY(PI/2);
       }
       popMatrix();
-      
+
       noStroke();
       int scale = 10;
       Frame f = matrix.current_frame();
@@ -140,6 +150,7 @@ public class CubeApplet extends PApplet {
     void mouseDragged() {
       rotY += radians(mouseX - pmouseX);
       rotX += radians(mouseY - pmouseY);
+      camera1.tumble( -1.0 * radians(mouseX - pmouseX), -1.0 * radians(mouseY - pmouseY));
     }
 
     void mouseClicked() {
@@ -151,6 +162,7 @@ public class CubeApplet extends PApplet {
     }
 
     void mouseWheel(int delta) {
+      camera1.zoom(delta*0.03);
       distance += delta * 0.5;
       if (distance > max_distance) {
         distance = max_distance;

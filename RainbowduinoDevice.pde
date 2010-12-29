@@ -7,10 +7,10 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
 
   public boolean running;
 
-  int bright = 4;
+  int bright = 16;
 
   RainbowduinoDevice(PApplet app) {
-    RainbowduinoDetector.start(app);
+    RainbowduinoDetector.start(app, true);
     this.rainbowduino = null;
   }
 
@@ -18,6 +18,7 @@ class RainbowduinoDevice implements Device, StandaloneDevice {
     rainbowduino = _rainbowduino;
     rainbowduino.brightnessSet(this.bright);
     rainbowduino.reset();
+    rainbowduino.stop();
     running = false;
   }
 
