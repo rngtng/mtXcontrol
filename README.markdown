@@ -10,7 +10,7 @@ Download binaries and sources here: [github cubeXcontrol Project](https://github
 
 ## Requirements:
 * Mac/Win/Linux System running Java
-* [Rainbowduino + 8x8 RGB LED Matrix](http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html)
+* [Rainbowduino + Rainbow Cube Kit](http://www.seeedstudio.com/depot/rainbow-cube-kit-rgb-4x4x4-rainbowduino-compatible-p-596.html)
 
 If you're using Rainbowduino you'll need to upload firmware:
 
