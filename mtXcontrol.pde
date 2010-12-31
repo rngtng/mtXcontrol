@@ -1,14 +1,7 @@
 /*
- * mtXcontrol - a LED Matrix Editor - version 1.1
+ * CubeXControl - a Rainbow Cube Editor - version 1.0
  *
- * By now this application supports Novation launchpad and Seeedstudion Rainbowduino. For both device additional
- * libraries are needed:
- *
- * For launchad get the processing library here: http://rngtng.github.com/launchpad
  * For rainbowduino get the processing library here: http://rngtng.github.com/rainbowduino.
- *
- * Alternatively, you could delete the accordant device files LaunchpadDevice.pde / RainbowduinoDevice.pde and
- * its object instantiation arround line 50 in this file
  *
  * See Readme.markdown for more
  *

@@ -42,7 +42,7 @@ public class CubeApplet extends PApplet {
        size(640, 640, P3D);
 
         picker = new Picker(this);
-        distance = max_distance;
+        distance = 3 * a;
 
         addMouseWheelListener(new java.awt.event.MouseWheelListener() {
           public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
@@ -100,7 +100,8 @@ public class CubeApplet extends PApplet {
       }
       popMatrix();
 
-      noStroke();
+      stroke(140,140,140);
+      //noStroke();
       int scale = 10;
       Frame f = matrix.current_frame();
       for(int y = 0; y < f.rows; y++) {
@@ -116,6 +117,7 @@ public class CubeApplet extends PApplet {
 
           translate(x1*scale, y1*scale, z1*scale);
           box(4);
+          //sphere(2);
           popMatrix();
         }
       }
