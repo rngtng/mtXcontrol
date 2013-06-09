@@ -47,7 +47,7 @@ void setup() {
   matrix = new Matrix(8, 8);
   
   //Device instantiation, try to find Launchpad first, fallback to Rainbowduino
-  device = new LaunchpadDevice(this); //delete this line (and LaunchpadDevice.pde) if no Launchpad support wanted
+  //device = new LaunchpadDevice(this); //delete this line (and LaunchpadDevice.pde) if no Launchpad support wanted
   if(device == null || !device.enabled()) device = new RainbowduinoDevice(this); //delete this line (and RainbowduinoDevice.pde) if no Rainbowduino support wanted
 
   device.setColorScheme();
