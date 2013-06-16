@@ -19,6 +19,7 @@ class Frame {
     this.rows = rows;
     this.pixs = new PixelColor[rows*cols];
     this.clear();
+    size(780, 720, P2D);
     this.pg = createGraphics(8*letter_scale, 10*letter_scale, P2D);
   }
 

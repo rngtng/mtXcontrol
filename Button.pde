@@ -11,20 +11,20 @@ class Button extends GuiElement
   boolean over = false;
   //  boolean clicked = false;
   String shortcut = null;
-  
+
   Button(int ix, int iy,  color icolor, color ihighlight) {
     super(ix, iy, icolor);
     this.highlightcolor = ihighlight;
   }
 
   public boolean clicked() {
-    return (this.over && !this.disabled);  
+    return (this.over && !this.disabled);
   }
 
   public boolean key_pressed(int key_code, boolean mac, boolean crtl, boolean alt) {
     return (this.shortcut != null &&  !this.disabled);
   }
-  
+
   public boolean over() {
     return false;
   }
@@ -104,7 +104,7 @@ class TextButton extends RectButton {
   public color text_color;
   float x_offset;
   float y_offset;
-  
+
   TextButton(String itext, int ix, int iy, int iwidth, int iheight, color icolor, color ihighlight) {
     super(ix, iy, iwidth, iheight, icolor, ihighlight);
     this.button_text = itext;
@@ -122,16 +122,16 @@ class TextButton extends RectButton {
   protected color current_text_color() {
     return (this.disabled) ? #666666 : #FFFFFF;
   }
-  
+
   protected String current_text() {
     return this.button_text;
   }
-  
+
   protected void update_offset() {
     x_offset = x + (this.width - textWidth(current_text())) / 2;
     y_offset = y + 17;
   }
-  
+
 }
 
 class ActionButton extends TextButton {
@@ -171,8 +171,8 @@ class ActionButton extends TextButton {
     if(this.button_text == "v") matrix.current_frame().shift_down();
     if(this.button_text == "<") matrix.current_frame().shift_left();
     if(this.button_text == ">") matrix.current_frame().shift_right();
-    if(this.shortcut    == "m+L") { matrix = matrix.load_from_file(); keyMac  = false;}
-    if(this.shortcut    == "m+S") { matrix.save_to_file(); keyMac  = false;}
+    if(this.shortcut    == "m+L") { selectInput("Choose a Matrix File to load", "inputFileSelected"); keyMac  = false;}
+    if(this.shortcut    == "m+S") { selectOutput("File to save to:", "outputFileSelected"); keyMac  = false;}
     if(this.shortcut    == "a+L" && device instanceof StandaloneDevice) matrix = ((StandaloneDevice) device).read_matrix();
     if(this.shortcut    == "a+S" && device instanceof StandaloneDevice) ((StandaloneDevice) device).write_matrix(matrix);
     if(this.button_text == "Add")    matrix.add_frame();
@@ -210,10 +210,10 @@ class ActionToggleButton extends ActionButton {
 class MiniColorButton extends RectButton {
 
   PixelColor px;
-  
+
   MiniColorButton(int ix, int iy, int iwidth, int iheight, PixelColor icolor) {
     super(ix, iy, iwidth, iheight, icolor.get_color(), icolor.get_color());
-    this.px = icolor;    
+    this.px = icolor;
   }
 
   public boolean clicked() {
@@ -221,7 +221,7 @@ class MiniColorButton extends RectButton {
     matrix.current_color.set_color(this.px);
     return true;
   }
-  
+
   public boolean display() {
     if( !super.display() ) return false;
     if(matrix.current_color.equal(this.px)) {
@@ -231,5 +231,5 @@ class MiniColorButton extends RectButton {
       strokeWeight(0);
     }
     return true;
-  }  
+  }
 }
