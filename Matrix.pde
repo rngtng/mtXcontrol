@@ -113,12 +113,7 @@ class Matrix {
   }
 
   /* +++++++++++++++ FILE +++++++++++++++ */
-  void save_to_file() {
-    String savePath = selectOutput();  // Opens file chooser
-    if(savePath == null) {
-      println("No output file was selected...");
-      return;
-    }
+  void save_to_file(String savePath) {
     if( match(savePath, ".bmp") == null )  savePath += ".bmp";
 
     int height = (int) Math.sqrt(this.num_frames());
@@ -141,16 +136,6 @@ class Matrix {
     }
     output.save(savePath); //TODO add scaling??
     println("SAVED to " + savePath);
-  }
-
-  Matrix load_from_file() {
-    String loadPath = selectInput("Choose a Matrix File to load");  // Opens file chooser
-    if(loadPath == null) {
-      println("No file was selected...");
-      return this;
-    }
-    if( match(loadPath, ".mtx") != null ) return load_mtx(loadPath); 
-    return load_bmp(loadPath);
   }
 
   Matrix load_mtx(String loadPath) {
@@ -195,9 +180,9 @@ class Matrix {
         for(int y = 0; y < frame.rows; y++) {
           for(int x = 0; x < frame.cols; x++) {
             int off = h * width * frame.cols * frame.rows + w * frame.cols + y * (frame.cols * width) + x ;
-            color c = input.pixels[off * SCALE];          
+            color c = input.pixels[off * SCALE];
             frame.get_pixel(x, y).set_color(c);
-          } 
+          }
         }
         frame = matrix.add_frame();
       }
