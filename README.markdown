@@ -52,7 +52,7 @@ To use your Rainbowduino with mtXcontrol you have to upload the Firmware to your
 * multiple Device support including auto detection
 * Draw multicolor points, line and rows (4bit color support)
 * Add, delete, clear, fill, *copy &amp; paste*, move frames
-* *Draw letters and numbers*, Font configureable
+* *Draw letters and numbers*, Font configurable
 * Save to &amp; load from *Bitmap file*
 * Frame preview, easily navigate through
 * Keyboard shortcut for each function
