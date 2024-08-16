@@ -179,3 +179,33 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Other resources
+
+### Rainbowduino Carnival 2010 Kickoff
+
+mtXcontrol 3D
+
+master <-> slave
+
+Rainbowduino MIDI
+
+Rainbwoduino writer
+ * webcam
+ * buchstaben
+
+Heart Button
+ * interaltv
+
+CigarBox
+ * mtx erweitern um Framezeit länge   
+ * sensoren ?  wieviel 
+ - abhänigkeiten Matze
+
+
+Glow Doodle:
+ www.glowdoodle.com
+
+Ui habs noch nicht angeschaut klingt aber nach dem was wir wollen?!
+
+http://processing.org/discourse/yabb2/YaBB.pl?num=1243385017/0
